@@ -8,10 +8,10 @@ namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Core\Model\QueryFilter;
-use jtl\Connector\OpenCart\Utility\Mmc;
 use jtl\Connector\Formatter\ExceptionFormatter;
-use jtl\Connector\Result\Action;
 use jtl\Connector\Model\ConnectorIdentification;
+use jtl\Connector\OpenCart\Utility\Mmc;
+use jtl\Connector\Result\Action;
 
 class Connector extends DataController
 {
@@ -26,9 +26,9 @@ class Connector extends DataController
         $action = new Action();
         $action->setHandled(true);
 
-        $results = array();
+        $results = [];
 
-        $mainControllers = array(
+        $mainControllers = [
             'Category',
             'Customer',
             'CustomerOrder',
@@ -38,7 +38,7 @@ class Connector extends DataController
             'Product',
             'Manufacturer',
             'Payment'
-        );
+        ];
 
         foreach ($mainControllers as $mainController) {
             try {
@@ -91,5 +91,10 @@ class Connector extends DataController
         $action->setResult(true);
 
         return $action;
+    }
+
+    protected function pullQuery($data, $limit = null)
+    {
+        // TODO: Implement pullQuery() method.
     }
 }

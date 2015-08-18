@@ -10,18 +10,33 @@ use jtl\Connector\Linker\IdentityLinker;
 
 class Category extends DataController
 {
-    const STATS_QUERY = 'SELECT COUNT(*) FROM oc_category c LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = 1 WHERE l.hostId IS NULL';
     private static $idCache = [];
 
-    protected function pullQuery($data, $limit)
+    public function pullData($data, $model, $limit = null)
     {
-        return sprintf('SELECT c.*
-            FROM oc_category c LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL LIMIT %d', IdentityLinker::TYPE_CATEGORY, $limit
+        $return = [];
+        $query = $this->pullQuery($data, $limit);
+        $result = $this->db->query($query);
+        foreach ($result as $row) {
+            $model = $this->mapper->toHost($row);
+            $return[] = $model;
+        }
+        return $return;
+    }
+
+    protected function pullQuery($data, $limit = null)
+    {
+        return sprintf('
+            SELECT c.*
+            FROM oc_category c
+            LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_CATEGORY, $limit
         );
     }
 
-    public function pushData($data)
+    /*public function pushData($data)
     {
         if (isset(static::$idCache[$data->getParentCategoryId()->getHost()])) {
             $data->getParentCategoryId()->setEndpoint(static::$idCache[$data->getParentCategoryId()->getHost()]);
@@ -34,20 +49,6 @@ class Category extends DataController
         return $data;
     }
 
-    private function addMeta($data)
-    {
-        $id = $data->getId()->getEndpoint();
-        if (!empty($id)) {
-            foreach ($data->getI18ns() as $i18n) {
-                $langId = $this->utils->getLanguageId($i18n->getLanguageISO());
-                if ($langId !== false) {
-                    //$encoder->addSeoEntry($id, 'oxbaseshop', $langId, null, null, null, null, $i18n->getMetaKeywords(),
-                    //   $i18n->getMetaDescription());
-                }
-            }
-        }
-    }
-
     public function deleteData($data)
     {
         $hostId = $data->getId()->getHost();
@@ -56,11 +57,17 @@ class Category extends DataController
         $this->db->query('DELETE FROM oc_category WHERE category_id = ' . $hostId);
         $this->db->query('DELETE FROM oc_category_description WHERE category_id = ' . $hostId);
         return $data;
-    }
+    }*/
 
     public function getStats()
     {
-        return $this->db->query(self::STATS_QUERY);
+        return $this->db->query(sprintf('
+			SELECT COUNT(*)
+			FROM oc_category c
+			LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_CATEGORY
+        ));
     }
 
 

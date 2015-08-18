@@ -8,8 +8,7 @@ namespace jtl\Connector\OpenCart\Controller;
 
 class Product extends DataController
 {
-
-    protected function pullQuery($data, $limit)
+    protected function pullQuery($data, $limit = null)
     {
         // TODO: Implement pullQuery() method.
     }

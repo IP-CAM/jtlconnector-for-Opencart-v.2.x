@@ -10,7 +10,19 @@ use jtl\Connector\Linker\IdentityLinker;
 
 class Customer extends DataController
 {
-    protected function pullQuery($data, $limit)
+    public function pullData($data, $model, $limit = null)
+    {
+        $return = [];
+        $query = $this->pullQuery($data, $limit);
+        $result = $this->db->query($query);
+        foreach ($result as $row) {
+            $model = $this->mapper->toHost($row);
+            $return[] = $model;
+        }
+        return $return;
+    }
+
+    protected function pullQuery($data, $limit = null)
     {
         return sprintf('
             SELECT c.*, a.company, a.address_1, a.city, a.postcode, a.country_id, co.iso_code_2, co.name

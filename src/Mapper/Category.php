@@ -8,6 +8,8 @@ namespace jtl\Connector\OpenCart\Mapper;
 
 class Category extends DataMapper
 {
+    protected $endpointModel = '\Category';
+
     protected $pull = [
         'id' => 'category_id',
         'parentCategoryId' => 'parent_id',
@@ -19,10 +21,11 @@ class Category extends DataMapper
 
     protected $push = [
         'category_id' => 'id',
-        'parent_id' => null,
+        'parent_id' => 'parentCategoryId',
         'column' => 'level',
         'status' => 'isActive',
         'sort_order' => 'sort',
         'CategoryI18n' => 'i18ns'
     ];
+
 }

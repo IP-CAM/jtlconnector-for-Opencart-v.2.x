@@ -9,4 +9,8 @@ namespace jtl\Connector\OpenCart\Controller;
 class Specific extends DataController
 {
 
+    protected function pullQuery($data, $limit = null)
+    {
+        // TODO: Implement pullQuery() method.
+    }
 }

@@ -9,12 +9,10 @@ namespace jtl\Connector\OpenCart\Mapper;
 use jtl\Connector\Core\Utilities\Singleton;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Utility\Db;
-use jtl\Connector\OpenCart\Utility\Utils;
 
 abstract class DataMapper extends Singleton
 {
     protected $db = null;
-    protected $utils = null;
     private $model = null;
     private $type;
     protected $endpointModel = null;
@@ -25,7 +23,6 @@ abstract class DataMapper extends Singleton
         $typeClass = "\\jtl\\Connector\\Type\\{$reflect->getShortName()}";
 
         $this->db = DB::getInstance();
-        $this->utils = Utils::getInstance();
         $this->model = "\\jtl\\Connector\\Model\\{$reflect->getShortName()}";
         $this->type = new $typeClass();
     }
@@ -33,6 +30,7 @@ abstract class DataMapper extends Singleton
     public function toHost($data)
     {
         $model = new $this->model();
+
         foreach ($this->pull as $host => $endpoint) {
             $setter = 'set' . ucfirst($host);
             $fnName = strtolower($host);
@@ -67,6 +65,7 @@ abstract class DataMapper extends Singleton
                 $model->$setter($value);
             }
         }
+
         return $model;
     }
 

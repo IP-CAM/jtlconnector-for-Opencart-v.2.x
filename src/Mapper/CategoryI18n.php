@@ -13,26 +13,26 @@ class CategoryI18n extends DataMapper
     protected $pull = [
         'categoryId' => 'category_id',
         'description' => 'description',
-        'languageISO' => 'language',
+        'languageISO' => 'code',
         'metaDescription' => 'meta_description',
         'metaKeywords' => 'meta_keyword',
-        'name' => 'name'
+        'name' => 'name',
+        //'titleTag',
+        //'urlPath'
     ];
 
-    protected $push = [
+    /*protected $push = [
         'category_id' => 'categoryId',
         'description' => 'description',
         'language' => 'languageISO',
         'meta_description' => 'metaDescription',
         'meta_keyword' => 'metaKeywords',
         'name' => 'name'
-    ];
+    ];*/
 
-    protected function languageiso($data)
+    protected function languageISO($data)
     {
         $language = Utils::getInstance()->getLanguages()[$data['language_id'] - 1];
         return $language->iso2;
     }
-
-
 }
