@@ -6,14 +6,14 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-use jtl\Connector\OpenCart\Utility\Utils;
+use jtl\Connector\Core\Utilities\Language;
 
 class CategoryI18n extends BaseMapper
 {
     protected $pull = [
         'categoryId' => 'category_id',
         'description' => 'description',
-        'languageISO' => 'code',
+        'languageISO' => null,
         'metaDescription' => 'meta_description',
         'metaKeywords' => 'meta_keyword',
         'name' => 'name',
@@ -32,7 +32,6 @@ class CategoryI18n extends BaseMapper
 
     protected function languageISO($data)
     {
-        $language = Utils::getInstance()->getLanguages()[$data['language_id'] - 1];
-        return $language->iso2;
+        return Language::convert($data['code']);
     }
 }

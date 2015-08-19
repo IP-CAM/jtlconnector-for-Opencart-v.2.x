@@ -59,18 +59,6 @@ class Category extends BaseController
         return $data;
     }*/
 
-    public function getStats()
-    {
-        return $this->db->query(sprintf('
-			SELECT COUNT(*)
-			FROM oc_category c
-			LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL',
-            IdentityLinker::TYPE_CATEGORY
-        ));
-    }
-
-
     protected function pushData($data, $model)
     {
         // TODO: Implement pushData() method.
@@ -79,5 +67,16 @@ class Category extends BaseController
     protected function deleteData($data, $model)
     {
         // TODO: Implement deleteData() method.
+    }
+
+    protected function getStats()
+    {
+        return $this->db->query(sprintf('
+			SELECT COUNT(*)
+			FROM oc_category c
+			LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_CATEGORY
+        ));
     }
 }

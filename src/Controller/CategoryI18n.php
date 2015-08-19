@@ -1,12 +1,12 @@
 <?php
 namespace jtl\Connector\OpenCart\Controller;
 
+use Symfony\Component\Finder\Exception\OperationNotPermitedException;
+
 class CategoryI18n extends BaseController
 {
-
     public function pullData($data, $model, $limit = null)
     {
-        var_dump($data);
         $return = [];
         $query = $this->pullQuery($data);
         $result = $this->db->query($query);
@@ -20,9 +20,9 @@ class CategoryI18n extends BaseController
     protected function pullQuery($data, $limit = null)
     {
         return sprintf('
-            SELECT c.*, l.name
+            SELECT c.*, l.code
             FROM oc_category_description c
-            INNER JOIN oc_language l ON c.language_id=l.language_id
+            LEFT JOIN oc_language l ON c.language_id = l.language_id
             WHERE c.category_id = %d',
             $data['category_id']
         );
@@ -54,7 +54,7 @@ class CategoryI18n extends BaseController
 
     protected function getStats()
     {
-        // TODO: Implement getStats() method.
+        throw new OperationNotPermitedException('Just for the main entities.');
     }
 
 }

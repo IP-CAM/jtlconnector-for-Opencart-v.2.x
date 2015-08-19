@@ -6,33 +6,34 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Linker\IdentityLinker;
+
 class CustomerOrder extends BaseController
 {
-
-
-    /**
-     * Called on a pull on the main model controllers including their sub model controllers.
-     *
-     * @param $data  array  For sub models their parent models data.
-     * @param $model object For sub models their parent model.
-     * @param $limit int    The limit.
-     * @return array A list of models resulting from the pull query.
-     */
     public function pullData($data, $model, $limit = null)
     {
-        // TODO: Implement pullData() method.
+        $return = [];
+        $query = $this->pullQuery($data, $limit);
+        $result = $this->db->query($query);
+        foreach ($result as $row) {
+            $model = $this->mapper->toHost($row);
+            $return[] = $model;
+        }
+        return $return;
     }
 
-    /**
-     * Just return the query for the the pulling of data.
-     *
-     * @param $data  array The data.
-     * @param $limit int   The limit.
-     * @return string The query.
-     */
     protected function pullQuery($data, $limit = null)
     {
-        // TODO: Implement pullQuery() method.
+        return sprintf('
+            SELECT c.*, a.company, a.address_1, a.city, a.postcode, a.country_id, co.iso_code_2, co.name
+            FROM oc_customer c
+            NATURAL JOIN oc_address a
+            NATURAL JOIN oc_country co
+            LEFT JOIN jtl_connector_link l ON c.customer_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_CUSTOMER, $limit
+        );
     }
 
     protected function pushData($data, $model)
@@ -45,13 +46,14 @@ class CustomerOrder extends BaseController
         // TODO: Implement deleteData() method.
     }
 
-    /**
-     * Called on the specific controller in order to get the availability of the model.
-     *
-     * @return string|int The availability of the model.
-     */
     protected function getStats()
     {
-        // TODO: Implement getStats() method.
+        return $this->db->query(sprintf('
+			SELECT COUNT(*)
+			FROM oc_order o
+			LEFT JOIN jtl_connector_link l ON o.order_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_CUSTOMER_ORDER
+        ));
     }
 }

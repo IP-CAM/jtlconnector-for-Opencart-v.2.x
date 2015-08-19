@@ -8,8 +8,6 @@ namespace jtl\Connector\OpenCart\Mapper;
 
 class Customer extends BaseMapper
 {
-    protected $endpointModel = '\Customer';
-
     protected $pull = [
         'id' => 'customer_id',
         'firstName' => 'firstname',
@@ -19,7 +17,7 @@ class Customer extends BaseMapper
         'zipCode' => 'postcode',
         'city' => 'city',
         'state' => 'name',
-        'countryIso' => 'iso_code_2',
+        'countryIso' => 'iso_code_3',
         'company' => 'company',
         'eMail' => 'email',
         'phone' => 'telephone',
@@ -42,7 +40,7 @@ class Customer extends BaseMapper
         'postcode' => 'zipCode',
         'city' => 'city',
         'name' => 'state',
-        'iso_code_2' => 'countryIso',
+        'iso_code_3' => 'countryIso',
         'company' => 'company',
         'email' => 'eMail',
         'telephone' => 'phone',
