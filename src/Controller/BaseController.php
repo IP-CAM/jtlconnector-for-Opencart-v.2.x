@@ -13,10 +13,11 @@ use jtl\Connector\Core\Model\QueryFilter;
 use jtl\Connector\Core\Rpc\Error;
 use jtl\Connector\Formatter\ExceptionFormatter;
 use jtl\Connector\Model\Statistic;
+use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\OpenCart\Utility\Db;
 use jtl\Connector\Result\Action;
 
-abstract class DataController extends Controller
+abstract class BaseController extends Controller
 {
     protected $db = null;
     protected $mapper = null;
@@ -27,7 +28,7 @@ abstract class DataController extends Controller
         $this->db = Db::getInstance();
         $reflect = new \ReflectionClass($this);
         $this->controllerName = $reflect->getShortName();
-        $mapperClass = "\\jtl\\Connector\\OpenCart\\Mapper\\{$reflect->getShortName()}";
+        $mapperClass = Constants::MAPPER_NAMESPACE . $reflect->getShortName();
         if (class_exists($mapperClass)) {
             $this->mapper = new $mapperClass();
         }
@@ -108,5 +109,33 @@ abstract class DataController extends Controller
         return $action;
     }
 
+    /**
+     * Called on a pull on the main model controllers including their sub model controllers.
+     *
+     * @param $data  array  For sub models their parent models data.
+     * @param $model object For sub models their parent model.
+     * @param $limit int    The limit.
+     * @return array A list of models resulting from the pull query.
+     */
+    public abstract function pullData($data, $model, $limit = null);
+
+    /**
+     * Just return the query for the the pulling of data.
+     *
+     * @param $data  array The data.
+     * @param $limit int   The limit.
+     * @return string The query.
+     */
     protected abstract function pullQuery($data, $limit = null);
+
+    protected abstract function pushData($data, $model);
+
+    protected abstract function deleteData($data, $model);
+
+    /**
+     * Called on the specific controller in order to get the availability of the model.
+     *
+     * @return string|int The availability of the model.
+     */
+    protected abstract function getStats();
 }

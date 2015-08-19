@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-class GlobalData extends DataMapper
+class GlobalBase extends BaseMapper
 {
 
 }

@@ -8,9 +8,10 @@ namespace jtl\Connector\OpenCart\Mapper;
 
 use jtl\Connector\Core\Utilities\Singleton;
 use jtl\Connector\Model\Identity;
+use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\OpenCart\Utility\Db;
 
-abstract class DataMapper extends Singleton
+abstract class BaseMapper extends Singleton
 {
     protected $db = null;
     private $model = null;
@@ -42,7 +43,7 @@ abstract class DataMapper extends Singleton
                 $property = $this->type->getProperty($host);
 
                 if ($property->isNavigation()) {
-                    $subControllerName = "\\jtl\\Connector\\OpenCart\\Controller\\" . $endpoint;
+                    $subControllerName = Constants::CONTROLLER_NAMESPACE . $endpoint;
 
                     if (class_exists($subControllerName)) {
                         $subController = new $subControllerName();

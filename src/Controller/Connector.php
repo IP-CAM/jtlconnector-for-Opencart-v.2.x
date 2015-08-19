@@ -13,7 +13,7 @@ use jtl\Connector\Model\ConnectorIdentification;
 use jtl\Connector\OpenCart\Utility\Mmc;
 use jtl\Connector\Result\Action;
 
-class Connector extends DataController
+class Connector extends BaseController
 {
     /**
      * Statistic
@@ -96,5 +96,38 @@ class Connector extends DataController
     protected function pullQuery($data, $limit = null)
     {
         // TODO: Implement pullQuery() method.
+    }
+
+    /**
+     * Called on a pull on the main model controllers including their sub model controllers.
+     *
+     * @param $data  array  For sub models their parent models data.
+     * @param $model object For sub models their parent model.
+     * @param $limit int    The limit.
+     * @return array A list of models resulting from the pull query.
+     */
+    public function pullData($data, $model, $limit = null)
+    {
+        // TODO: Implement pullData() method.
+    }
+
+    protected function pushData($data, $model)
+    {
+        // TODO: Implement pushData() method.
+    }
+
+    protected function deleteData($data, $model)
+    {
+        // TODO: Implement deleteData() method.
+    }
+
+    /**
+     * Called on the specific controller in order to get the availability of the model.
+     *
+     * @return string|int The availability of the model.
+     */
+    protected function getStats()
+    {
+        // TODO: Implement getStats() method.
     }
 }

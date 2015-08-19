@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-class Category extends DataMapper
+class Category extends BaseMapper
 {
     protected $endpointModel = '\Category';
 

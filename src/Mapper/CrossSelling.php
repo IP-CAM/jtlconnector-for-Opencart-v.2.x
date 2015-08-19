@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-class CrossSelling extends DataMapper
+class CrossSelling extends BaseMapper
 {
 
 }

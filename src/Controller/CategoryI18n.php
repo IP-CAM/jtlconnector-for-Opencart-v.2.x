@@ -1,11 +1,12 @@
 <?php
 namespace jtl\Connector\OpenCart\Controller;
 
-class CategoryI18n extends DataController implements SubDataController
+class CategoryI18n extends BaseController
 {
 
-    public function pullData($data, $model)
+    public function pullData($data, $model, $limit = null)
     {
+        var_dump($data);
         $return = [];
         $query = $this->pullQuery($data);
         $result = $this->db->query($query);
@@ -40,5 +41,20 @@ class CategoryI18n extends DataController implements SubDataController
             $model->meta_description[$id] = $i18n->getMetaDescription();
         }
     }*/
+
+    protected function pushData($data, $model)
+    {
+        // TODO: Implement pushData() method.
+    }
+
+    protected function deleteData($data, $model)
+    {
+        // TODO: Implement deleteData() method.
+    }
+
+    protected function getStats()
+    {
+        // TODO: Implement getStats() method.
+    }
 
 }

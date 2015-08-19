@@ -37,7 +37,7 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
     {
         $query = sprintf('SELECT hostId FROM jtl_connector_link WHERE endpointId = %s AND type = %s', $endpointId,
             $type);
-        return $this->db ->query($query)[0];
+        return $this->db->query($query)[0];
     }
 
     /**

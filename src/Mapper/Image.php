@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-class Image extends DataMapper
+class Image extends BaseMapper
 {
 
 }

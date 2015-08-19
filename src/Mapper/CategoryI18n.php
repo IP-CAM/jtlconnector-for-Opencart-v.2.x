@@ -8,7 +8,7 @@ namespace jtl\Connector\OpenCart\Mapper;
 
 use jtl\Connector\OpenCart\Utility\Utils;
 
-class CategoryI18n extends DataMapper
+class CategoryI18n extends BaseMapper
 {
     protected $pull = [
         'categoryId' => 'category_id',

@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-class DeliveryNote extends DataMapper
+class DeliveryNote extends BaseMapper
 {
 
 }

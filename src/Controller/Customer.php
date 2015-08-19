@@ -8,7 +8,7 @@ namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
 
-class Customer extends DataController
+class Customer extends BaseController
 {
     public function pullData($data, $model, $limit = null)
     {
@@ -36,15 +36,15 @@ class Customer extends DataController
         );
     }
 
-    /*public function pushData($data)
+    protected function pushData($data, $model)
     {
-        $endpointModel = $this->mapper->toEndpoint($data);
-        if (!$id = $endpointModel->save()) {
-            //throw new \Exception('Error saving customer');
-        }
-        $data->getId()->setEndpoint($id);
-        return $data;
-    }*/
+        // TODO: Implement pushData() method.
+    }
+
+    protected function deleteData($data, $model)
+    {
+        // TODO: Implement deleteData() method.
+    }
 
     public function getStats()
     {
@@ -56,4 +56,6 @@ class Customer extends DataController
             IdentityLinker::TYPE_CUSTOMER
         ));
     }
+
+
 }

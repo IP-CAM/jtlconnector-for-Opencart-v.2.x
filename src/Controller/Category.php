@@ -8,7 +8,7 @@ namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
 
-class Category extends DataController
+class Category extends BaseController
 {
     private static $idCache = [];
 
@@ -71,4 +71,13 @@ class Category extends DataController
     }
 
 
+    protected function pushData($data, $model)
+    {
+        // TODO: Implement pushData() method.
+    }
+
+    protected function deleteData($data, $model)
+    {
+        // TODO: Implement deleteData() method.
+    }
 }

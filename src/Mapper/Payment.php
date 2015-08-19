@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-class Payment extends DataMapper
+class Payment extends BaseMapper
 {
 
 }
