@@ -7,16 +7,32 @@
 namespace jtl\Connector\OpenCart\Controller;
 
 
+use jtl\Connector\Linker\IdentityLinker;
+
 class CrossSelling extends MainEntityController
 {
     public function pullData($data, $model, $limit = null)
     {
-        // TODO: Implement pullData() method.
+        $return = [];
+        $query = $this->pullQuery($data, $limit);
+        $result = $this->db->query($query);
+        foreach ($result as $row) {
+            $model = $this->mapper->toHost($row);
+            $return[] = $model;
+        }
+        return $return;
     }
 
     protected function pullQuery($data, $limit = null)
     {
-        // TODO: Implement pullQuery() method.
+        return sprintf('
+            SELECT *
+            FROM oc_product_related pr
+            LEFT JOIN jtl_connector_link l ON pr.category_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_CROSSSELLING, $limit
+        );
     }
 
     protected function pushData($data, $model)
@@ -31,6 +47,12 @@ class CrossSelling extends MainEntityController
 
     protected function getStats()
     {
-        // TODO: Implement getStats() method.
+        return $this->db->query(sprintf('
+			SELECT COUNT(*)
+			FROM oc_category c
+			LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_CATEGORY
+        ));
     }
 }

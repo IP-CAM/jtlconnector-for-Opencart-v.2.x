@@ -8,5 +8,9 @@ namespace jtl\Connector\OpenCart\Mapper;
 
 class Manufacturer extends BaseMapper
 {
-
+    protected $pull = [
+        'id' => 'manufacturer_id',
+        'name' => 'name',
+        'sort' => 'sort_order'
+    ];
 }

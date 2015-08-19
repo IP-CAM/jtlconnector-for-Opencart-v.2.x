@@ -19,7 +19,6 @@ class Category extends BaseMapper
         'isActive' => 'status',
         'sort' => 'sort_order',
         'i18ns' => 'CategoryI18n',
-        'customerGroup' => 'CustomerGroup'
         // attributes, invisibilities
     ];
 
@@ -29,7 +28,6 @@ class Category extends BaseMapper
         'column' => 'level',
         'status' => 'isActive',
         'sort_order' => 'sort',
-        'CategoryI18n' => 'i18ns',
-        'CustomerGroup' => 'customerGroup'
+        'CategoryI18n' => 'i18ns'
     ];
 }

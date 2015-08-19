@@ -25,11 +25,12 @@ class CustomerOrder extends MainEntityController
     protected function pullQuery($data, $limit = null)
     {
         return sprintf('
-            SELECT o.*, l.code
+            SELECT o.*, l.code, c.iso_code_3
             FROM oc_order o
             LEFT JOIN oc_language l ON o.language_id = l.language_id
-            LEFT JOIN jtl_connector_link l ON o.order_id = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL
+            LEFT JOIN oc_country c ON o.payment_country_id = c.country_id
+            LEFT JOIN jtl_connector_link cl ON o.order_id = cl.endpointId AND cl.type = %d
+            WHERE cl.hostId IS NULL
             LIMIT %d',
             IdentityLinker::TYPE_CUSTOMER_ORDER, $limit
         );

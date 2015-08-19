@@ -6,19 +6,35 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Linker\IdentityLinker;
+
 class Manufacturer extends MainEntityController
 {
     public function pullData($data, $model, $limit = null)
     {
-        // TODO: Implement pullData() method.
+        $return = [];
+        $query = $this->pullQuery($data, $limit);
+        $result = $this->db->query($query);
+        foreach ($result as $row) {
+            $model = $this->mapper->toHost($row);
+            $return[] = $model;
+        }
+        return $return;
     }
 
     protected function pullQuery($data, $limit = null)
     {
-        // TODO: Implement pullQuery() method.
+        return sprintf('
+            SELECT m.*
+            FROM oc_manufacturer m
+            LEFT JOIN jtl_connector_link l ON m.manufacturer_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_MANUFACTURER, $limit
+        );
     }
 
-    protected function pushData($data, $model)
+    public function pushData($data, $model)
     {
         // TODO: Implement pushData() method.
     }
@@ -30,6 +46,12 @@ class Manufacturer extends MainEntityController
 
     protected function getStats()
     {
-        // TODO: Implement getStats() method.
+        return $this->db->query(sprintf('
+			SELECT COUNT(*)
+			FROM oc_manufacturer m
+			LEFT JOIN jtl_connector_link l ON m.manufacturer_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_MANUFACTURER
+        ));
     }
 }

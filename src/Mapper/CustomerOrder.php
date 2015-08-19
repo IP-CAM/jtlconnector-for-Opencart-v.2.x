@@ -18,14 +18,13 @@ class CustomerOrder extends BaseMapper
         'currencyIso' => 'currency_code',
         'languageISO' => null,
         'note' => 'comment',
-        'paymentInfo' => 'CustomerOrderPaymentInfo',
         'shippingAddress' => 'CustomerOrderShippingAddress',
         'shippingInfo' => 'shipping_custom_field',
         // Shipping: const in Custom Order
-        'status' => 'string',
-        'totalSum' => 'double',
-        'attributes' => '\jtl\Connector\Model\CustomerOrderAttr',
-        'items' => '\jtl\Connector\Model\CustomerOrderItem',
+        //'status' => 'string',
+        'totalSum' => 'total',
+        // TODO: Error
+        //'items' => 'CustomerOrderItem',
         // Flat Shipping Rate ?
         //'carrierName' => 'string',
         // History ?
