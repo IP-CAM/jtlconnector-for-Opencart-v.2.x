@@ -1,7 +1,15 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Sven
+ * Date: 19.08.2015
+ * Time: 12:35
+ */
+
 namespace jtl\Connector\OpenCart\Controller;
 
-class CategoryI18n extends BaseController
+
+class CustomerGroup extends BaseController
 {
     public function pullData($data, $model, $limit = null)
     {
@@ -19,10 +27,10 @@ class CategoryI18n extends BaseController
     {
         return sprintf('
             SELECT c.*, l.code
-            FROM oc_category_description c
+            FROM oc_customer_group c
             LEFT JOIN oc_language l ON c.language_id = l.language_id
-            WHERE c.category_id = %d',
-            $data['category_id']
+            WHERE c.customer_id = %d',
+            $data['customer_id']
         );
     }
 }

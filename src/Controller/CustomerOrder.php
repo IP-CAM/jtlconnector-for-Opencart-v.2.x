@@ -8,7 +8,7 @@ namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
 
-class CustomerOrder extends BaseController
+class CustomerOrder extends MainEntityController
 {
     public function pullData($data, $model, $limit = null)
     {
@@ -25,14 +25,13 @@ class CustomerOrder extends BaseController
     protected function pullQuery($data, $limit = null)
     {
         return sprintf('
-            SELECT c.*, a.company, a.address_1, a.city, a.postcode, a.country_id, co.iso_code_2, co.name
-            FROM oc_customer c
-            NATURAL JOIN oc_address a
-            NATURAL JOIN oc_country co
-            LEFT JOIN jtl_connector_link l ON c.customer_id = l.endpointId AND l.type = %d
+            SELECT o.*, l.code
+            FROM oc_order o
+            LEFT JOIN oc_language l ON o.language_id = l.language_id
+            LEFT JOIN jtl_connector_link l ON o.order_id = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL
             LIMIT %d',
-            IdentityLinker::TYPE_CUSTOMER, $limit
+            IdentityLinker::TYPE_CUSTOMER_ORDER, $limit
         );
     }
 

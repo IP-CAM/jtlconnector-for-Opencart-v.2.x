@@ -6,35 +6,43 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
+use jtl\Connector\Core\Utilities\Language;
+
 class CustomerOrder extends BaseMapper
 {
     protected $pull = [
         'id' => 'order_id',
         'customerId' => 'customer_id',
         'billingAddress' => 'CustomerOrderBillingAddress',
-        // Flat Shipping Rate?
-        //'carrierName' => 'string',
         'creationDate' => 'date_added',
-        'currencyIso' => 'string',
-        'estimatedDeliveryDate' => 'DateTime',
-        'languageISO' => 'string',
-        'note' => 'string',
-        'orderNumber' => 'string',
-        'paymentDate' => 'DateTime',
+        'currencyIso' => 'currency_code',
+        'languageISO' => null,
+        'note' => 'comment',
         'paymentInfo' => 'CustomerOrderPaymentInfo',
-        'paymentModuleCode' => 'string',
-        'paymentStatus' => 'string',
         'shippingAddress' => 'CustomerOrderShippingAddress',
-        'shippingDate' => 'DateTime',
-        'shippingInfo' => 'string',
-        'shippingMethodName' => 'string',
+        'shippingInfo' => 'shipping_custom_field',
+        // Shipping: const in Custom Order
         'status' => 'string',
         'totalSum' => 'double',
         'attributes' => '\jtl\Connector\Model\CustomerOrderAttr',
         'items' => '\jtl\Connector\Model\CustomerOrderItem',
+        // Flat Shipping Rate ?
+        //'carrierName' => 'string',
+        // History ?
+        //'paymentDate' => 'DateTime',
+        // See PaymentTypes ?
+        //'paymentModuleCode' => 'string',
+        //'paymentStatus' => 'string',
+        //'shippingDate' => 'DateTime',
+        //'shippingMethodName' => 'string',
     ];
 
     protected $push = [
 
     ];
+
+    protected function languageISO($data)
+    {
+        return Language::convert($data['code']);
+    }
 }

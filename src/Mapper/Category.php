@@ -6,9 +6,11 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
+use jtl\Connector\OpenCart\Utility\Constants;
+
 class Category extends BaseMapper
 {
-    protected $endpointModel = '\Category';
+    protected $endpointModel = Constants::CORE_MODEL_NAMESPACE . "Category";
 
     protected $pull = [
         'id' => 'category_id',
@@ -16,7 +18,9 @@ class Category extends BaseMapper
         'level' => 'column',
         'isActive' => 'status',
         'sort' => 'sort_order',
-        'i18ns' => 'CategoryI18n'
+        'i18ns' => 'CategoryI18n',
+        'customerGroup' => 'CustomerGroup'
+        // attributes, invisibilities
     ];
 
     protected $push = [
@@ -25,7 +29,7 @@ class Category extends BaseMapper
         'column' => 'level',
         'status' => 'isActive',
         'sort_order' => 'sort',
-        'CategoryI18n' => 'i18ns'
+        'CategoryI18n' => 'i18ns',
+        'CustomerGroup' => 'customerGroup'
     ];
-
 }

@@ -1,7 +1,8 @@
 <?php
+
 namespace jtl\Connector\OpenCart\Controller;
 
-class CategoryI18n extends BaseController
+class CustomerGroupI18n extends BaseController
 {
     public function pullData($data, $model, $limit = null)
     {
@@ -19,10 +20,12 @@ class CategoryI18n extends BaseController
     {
         return sprintf('
             SELECT c.*, l.code
-            FROM oc_category_description c
+            FROM oc_customer_group_description c
             LEFT JOIN oc_language l ON c.language_id = l.language_id
-            WHERE c.category_id = %d',
-            $data['category_id']
+            WHERE c.customer_group_id = %d',
+            $data['customer_group_id']
         );
     }
+
+
 }

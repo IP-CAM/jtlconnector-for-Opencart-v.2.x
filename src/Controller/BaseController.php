@@ -127,15 +127,4 @@ abstract class BaseController extends Controller
      * @return string The query.
      */
     protected abstract function pullQuery($data, $limit = null);
-
-    protected abstract function pushData($data, $model);
-
-    protected abstract function deleteData($data, $model);
-
-    /**
-     * Called on the specific controller in order to get the availability of the model.
-     *
-     * @return string|int The availability of the model.
-     */
-    protected abstract function getStats();
 }

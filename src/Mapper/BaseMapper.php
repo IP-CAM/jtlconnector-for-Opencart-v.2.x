@@ -88,7 +88,7 @@ abstract class BaseMapper extends Singleton
                 $property = $this->type->getProperty($host);
 
                 if ($property->isNavigation()) {
-                    $subControllerName = "\\jtl\\Connector\\OpenCart\\Controller\\" . $endpoint;
+                    $subControllerName = Constants::CONTROLLER_NAMESPACE . $endpoint;
 
                     if (class_exists($subControllerName)) {
                         $subController = new $subControllerName();

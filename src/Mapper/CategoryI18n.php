@@ -12,13 +12,12 @@ class CategoryI18n extends BaseMapper
 {
     protected $pull = [
         'categoryId' => 'category_id',
+        'name' => 'name',
         'description' => 'description',
         'languageISO' => null,
         'metaDescription' => 'meta_description',
         'metaKeywords' => 'meta_keyword',
-        'name' => 'name',
-        //'titleTag',
-        //'urlPath'
+        'titleTag' => 'meta_title'
     ];
 
     /*protected $push = [
@@ -27,6 +26,7 @@ class CategoryI18n extends BaseMapper
         'language' => 'languageISO',
         'meta_description' => 'metaDescription',
         'meta_keyword' => 'metaKeywords',
+        'meta_title' => 'titleTag',
         'name' => 'name'
     ];*/
 

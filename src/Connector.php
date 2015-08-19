@@ -7,10 +7,10 @@ use jtl\Connector\Core\Controller\Controller as CoreController;
 use jtl\Connector\Core\Rpc\Method;
 use jtl\Connector\Core\Rpc\RequestPacket;
 use jtl\Connector\Core\Utilities\RpcMethod;
-use jtl\Connector\Result\Action;
 use jtl\Connector\OpenCart\Authentication\TokenLoader;
 use jtl\Connector\OpenCart\Checksum\ChecksumLoader;
 use jtl\Connector\OpenCart\Mapper\PrimaryKeyMapper;
+use jtl\Connector\Result\Action;
 
 /**
  * OpenCart Connector
