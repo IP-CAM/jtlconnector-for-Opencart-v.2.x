@@ -7,7 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
-use jtl\Connector\OpenCart\Utility\OpenCartLoader;
+use jtl\Connector\OpenCart\Utility\OpenCart;
 
 class Customer extends MainEntityController
 {
@@ -44,7 +44,7 @@ class Customer extends MainEntityController
 
     protected function deleteData($data, $model)
     {
-        $customer = OpenCartLoader::getInstance()->loadModel('sale/customer');
+        $customer = OpenCart::getInstance()->loadModel('sale/customer');
         $customer->deleteCustomer($data->getId()->getEndpoint());
         return $data;
     }

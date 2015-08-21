@@ -8,7 +8,7 @@ namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\OpenCart\Mapper\PrimaryKeyMapper;
-use jtl\Connector\OpenCart\Utility\OpenCartLoader;
+use jtl\Connector\OpenCart\Utility\OpenCart;
 
 class Category extends MainEntityController
 {
@@ -40,7 +40,7 @@ class Category extends MainEntityController
 
     public function pushData($data, $model)
     {
-        $category = OpenCartLoader::getInstance()->loadModel('catalog/category');
+        $category = OpenCart::getInstance()->loadModel('catalog/category');
 
         //die(var_dump($this->mapper->toEndpoint($data)));
 
@@ -71,7 +71,7 @@ class Category extends MainEntityController
 
     protected function deleteData($data, $model)
     {
-        $category = OpenCartLoader::getInstance()->loadModel('catalog/category');
+        $category = OpenCart::getInstance()->loadModel('catalog/category');
         $category->deleteCategory($data->getId()->getEndpoint());
         return $data;
     }

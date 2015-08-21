@@ -9,17 +9,10 @@ namespace jtl\Connector\OpenCart\Mapper;
 class Image extends BaseMapper
 {
     protected $pull = [
-        // ?
-        //'foreignKey' => 'Identity',
-        // ?
-        'id' => null,
-        // image ?
-        'filename' => null,
-        // product_image.image => TYPE_PRODUCT
-        // manufacturer.image => TYPE_MANUFACTURER
-        // option_value.image => TYPE_SPECIFIC_VALUE
+        'id' => 'id',
+        'foreignKey' => 'foreign_key',
+        'filename' => 'image',
         'relationType' => null,
-        // komplett ?
         'remoteUrl' => null,
         'sort' => 'sort_order'
     ];

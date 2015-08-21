@@ -29,7 +29,7 @@ class CustomerOrder extends BaseMapper
         //'paymentModuleCode' => 'string',
         //'paymentStatus' => 'string',
         //'shippingDate' => 'DateTime',
-        //'shippingMethodName' => 'string',
+        'shippingMethodName' => 'shipping_method',
         // Shipping: const in Custom Order
         //'status' => 'string',
     ];

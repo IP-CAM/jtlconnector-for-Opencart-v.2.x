@@ -6,34 +6,100 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Drawing\ImageRelationType;
+use jtl\Connector\Linker\IdentityLinker;
+use Symfony\Component\Finder\Exception\OperationNotPermitedException;
+
 class Image extends MainEntityController
 {
+    private $methods = [
+        'productPullQuery' => ImageRelationType::TYPE_PRODUCT,
+        'categoryPullQuery' => ImageRelationType::TYPE_CATEGORY,
+        'manufacturerPullQuery' => ImageRelationType::TYPE_MANUFACTURER,
+        'specificValuePullQuery' => ImageRelationType::TYPE_SPECIFIC_VALUE
+    ];
+
     public function pullData($data, $model, $limit = null)
     {
         $return = [];
-        $queries = $this->pullQuery($data, $limit);
-        foreach ($queries as $query) {
-            $result = $this->database->query($query);
-            foreach ($result as $row) {
-                $model = $this->mapper->toHost($row);
-                $return[] = $model;
+        reset($this->methods);
+        while (count($return) < $limit) {
+            if ($this->addNextImages($this->methods, $return, $limit) === false) {
+                break;
             }
         }
         return $return;
     }
 
-    protected function pullQuery($data, $limit = null)
+    private function addNextImages(&$methods, &$return, &$limit)
+    {
+        list($method, $type) = each($methods);
+        if (!is_null($method)) {
+            $query = $this->{$method}($limit);
+            $result = $this->database->query($query);
+            foreach ($result as $pi) {
+                $model = $this->mapper->toHost($pi);
+                $model->setRelationType($type);
+                $model->setRemoteURL(HTTP_SERVER . 'image/' . $model->getFilename());
+                $return[] = $model;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function productPullQuery($limit)
     {
         return sprintf('
-            SELECT c.*, a.company, a.address_1, a.city, a.postcode, a.country_id, co.iso_code_2, co.name
-            FROM oc_customer c
-            LEFT JOIN oc_address a ON c.address_id = a.address_id
-            LEFT JOIN oc_country co ON a.country_id = co.country_id
-            LEFT JOIN jtl_connector_link l ON c.customer_id = l.endpointId AND l.type = %d
+            SELECT pi.image, pi.sort_order, pi.product_image_id as id, pi.product_id as foreign_key
+            FROM oc_product_image pi
+            LEFT JOIN jtl_connector_link l ON l.endpointId = pi.product_image_id AND l.relation_type = %d AND l.type = %d
             WHERE l.hostId IS NULL
             LIMIT %d',
-            IdentityLinker::TYPE_CUSTOMER, $limit
+            IdentityLinker::TYPE_PRODUCT, IdentityLinker::TYPE_IMAGE, $limit
         );
+    }
+
+    private function categoryPullQuery($limit)
+    {
+        return sprintf('
+            SELECT c.image, c.sort_order, c.category_id as id, c.category_id as foreign_key
+            FROM oc_category c
+            LEFT JOIN jtl_connector_link l ON l.endpointId = c.category_id AND l.relation_type = %d AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_CATEGORY, IdentityLinker::TYPE_IMAGE, $limit
+        );
+    }
+
+    private function manufacturerPullQuery($limit)
+    {
+        return sprintf('
+            SELECT m.image, m.sort_order, m.manufacturer_id as id, m.manufacturer_id as foreign_key
+            FROM oc_manufacturer m
+            LEFT JOIN jtl_connector_link l ON l.endpointId = m.manufacturer_id AND l.relation_type = %d AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_MANUFACTURER, IdentityLinker::TYPE_IMAGE, $limit
+        );
+    }
+
+    private function specificValuePullQuery($limit)
+    {
+        return sprintf('
+            SELECT v.image, v.sort_order, v.option_value_id as id, c.option_value_id as foreign_key
+            FROM oc_option_value v
+            LEFT JOIN jtl_connector_link l ON l.endpointId = v.option_value_id AND l.relation_type = %d AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_SPECIFIC_VALUE, IdentityLinker::TYPE_IMAGE, $limit
+        );
+    }
+
+    protected function pullQuery($data, $limit = null)
+    {
+        throw new OperationNotPermitedException("Use the queries for the specific types.");
     }
 
     protected function pushData($data, $model)
@@ -48,6 +114,11 @@ class Image extends MainEntityController
 
     protected function getStats()
     {
-        // TODO: Implement getStats() method.
+        $return = [];
+        $limit = PHP_INT_MAX;
+        reset($this->methods);
+        while ($this->addNextImages($this->methods, $return, $limit) === true) {
+        }
+        return count($return);
     }
 }

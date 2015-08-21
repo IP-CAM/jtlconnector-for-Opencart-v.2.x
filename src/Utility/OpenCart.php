@@ -4,12 +4,6 @@ namespace jtl\Connector\OpenCart\Utility;
 
 use jtl\Connector\Core\Utilities\Singleton;
 
-define('DIR_SYSTEM', 'C:/xampp/htdocs/opencart/system/');
-define('DIR_MODIFICATION', 'C:/xampp/htdocs/opencart/system/modification/');
-define('DIR_APPLICATION', 'C:/xampp/htdocs/opencart/admin/');
-define('DIR_CATALOG', 'C:/xampp/htdocs/opencart/catalog/');
-define('DB_PREFIX', 'oc_');
-
 function modification($filename)
 {
     if (!defined('DIR_CATALOG')) {
@@ -37,7 +31,7 @@ require_once(modification(DIR_SYSTEM . 'engine/model.php'));
 require_once(modification(DIR_SYSTEM . 'engine/loader.php'));
 require_once(modification(DIR_SYSTEM . 'engine/registry.php'));
 
-class OpenCartLoader extends Singleton
+class OpenCart extends Singleton
 {
     private $config = null;
     private $loader = null;
