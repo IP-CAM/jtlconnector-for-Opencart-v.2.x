@@ -15,7 +15,7 @@ class CustomerGroup extends BaseController
     {
         $return = [];
         $query = $this->pullQuery($data);
-        $result = $this->db->query($query);
+        $result = $this->database->query($query);
         foreach ($result as $row) {
             $model = $this->mapper->toHost($row);
             $return[] = $model;

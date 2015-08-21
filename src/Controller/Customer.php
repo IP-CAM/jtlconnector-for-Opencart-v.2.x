@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\OpenCart\Utility\OpenCartLoader;
 
 class Customer extends MainEntityController
 {
@@ -14,7 +15,7 @@ class Customer extends MainEntityController
     {
         $return = [];
         $query = $this->pullQuery($data, $limit);
-        $result = $this->db->query($query);
+        $result = $this->database->query($query);
         foreach ($result as $row) {
             $model = $this->mapper->toHost($row);
             $return[] = $model;
@@ -43,12 +44,14 @@ class Customer extends MainEntityController
 
     protected function deleteData($data, $model)
     {
-        // TODO: Implement deleteData() method.
+        $customer = OpenCartLoader::getInstance()->loadModel('sale/customer');
+        $customer->deleteCustomer($data->getId()->getEndpoint());
+        return $data;
     }
 
     protected function getStats()
     {
-        return $this->db->query(sprintf('
+        return $this->database->queryOne(sprintf('
 			SELECT COUNT(*)
 			FROM oc_customer c
 			LEFT JOIN jtl_connector_link l ON c.customer_id = l.endpointId AND l.type = %d

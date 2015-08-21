@@ -14,7 +14,7 @@ class CustomerOrder extends MainEntityController
     {
         $return = [];
         $query = $this->pullQuery($data, $limit);
-        $result = $this->db->query($query);
+        $result = $this->database->query($query);
         foreach ($result as $row) {
             $model = $this->mapper->toHost($row);
             $return[] = $model;
@@ -48,7 +48,7 @@ class CustomerOrder extends MainEntityController
 
     protected function getStats()
     {
-        return $this->db->query(sprintf('
+        return $this->database->queryOne(sprintf('
 			SELECT COUNT(*)
 			FROM oc_order o
 			LEFT JOIN jtl_connector_link l ON o.order_id = l.endpointId AND l.type = %d

@@ -31,6 +31,9 @@
   "autoload": {
     "psr-4": {
       "jtl\\Connector\\OpenCart\\": "src/"
+    },
+    "psr-0": {
+      "": "plugins/"
     }
   }
 }

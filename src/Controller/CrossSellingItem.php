@@ -14,7 +14,7 @@ class CrossSellingItem extends BaseController
     public function pullData($data, $model, $limit = null)
     {
         $query = $this->pullQuery($data, $limit);
-        $result = $this->db->query($query);
+        $result = $this->database->query($query);
         $model = new CrossSellingItemModel();
         foreach ($result as $row) {
             $model->addProductId(new Identity($row['related_id']));

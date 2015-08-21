@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Controller
+ * @package jtl\Connector\OpenCart\Mapper
  */
 
 namespace jtl\Connector\OpenCart\Mapper;
@@ -20,13 +20,9 @@ class CustomerOrder extends BaseMapper
         'note' => 'comment',
         'shippingAddress' => 'CustomerOrderShippingAddress',
         'shippingInfo' => 'shipping_custom_field',
-        // Shipping: const in Custom Order
-        //'status' => 'string',
         'totalSum' => 'total',
         // TODO: Error
-        //'items' => 'CustomerOrderItem',
-        // Flat Shipping Rate ?
-        //'carrierName' => 'string',
+        'items' => 'CustomerOrderItem',
         // History ?
         //'paymentDate' => 'DateTime',
         // See PaymentTypes ?
@@ -34,6 +30,8 @@ class CustomerOrder extends BaseMapper
         //'paymentStatus' => 'string',
         //'shippingDate' => 'DateTime',
         //'shippingMethodName' => 'string',
+        // Shipping: const in Custom Order
+        //'status' => 'string',
     ];
 
     protected $push = [

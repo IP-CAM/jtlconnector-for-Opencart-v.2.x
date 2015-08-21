@@ -7,7 +7,7 @@ class CategoryI18n extends BaseController
     {
         $return = [];
         $query = $this->pullQuery($data);
-        $result = $this->db->query($query);
+        $result = $this->database->query($query);
         foreach ($result as $row) {
             $model = $this->mapper->toHost($row);
             $return[] = $model;
@@ -24,5 +24,10 @@ class CategoryI18n extends BaseController
             WHERE c.category_id = %d',
             $data['category_id']
         );
+    }
+
+    public function pushData($data, $model)
+    {
+       return $this->mapper->toEndpoint($data);
     }
 }

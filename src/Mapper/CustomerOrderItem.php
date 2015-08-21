@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright 2010-2013 JTL-Software GmbH
+ * @package jtl\Connector\OpenCart\Mapper
+ */
 
 namespace jtl\Connector\OpenCart\Mapper;
 
@@ -11,7 +15,7 @@ class CustomerOrderItem extends BaseMapper
         'id' => 'order_product_id',
         'productId' => 'product_id',
         'name' => 'name',
-        'price' => 'price',
+        'price' => null,
         'quantity' => 'quantity',
         'vat' => 'tax',
         'sku' => 'sku',
@@ -23,9 +27,6 @@ class CustomerOrderItem extends BaseMapper
 
     protected function type($data)
     {
-        if (!isset($data['code'])) {
-            return null;
-        }
         switch ($data['code']) {
             case 'shipping':
                 return COI::TYPE_SHIPPING;
@@ -35,6 +36,15 @@ class CustomerOrderItem extends BaseMapper
                 return COI::TYPE_DISCOUNT;
             default:
                 return COI::TYPE_PRODUCT;
+        }
+    }
+
+    protected function price($data)
+    {
+        if ($this->type($data) == COI::TYPE_PRODUCT) {
+            return doubleval($data['price']);
+        } else {
+            return doubleval($data['value']);
         }
     }
 

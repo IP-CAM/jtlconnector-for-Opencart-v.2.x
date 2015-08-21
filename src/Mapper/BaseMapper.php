@@ -13,7 +13,7 @@ use jtl\Connector\OpenCart\Utility\Db;
 
 abstract class BaseMapper extends Singleton
 {
-    protected $db = null;
+    protected $database = null;
     private $model = null;
     private $type;
     protected $endpointModel = null;
@@ -22,9 +22,8 @@ abstract class BaseMapper extends Singleton
     {
         $reflect = new \ReflectionClass($this);
         $typeClass = "\\jtl\\Connector\\Type\\{$reflect->getShortName()}";
-
-        $this->db = DB::getInstance();
-        $this->model = "\\jtl\\Connector\\Model\\{$reflect->getShortName()}";
+        $this->database = DB::getInstance();
+        $this->model = Constants::CORE_MODEL_NAMESPACE . $reflect->getShortName();
         $this->type = new $typeClass();
     }
 
@@ -72,24 +71,17 @@ abstract class BaseMapper extends Singleton
 
     public function toEndpoint($data, $customData = null)
     {
-        $model = new $this->endpointModel();
-
-        $assign = array();
-
+        $model = [];
         foreach ($this->push as $endpoint => $host) {
             $fnName = strtolower($endpoint);
-
             if (method_exists($this, $fnName)) {
                 $value = $this->$fnName($data, $customData);
             } else {
                 $getter = 'get' . ucfirst($host);
-
                 $value = $data->$getter();
                 $property = $this->type->getProperty($host);
-
                 if ($property->isNavigation()) {
                     $subControllerName = Constants::CONTROLLER_NAMESPACE . $endpoint;
-
                     if (class_exists($subControllerName)) {
                         $subController = new $subControllerName();
                         $subController->pushData($data, $model);
@@ -100,12 +92,9 @@ abstract class BaseMapper extends Singleton
                     $value = $value === null ? '0000-00-00 00:00:00' : $value->format('Y-m-d H:i:s');
                 }
             }
-
-            $assign[$endpoint] = $value;
+            $model[$endpoint] = $value;
         }
-
-        $model->assign($assign);
-
+        var_dump($model);
         return $model;
     }
 

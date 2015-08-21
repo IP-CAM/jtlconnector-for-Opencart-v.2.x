@@ -1,13 +1,10 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Sven
- * Date: 19.08.2015
- * Time: 12:32
+ * @copyright 2010-2013 JTL-Software GmbH
+ * @package jtl\Connector\OpenCart\Mapper
  */
 
 namespace jtl\Connector\OpenCart\Mapper;
-
 
 use jtl\Connector\Core\Utilities\Language;
 

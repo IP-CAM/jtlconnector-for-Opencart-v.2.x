@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Controller
+ * @package jtl\Connector\OpenCart\Mapper
  */
 
 namespace jtl\Connector\OpenCart\Mapper;
@@ -27,8 +27,6 @@ class Customer extends BaseMapper
         'hasNewsletterSubscription' => 'newsletter',
         'isActive' => 'status',
         'hasCustomerAccount' => null
-        //'origin',
-        //'attributes',
     ];
 
     protected $push = [
@@ -47,9 +45,7 @@ class Customer extends BaseMapper
         'customer_group_id' => 'customerGroupId',
         'date_added' => 'creationDate',
         'newsletter' => 'hasNewsletterSubscription',
-        'status' => 'isActive',
-        //'origin',
-        //'attributes'
+        'status' => 'isActive'
     ];
 
     protected function hasCustomerAccount($data)

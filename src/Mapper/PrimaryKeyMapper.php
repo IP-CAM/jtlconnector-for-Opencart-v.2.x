@@ -67,10 +67,11 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      */
     public function save($endpointId, $hostId, $type)
     {
-        $id = $this->db->insert(sprintf('INSERT INTO jtl_connector_link (endpointId, hostId, type) VALUES (%s, %s, %s)',
-            $endpointId,
-            $hostId, $type));
-
+        $id = $this->db->query(sprintf('
+            INSERT INTO jtl_connector_link (endpointId, hostId, type)
+            VALUES (%s, %s, %s)',
+            $endpointId, $hostId, $type
+        ));
         return $id !== false;
     }
 

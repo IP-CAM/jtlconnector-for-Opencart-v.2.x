@@ -14,7 +14,7 @@ class CrossSelling extends MainEntityController
     {
         $return = [];
         $query = $this->pullQuery($data, $limit);
-        $result = $this->db->query($query);
+        $result = $this->database->query($query);
         foreach ($result as $row) {
             $model = $this->mapper->toHost($row);
             $return[] = $model;
@@ -46,12 +46,12 @@ class CrossSelling extends MainEntityController
 
     protected function getStats()
     {
-        $result = $this->db->queryOne(sprintf('
+        $result = $this->database->queryOne(sprintf('
 			SELECT COUNT(DISTINCT(pr.product_id))
 			FROM oc_product_related pr
-			LEFT JOIN jtl_connector_link l ON CONCAT_WS("_", pr.product_id, pr.related_id) = l.endpointId AND l.type = %d
+			LEFT JOIN jtl_connector_link l ON %s = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL',
-            IdentityLinker::TYPE_CROSSSELLING
+            'CONCAT_WS("_", pr.product_id, pr.related_id)', IdentityLinker::TYPE_CROSSSELLING
         ));
         return $result;
     }

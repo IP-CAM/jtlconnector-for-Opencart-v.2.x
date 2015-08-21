@@ -19,13 +19,14 @@ use jtl\Connector\Result\Action;
 
 abstract class BaseController extends Controller
 {
-    protected $db = null;
+    protected $database = null;
     protected $mapper = null;
+    protected $endpoint = null;
     private $controllerName = null;
 
     public function __construct()
     {
-        $this->db = Db::getInstance();
+        $this->database = Db::getInstance();
         $reflect = new \ReflectionClass($this);
         $this->controllerName = $reflect->getShortName();
         $mapperClass = Constants::MAPPER_NAMESPACE . $reflect->getShortName();
