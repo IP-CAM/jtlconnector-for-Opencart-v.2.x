@@ -6,17 +6,33 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Linker\IdentityLinker;
+
 class Product extends MainEntityController
 {
 
     public function pullData($data, $model, $limit = null)
     {
-        // TODO: Implement pullData() method.
+        $return = [];
+        $query = $this->pullQuery($data, $limit);
+        $result = $this->database->query($query);
+        foreach ($result as $row) {
+            $model = $this->mapper->toHost($row);
+            $return[] = $model;
+        }
+        return $return;
     }
 
     protected function pullQuery($data, $limit = null)
     {
-        // TODO: Implement pullQuery() method.
+        return sprintf('
+            SELECT p.*
+            FROM oc_product p
+            LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_PRODUCT, $limit
+        );
     }
 
     protected function pushData($data, $model)

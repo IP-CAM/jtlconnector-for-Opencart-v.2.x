@@ -17,10 +17,10 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
     {
         $mysql = Mysql::getInstance();
         $mysql->connect([
-            'host' => 'localhost',
-            'name' => 'opencart',
-            'user' => 'opencart',
-            'password' => 'Z5U2hU2xxLXQZtGK'
+            'host' => DB_HOSTNAME,
+            'name' => DB_DATABASE,
+            'user' => DB_USERNAME,
+            'password' => DB_PASSWORD
         ]);
         $mysql->DB()->set_charset("utf8");
         $this->db = $mysql;

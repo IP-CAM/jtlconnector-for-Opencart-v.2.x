@@ -67,7 +67,7 @@ class Image extends MainEntityController
             SELECT c.image, c.sort_order, c.category_id as id, c.category_id as foreign_key
             FROM oc_category c
             LEFT JOIN jtl_connector_link l ON l.endpointId = c.category_id AND l.relation_type = %d AND l.type = %d
-            WHERE l.hostId IS NULL
+            WHERE l.hostId IS NULL AND c.image IS NOT NULL AND c.image != ""
             LIMIT %d',
             IdentityLinker::TYPE_CATEGORY, IdentityLinker::TYPE_IMAGE, $limit
         );
@@ -79,7 +79,7 @@ class Image extends MainEntityController
             SELECT m.image, m.sort_order, m.manufacturer_id as id, m.manufacturer_id as foreign_key
             FROM oc_manufacturer m
             LEFT JOIN jtl_connector_link l ON l.endpointId = m.manufacturer_id AND l.relation_type = %d AND l.type = %d
-            WHERE l.hostId IS NULL
+            WHERE l.hostId IS NULL AND m.image IS NOT NULL AND m.image != ""
             LIMIT %d',
             IdentityLinker::TYPE_MANUFACTURER, IdentityLinker::TYPE_IMAGE, $limit
         );
@@ -88,10 +88,10 @@ class Image extends MainEntityController
     private function specificValuePullQuery($limit)
     {
         return sprintf('
-            SELECT v.image, v.sort_order, v.option_value_id as id, c.option_value_id as foreign_key
+            SELECT v.image, v.sort_order, v.option_value_id as id, v.option_value_id as foreign_key
             FROM oc_option_value v
             LEFT JOIN jtl_connector_link l ON l.endpointId = v.option_value_id AND l.relation_type = %d AND l.type = %d
-            WHERE l.hostId IS NULL
+            WHERE l.hostId IS NULL AND v.image IS NOT NULL AND v.image != ""
             LIMIT %d',
             IdentityLinker::TYPE_SPECIFIC_VALUE, IdentityLinker::TYPE_IMAGE, $limit
         );
@@ -109,7 +109,25 @@ class Image extends MainEntityController
 
     protected function deleteData($data, $model)
     {
-        // TODO: Implement deleteData() method.
+        switch ($data->getRelationType()) {
+            case ImageRelationType::TYPE_PRODUCT:
+                $where = sprintf('WHERE product__image_id = %s', $data->getId()->getEndpoint());
+                $this->database->query(sprintf('DELETE FROM oc_product_image %s'), $where);
+                break;
+            case ImageRelationType::TYPE_CATEGORY:
+                $this->database->update($data, 'oc_category', 'image', null);
+                break;
+            case ImageRelationType::TYPE_MANUFACTURER:
+                $this->database->update($data, 'oc_manufacturer', 'image', null);
+                break;
+            case ImageRelationType::TYPE_SPECIFIC_VALUE:
+                $this->database->update($data, 'oc_option_value', 'image', null);
+                break;
+        }
+        $this->database->query(sprintf(
+            'DELETE FROM jtl_connector_link WHERE hostId = %d && type = %d',
+            $data->getId()->getHost(), IdentityLinker::TYPE_IMAGE
+        ));
     }
 
     protected function getStats()

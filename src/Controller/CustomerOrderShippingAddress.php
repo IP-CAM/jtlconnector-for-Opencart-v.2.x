@@ -14,6 +14,6 @@ class CustomerOrderShippingAddress extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        throw new OperationNotPermitedException();
+        throw new OperationNotPermitedException("Data already fetched");
     }
 }

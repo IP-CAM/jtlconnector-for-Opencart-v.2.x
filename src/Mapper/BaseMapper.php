@@ -13,10 +13,12 @@ use jtl\Connector\OpenCart\Utility\Db;
 
 abstract class BaseMapper extends Singleton
 {
-    protected $database = null;
     private $model = null;
-    private $type;
+    private $type = null;
+    protected $database = null;
     protected $endpointModel = null;
+    protected $push = [];
+    protected $pull = [];
 
     public function __construct()
     {
@@ -94,7 +96,6 @@ abstract class BaseMapper extends Singleton
             }
             $model[$endpoint] = $value;
         }
-        var_dump($model);
         return $model;
     }
 
