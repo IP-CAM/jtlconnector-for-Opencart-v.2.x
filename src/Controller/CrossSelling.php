@@ -41,7 +41,11 @@ class CrossSelling extends MainEntityController
 
     protected function deleteData($data, $model)
     {
-        // TODO: Implement deleteData() method.
+        $id = $data->getProductId()->getEndpoint();
+        if (!is_null($id)) {
+            $this->database->query(sprintf('DELETE FROM oc_product_related WHERE product_id = %d', $id));
+        }
+        return $data;
     }
 
     protected function getStats()

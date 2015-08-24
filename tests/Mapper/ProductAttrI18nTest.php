@@ -10,11 +10,13 @@ class ProductAttrI18nTest extends PHPUnit_Framework_TestCase
     private $mapper = null;
 
     private $endpoint = [
+        'productAttrId' => '25',
         'languageISO' => 'de',
         'name' => 'Color',
         'value' => 'red'
     ];
     private $host = [
+        'attribute_id' => 25,
         'code' => 'de',
         'name' => 'Color',
         'text' => 'red'
@@ -33,7 +35,8 @@ class ProductAttrI18nTest extends PHPUnit_Framework_TestCase
 
     public function testToHost()
     {
-        $result = $this->mapper->toHost(json_encode($this->endpoint));
+        $result = $this->mapper->toHost($this->endpoint);
+        var_dump($result);die();
         $this->assertEquals($this->host, $result);
     }
 }

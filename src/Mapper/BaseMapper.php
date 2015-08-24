@@ -32,7 +32,6 @@ abstract class BaseMapper extends Singleton
     public function toHost($data)
     {
         $model = new $this->model();
-
         foreach ($this->pull as $host => $endpoint) {
             $setter = 'set' . ucfirst($host);
             $fnName = strtolower($host);

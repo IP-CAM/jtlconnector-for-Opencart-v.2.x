@@ -6,9 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-use jtl\Connector\Core\Utilities\Language;
-
-class ProductI18n extends BaseMapper
+class ProductI18n extends I18nBaseMapper
 {
     protected $pull = [
         'productId' => 'product_id',
@@ -20,9 +18,4 @@ class ProductI18n extends BaseMapper
         'titleTag' => 'tag'
         // deliveryStatus, measurementUnitName, unitName, urlPath
     ];
-
-    protected function languageISO($data)
-    {
-        return Language::convert($data['code']);
-    }
 }
