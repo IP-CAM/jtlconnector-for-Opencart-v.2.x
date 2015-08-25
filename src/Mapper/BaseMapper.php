@@ -35,16 +35,13 @@ abstract class BaseMapper extends Singleton
         foreach ($this->pull as $host => $endpoint) {
             $setter = 'set' . ucfirst($host);
             $fnName = strtolower($host);
-
             if (method_exists($this, $fnName)) {
                 $value = $this->$fnName($data);
             } else {
                 $value = $data[$endpoint];
                 $property = $this->type->getProperty($host);
-
                 if ($property->isNavigation()) {
                     $subControllerName = Constants::CONTROLLER_NAMESPACE . $endpoint;
-
                     if (class_exists($subControllerName)) {
                         $subController = new $subControllerName();
                         $value = $subController->pullData($data, $model);
@@ -61,12 +58,10 @@ abstract class BaseMapper extends Singleton
                     $value = $value == '0000-00-00' || $value == '0000-00-00 00:00:00' ? null : new \DateTime($value);
                 }
             }
-
             if (!empty($value)) {
                 $model->$setter($value);
             }
         }
-
         return $model;
     }
 

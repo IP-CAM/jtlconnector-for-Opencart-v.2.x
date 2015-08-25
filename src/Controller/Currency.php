@@ -2,7 +2,7 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-class Language extends BaseController
+class Currency extends BaseController
 {
     public function pullData($data, $model, $limit = null)
     {

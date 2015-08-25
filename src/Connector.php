@@ -10,6 +10,7 @@ use jtl\Connector\Core\Utilities\RpcMethod;
 use jtl\Connector\OpenCart\Authentication\TokenLoader;
 use jtl\Connector\OpenCart\Checksum\ChecksumLoader;
 use jtl\Connector\OpenCart\Mapper\PrimaryKeyMapper;
+use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\Result\Action;
 
 /**
@@ -47,7 +48,7 @@ class Connector extends BaseConnector
     {
         $controller = RpcMethod::buildController($this->getMethod()->getController());
 
-        $class = "\\jtl\\Connector\\OpenCart\\Controller\\{$controller}";
+        $class = Constants::CONTROLLER_NAMESPACE . $controller;
         if (class_exists($class)) {
             $this->controller = $class::getInstance();
             $this->action = RpcMethod::buildAction($this->getMethod()->getAction());

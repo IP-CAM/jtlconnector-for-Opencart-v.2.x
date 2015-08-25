@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-class GlobalBase extends BaseMapper
+class GlobalData extends BaseMapper
 {
     protected $pull = [
         'languages' => 'Language',

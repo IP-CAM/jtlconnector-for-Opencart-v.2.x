@@ -6,9 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-use Symfony\Component\Finder\Exception\OperationNotPermitedException;
-
-class GlobalBase extends MainEntityController
+class GlobalData extends BaseController
 {
 
     public function pullData($data, $model, $limit = null)
@@ -19,21 +17,11 @@ class GlobalBase extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        throw new OperationNotPermitedException("Each of the sub controllers fetches the data.");
+        // TODO: Implement pullQuery() method.
     }
 
     protected function pushData($data, $model)
     {
         // TODO: Implement pushData() method.
-    }
-
-    protected function deleteData($data, $model)
-    {
-        // TODO: Implement deleteData() method.
-    }
-
-    protected function getStats()
-    {
-        // TODO: Implement getStats() method.
     }
 }
