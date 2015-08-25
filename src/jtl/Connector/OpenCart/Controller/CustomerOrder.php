@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
+use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class CustomerOrder extends MainEntityController
 {
@@ -38,12 +39,12 @@ class CustomerOrder extends MainEntityController
 
     protected function pushData($data, $model)
     {
-        // TODO: Implement pushData() method.
+        throw new OperationNotPermitedException("Orders should after pulling be handled in the Wawi.");
     }
 
     protected function deleteData($data, $model)
     {
-        // TODO: Implement deleteData() method.
+        throw new OperationNotPermitedException("Orders should after pulling be handled in the Wawi.");
     }
 
     protected function getStats()

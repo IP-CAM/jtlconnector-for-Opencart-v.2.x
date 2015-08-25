@@ -17,13 +17,12 @@ class CategoryI18n extends I18nBaseMapper
         'metaKeywords' => 'meta_keyword'
     ];
 
-    /*protected $push = [
+    protected $push = [
         'category_id' => 'categoryId',
+        'name' => 'name',
         'description' => 'description',
         'language' => 'languageISO',
         'meta_description' => 'metaDescription',
-        'meta_keyword' => 'metaKeywords',
-        'meta_title' => 'titleTag',
-        'name' => 'name'
-    ];*/
+        'meta_keyword' => 'metaKeywords'
+    ];
 }

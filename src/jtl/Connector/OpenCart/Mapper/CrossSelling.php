@@ -12,4 +12,9 @@ class CrossSelling extends BaseMapper
         'productId' => 'product_id',
         'items' => 'CrossSellingItem'
     ];
+
+    protected $push = [
+        'product_id' => 'productId',
+        'CrossSellingItem' => 'items'
+    ];
 }

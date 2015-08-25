@@ -6,9 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-use jtl\Connector\Core\Utilities\Language;
-
-class CustomerOrder extends BaseMapper
+class CustomerOrder extends I18nBaseMapper
 {
     protected $pull = [
         'id' => 'order_id',
@@ -19,10 +17,11 @@ class CustomerOrder extends BaseMapper
         'languageISO' => null,
         'note' => 'comment',
         'shippingAddress' => 'CustomerOrderShippingAddress',
-        'shippingInfo' => 'shipping_custom_field',
         'totalSum' => 'total',
         // TODO: Error
         'items' => 'CustomerOrderItem',
+        // TODO: invoice_no und invoice_prefix
+        // 'order_no' => '',
         // History ?
         //'paymentDate' => 'DateTime',
         // See PaymentTypes ?
@@ -33,13 +32,4 @@ class CustomerOrder extends BaseMapper
         // Shipping: const in Custom Order
         //'status' => 'string',
     ];
-
-    protected $push = [
-
-    ];
-
-    protected function languageISO($data)
-    {
-        return Language::convert($data['code']);
-    }
 }

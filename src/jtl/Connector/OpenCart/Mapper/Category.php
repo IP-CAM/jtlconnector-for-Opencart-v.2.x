@@ -28,8 +28,9 @@ class Category extends BaseMapper
 
     protected function parent_id($data)
     {
-        $parent = $data->getParentCategoryId()->getEndpoint();
-        return empty($parent) ? 0 : $parent;
+        // TODO: Implementation based on OpenCart Model or not.
+        //$parent = $data->getParentCategoryId()->getEndpoint();
+        //return empty($parent) ? 0 : $parent;
     }
 
 }

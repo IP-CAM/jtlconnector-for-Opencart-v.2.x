@@ -32,11 +32,9 @@
     "phpunit/phpunit": "4.8.*"
   },
   "autoload": {
-    "psr-4": {
-      "jtl\\Connector\\OpenCart\\": "src/",
-      "jtl\\Connector\\OpenCart\\Tests\\": "tests/"
-    },
     "psr-0": {
+      "jtl\\Connector\\OpenCart\\": "src/",
+      "jtl\\Connector\\OpenCart\\Tests\\": "tests/",
       "": "plugins/"
     }
   }
