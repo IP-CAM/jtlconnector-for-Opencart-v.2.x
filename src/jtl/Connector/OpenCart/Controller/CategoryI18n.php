@@ -28,6 +28,6 @@ class CategoryI18n extends BaseController
 
     public function pushData($data, $model)
     {
-       return $this->mapper->toEndpoint($data);
+        return $this->mapper->toEndpoint($data);
     }
 }

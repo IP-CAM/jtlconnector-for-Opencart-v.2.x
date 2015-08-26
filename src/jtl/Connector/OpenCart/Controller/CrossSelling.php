@@ -50,13 +50,12 @@ class CrossSelling extends MainEntityController
 
     protected function getStats()
     {
-        $result = $this->database->queryOne(sprintf('
+        return $this->database->queryOne(sprintf('
 			SELECT COUNT(DISTINCT(pr.product_id))
 			FROM oc_product_related pr
 			LEFT JOIN jtl_connector_link l ON %s = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL',
             'CONCAT_WS("_", pr.product_id, pr.related_id)', IdentityLinker::TYPE_CROSSSELLING
         ));
-        return $result;
     }
 }

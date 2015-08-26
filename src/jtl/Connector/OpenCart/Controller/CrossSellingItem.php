@@ -15,11 +15,14 @@ class CrossSellingItem extends BaseController
     {
         $query = $this->pullQuery($data, $limit);
         $result = $this->database->query($query);
+        if (empty($result)) {
+            return [];
+        }
         $model = new CrossSellingItemModel();
         foreach ($result as $row) {
             $model->addProductId(new Identity($row['related_id']));
         }
-        return array($model);
+        return [$model];
     }
 
     protected function pullQuery($data, $limit = null)
