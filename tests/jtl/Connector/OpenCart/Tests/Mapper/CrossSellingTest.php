@@ -36,6 +36,6 @@ class CrossSellingTest extends AbstractMapper
     protected function assertToHost($result)
     {
         $this->assertEquals($this->host['productId'], $result->getProductId()->getEndpoint());
-        $this->assertTrue(empty($result->getItems()));
+        $this->assertEmpty($result->getItems());
     }
 }

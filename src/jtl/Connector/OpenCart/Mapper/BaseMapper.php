@@ -32,6 +32,9 @@ abstract class BaseMapper extends Singleton
     public function toHost($data)
     {
         $model = new $this->model();
+        if ($this->model === '\jtl\Connector\Model\CrossSelling') {
+            //var_dump($data);
+        }
         foreach ($this->pull as $host => $endpoint) {
             $setter = 'set' . ucfirst($host);
             $fnName = strtolower($host);

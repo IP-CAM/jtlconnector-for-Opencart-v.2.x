@@ -51,7 +51,7 @@ class CategoryI18nTest extends AbstractMapper
         $this->assertEquals($this->host['metaDescription'], $result->getMetaDescription());
         $this->assertEquals($this->host['metaKeywords'], $result->getMetaKeywords());
         // Default values
-        $this->assertTrue(empty($result->getURLPath()));
-        $this->assertTrue(empty($result->getTitleTag()));
+        $this->assertEmpty($result->getURLPath());
+        $this->assertEmpty($result->getTitleTag());
     }
 }

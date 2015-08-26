@@ -48,10 +48,10 @@ class CategoryTest extends AbstractMapper
         $this->assertEquals($this->host['level'], $result->getLevel());
         $this->assertEquals($this->host['isActive'], $result->getIsActive());
         $this->assertEquals($this->host['sort'], $result->getSort());
-        $this->assertTrue(empty($result->getI18ns()));
+        $this->assertEmpty($result->getI18ns());
         // Default values
-        $this->assertTrue(empty($result->getAttributes()));
-        $this->assertTrue(empty($result->getCustomerGroups()));
-        $this->assertTrue(empty($result->getInvisibilities()));
+        $this->assertEmpty($result->getAttributes());
+        $this->assertEmpty($result->getCustomerGroups());
+        $this->assertEmpty($result->getInvisibilities());
     }
 }

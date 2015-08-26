@@ -110,7 +110,7 @@ abstract class BaseController extends Controller
         return $action;
     }
 
-    public function pullDataDefault($data, $model, $limit)
+    public function pullDataDefault($data, $model, $limit = null)
     {
         $return = [];
         $query = $this->pullQuery($data, $limit);

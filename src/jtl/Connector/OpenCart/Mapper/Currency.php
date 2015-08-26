@@ -10,7 +10,7 @@ class Currency extends BaseMapper
 {
     protected $pull = [
         'id' => 'currency_id',
-        'factor' => 1,
+        'factor' => 'value',
         'name' => 'title',
         'iso' => 'code',
         'hasCurrencySignBeforeValue' => null
