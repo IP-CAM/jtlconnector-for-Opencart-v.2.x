@@ -35,7 +35,7 @@ class CategoryI18nTest extends AbstractMapper
             'category_id' => "1",
             'name' => 'English Product Name',
             'description' => 'This is a description.',
-            'code' => 'EN',
+            'code' => 'en',
             'meta_description' => 'This is a meta description.',
             'meta_keyword' => 'These are meta keywords.'
         ];

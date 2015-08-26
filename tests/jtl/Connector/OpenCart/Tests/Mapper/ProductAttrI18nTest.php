@@ -14,8 +14,8 @@ class ProductAttrI18nTest extends AbstractMapper
     protected function getHost()
     {
         return [
-            'attribute_id' => 25,
-            'code' => 'de',
+            'productAttrId' => '25',
+            'languageISO' => 'ger',
             'name' => 'Color',
             'text' => 'red'
         ];
@@ -24,8 +24,8 @@ class ProductAttrI18nTest extends AbstractMapper
     protected function getEndpoint()
     {
         return [
-            'productAttrId' => '25',
-            'languageISO' => 'de',
+            'attribute_id' => 25,
+            'code' => 'de',
             'name' => 'Color',
             'value' => 'red'
         ];
@@ -33,6 +33,9 @@ class ProductAttrI18nTest extends AbstractMapper
 
     protected function assertToHost($result)
     {
-        // TODO: Implement assertToHost() method.
+        $this->assertEquals($this->host['productAttrId'], $result->getProductAttrId()->getEndpoint());
+        $this->assertEquals($this->host['languageISO'], $result->getLanguageISO());
+        $this->assertEquals($this->host['name'], $result->getName());
+        $this->assertEquals($this->host['text'], $result->getValue());
     }
 }
