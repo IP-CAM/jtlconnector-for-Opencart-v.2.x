@@ -2,7 +2,7 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-class TaxRate extends BaseController
+class TaxClass extends BaseController
 {
     public function pullData($data, $model, $limit = null)
     {
@@ -11,6 +11,6 @@ class TaxRate extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return 'SELECT * FROM oc_tax_rate';
+        return 'SELECT * FROM oc_tax_class';
     }
 }

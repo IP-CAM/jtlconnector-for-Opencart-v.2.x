@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-class GlobalData extends BaseController
+class DGlobalData extends BaseController
 {
 
     public function pullData($data, $model, $limit = null)

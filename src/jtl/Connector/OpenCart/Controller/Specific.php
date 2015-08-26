@@ -10,7 +10,7 @@ class Specific extends MainEntityController
 {
     public function pullData($data, $model, $limit = null)
     {
-        // TODO: Implement pullData() method.
+        return parent::pullDataDefault($data, $model, $limit);
     }
 
     protected function pullQuery($data, $limit = null)

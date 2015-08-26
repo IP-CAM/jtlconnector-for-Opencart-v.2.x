@@ -37,8 +37,7 @@ class Connector extends Controller
             'DeliveryNote',
             'Image',
             'Product',
-            'Manufacturer',
-            'Payment'
+            'Manufacturer'
         ];
 
         foreach ($mainControllers as $mainController) {

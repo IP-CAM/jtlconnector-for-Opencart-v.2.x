@@ -110,6 +110,18 @@ abstract class BaseController extends Controller
         return $action;
     }
 
+    public function pullDataDefault($data, $model, $limit)
+    {
+        $return = [];
+        $query = $this->pullQuery($data, $limit);
+        $result = $this->database->query($query);
+        foreach ($result as $row) {
+            $host = $this->mapper->toHost($row);
+            $return[] = $host;
+        }
+        return $return;
+    }
+
     /**
      * Called on a pull on the main model controllers including their sub model controllers.
      *

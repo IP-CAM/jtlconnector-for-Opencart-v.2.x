@@ -6,7 +6,10 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-class Payment extends BaseMapper
+class TaxClass extends BaseMapper
 {
-    // Not really supported
+    protected $pull = [
+        'id' => 'tax_class_id',
+        'name' => 'title'
+    ];
 }
