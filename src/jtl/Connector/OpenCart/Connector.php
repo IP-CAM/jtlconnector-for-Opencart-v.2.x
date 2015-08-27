@@ -49,6 +49,8 @@ class Connector extends BaseConnector
         $controller = RpcMethod::buildController($this->getMethod()->getController());
         if ($this->startsWith($controller, 'Product')) {
             $controller = 'Product' . DIRECTORY_SEPARATOR . $controller;
+        } elseif (strpos($controller, 'Order') !== false) {
+            $controller = 'Order' . DIRECTORY_SEPARATOR . $controller;
         }
         $class = Constants::CONTROLLER_NAMESPACE . $controller;
         if (class_exists($class)) {
