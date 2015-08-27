@@ -47,15 +47,12 @@ class Connector extends BaseConnector
     public function canHandle()
     {
         $controller = RpcMethod::buildController($this->getMethod()->getController());
-
         $class = Constants::CONTROLLER_NAMESPACE . $controller;
         if (class_exists($class)) {
             $this->controller = $class::getInstance();
             $this->action = RpcMethod::buildAction($this->getMethod()->getAction());
-
             return is_callable(array($this->controller, $this->action));
         }
-
         return false;
     }
 
@@ -75,30 +72,39 @@ class Connector extends BaseConnector
         $this->controller->setMethod($this->getMethod());
 
         if ($this->action === Method::ACTION_PUSH || $this->action === Method::ACTION_DELETE) {
-            if ($this->getMethod()->getController() === 'image') {
+            if ($this->action === Method::ACTION_PUSH && $this->getMethod()->getController() === 'image') {
                 return $this->controller->{$this->action}($requestpacket->getParams());
             }
+
+//            if ($this->action === Method::ACTION_PUSH && $this->getMethod()->getController() === 'product_price') {
+//                $params = $requestpacket->getParams();
+//                $result = $this->controller->update($params);
+//                $results[] = $result->getResult();
+//            } else {
+//                foreach ($requestpacket->getParams() as $param) {
+//                    $result = $this->controller->{$this->action}($param);
+//                    $results[] = $result->getResult();
+//                }
+//            }
 
             if (!is_array($requestpacket->getParams())) {
                 throw new \Exception("Expecting request array, invalid data given");
             }
 
             $action = new Action();
-            $results = array();
-            if ($this->action === Method::ACTION_PUSH && $this->getMethod()->getController() === 'product_price') {
-                $params = $requestpacket->getParams();
-                $result = $this->controller->update($params);
-                $results[] = $result->getResult();
-            } else {
-                foreach ($requestpacket->getParams() as $param) {
-                    $result = $this->controller->{$this->action}($param);
+            $results = [];
+            $entities = $requestpacket->getParams();
+            foreach ($entities as $entity) {
+                $result = $this->controller->{$this->action}($entity);
+
+                if ($result->getResult() !== null) {
                     $results[] = $result->getResult();
                 }
-            }
 
-            $action->setHandled(true)
-                ->setResult($results)
-                ->setError($result->getError());    // @todo: refactor to array of errors
+                $action->setHandled(true)
+                    ->setResult($results)
+                    ->setError($result->getError());    // Todo: refactor to array of errors
+            }
 
             return $action;
         } else {
@@ -124,6 +130,7 @@ class Connector extends BaseConnector
     public function setController(CoreController $controller)
     {
         $this->controller = $controller;
+        return $this;
     }
 
     /**
@@ -144,5 +151,6 @@ class Connector extends BaseConnector
     public function setAction($action)
     {
         $this->action = $action;
+        return $this;
     }
 }

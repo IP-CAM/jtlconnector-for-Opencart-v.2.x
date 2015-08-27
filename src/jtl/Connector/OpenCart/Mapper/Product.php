@@ -17,9 +17,6 @@ class Product extends BaseMapper
         'height' => 'height',
         'isActive' => 'status',
         'isbn' => 'isbn',
-//        'partsListId' => 'Identity',
-//        'shippingClassId' => 'Identity',
-//        'unitId' => 'Identity',
         'availableFrom' => 'date_available',
 //        'basePriceDivisor' => 'double',
 //        'basePriceFactor' => 'double',
@@ -27,14 +24,8 @@ class Product extends BaseMapper
 //        'basePriceUnitCode' => 'string',
 //        'basePriceUnitName' => 'string',
 //        'considerBasePrice' => 'boolean',
-//        'considerStock' => 'boolean',
-//        'considerVariationStock' => 'boolean',
-        // viewed count?
-//        'isNewProduct' => 'boolean',
         'length' => 'length',
 //        'manufacturerNumber' => 'string',
-//        'measurementQuantity' => 'double',
-//        'measurementUnitCode' => 'string',
         'minimumQuantity' => 'minimum',
         'modified' => 'date_modified',
 //        'nextAvailableInflowDate' => 'DateTime',
@@ -47,8 +38,8 @@ class Product extends BaseMapper
         'sku' => 'sku',
         'sort' => 'sort_order',
 //        'stockLevel' => 'ProductStockLevel',
-//        'supplierDeliveryTime' => 'integer',
-//        'supplierStockLevel' => 'double',
+//        'considerStock' => 'boolean',
+//        'considerVariationStock' => 'boolean',
         'upc' => 'upc',
         'vat' => 'double',
         'width' => 'width',
@@ -58,13 +49,11 @@ class Product extends BaseMapper
 //        'configGroups' => '\jtl\Connector\Model\ProductConfigGroup',
 //        'customerGroupPackagingQuantities' => '\jtl\Connector\Model\CustomerGroupPackagingQuantity',
         'fileDownloads' => 'ProductFileDownload',
-        'i18ns' => 'ProductI18n'
-//        'partsLists' => '\jtl\Connector\Model\ProductPartsList',
-//        'prices' => '\jtl\Connector\Model\ProductPrice',
+        'i18ns' => 'ProductI18n',
+//        'prices' => 'ProductPrice',
 //        'specialPrices' => '\jtl\Connector\Model\ProductSpecialPrice',
 //        'specifics' => '\jtl\Connector\Model\ProductSpecific',
-//        'varCombinations' => '\jtl\Connector\Model\ProductVarCombination',
-//        'variations' => '\jtl\Connector\Model\ProductVariation',
-//        'warehouseInfo' => '\jtl\Connector\Model\ProductWarehouseInfo'
+        'varCombinations' => 'ProductVarCombination',
+        'variations' => 'ProductVariation'
     ];
 }

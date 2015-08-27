@@ -15,7 +15,7 @@ function exception_handler(\Exception $exception)
 {
     $trace = $exception->getTrace();
     if (isset($trace[0]['args'][0])) {
-        $requestpacket = $trace[0]['args'][0];
+        $request_packet = $trace[0]['args'][0];
     }
 
     $error = new Error();
@@ -24,15 +24,15 @@ function exception_handler(\Exception $exception)
                 1) . " - File: {$exception->getFile()} - Line: {$exception->getLine()}")
         ->setMessage($exception->getMessage());
 
-    $responsepacket = new ResponsePacket();
-    $responsepacket->setError($error)
+    $response_packet = new ResponsePacket();
+    $response_packet->setError($error)
         ->setJtlrpc("2.0");
 
-    if (isset($requestpacket) && $requestpacket !== null && $requestpacket instanceof RequestPacket) {
-        $responsepacket->setId($requestpacket->getId());
+    if (isset($request_packet) && $request_packet !== null && $request_packet instanceof RequestPacket) {
+        $response_packet->setId($request_packet->getId());
     }
 
-    Response::send($responsepacket);
+    Response::send($response_packet);
 }
 
 function error_handler($errno, $errstr, $errfile, $errline, $errcontext)

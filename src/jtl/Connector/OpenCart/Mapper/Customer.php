@@ -42,13 +42,20 @@ class Customer extends BaseMapper
         'company' => 'company',
         'email' => 'eMail',
         'telephone' => 'phone',
+        'fax' => 'fax',
         'customer_group_id' => 'customerGroupId',
         'date_added' => 'creationDate',
         'newsletter' => 'hasNewsletterSubscription',
-        'status' => 'isActive'
+        'status' => 'isActive',
+        'has_customer_account' => 'hasCustomerAccount'
     ];
 
     protected function hasCustomerAccount($data)
+    {
+        return true;
+    }
+
+    protected function has_customer_account($data)
     {
         return true;
     }
