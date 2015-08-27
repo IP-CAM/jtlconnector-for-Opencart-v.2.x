@@ -9,6 +9,7 @@ use jtl\Connector\Core\Rpc\RequestPacket;
 use jtl\Connector\Core\Utilities\RpcMethod;
 use jtl\Connector\OpenCart\Authentication\TokenLoader;
 use jtl\Connector\OpenCart\Checksum\ChecksumLoader;
+use jtl\Connector\OpenCart\Mapper\GlobalData;
 use jtl\Connector\OpenCart\Mapper\PrimaryKeyMapper;
 use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\Result\Action;
@@ -51,6 +52,8 @@ class Connector extends BaseConnector
             $controller = 'Product' . DIRECTORY_SEPARATOR . $controller;
         } elseif (strpos($controller, 'Order') !== false) {
             $controller = 'Order' . DIRECTORY_SEPARATOR . $controller;
+        } elseif (in_array($controller, array_merge(['GlobalData'], GlobalData::getModels()))) {
+            $controller = 'GlobalData' . DIRECTORY_SEPARATOR . $controller;
         }
         $class = Constants::CONTROLLER_NAMESPACE . $controller;
         if (class_exists($class)) {

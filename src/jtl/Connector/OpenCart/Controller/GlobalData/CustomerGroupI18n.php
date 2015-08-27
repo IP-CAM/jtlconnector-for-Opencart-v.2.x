@@ -1,6 +1,8 @@
 <?php
 
-namespace jtl\Connector\OpenCart\Controller;
+namespace jtl\Connector\OpenCart\Controller\GlobalData;
+
+use jtl\Connector\OpenCart\Controller\BaseController;
 
 class CustomerGroupI18n extends BaseController
 {

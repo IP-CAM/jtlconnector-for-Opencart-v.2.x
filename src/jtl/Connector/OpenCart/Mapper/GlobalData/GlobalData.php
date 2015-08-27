@@ -4,7 +4,9 @@
  * @package jtl\Connector\OpenCart\Mapper
  */
 
-namespace jtl\Connector\OpenCart\Mapper;
+namespace jtl\Connector\OpenCart\Mapper\GlobalData;
+
+use jtl\Connector\OpenCart\Mapper\BaseMapper;
 
 class GlobalData extends BaseMapper
 {
@@ -14,4 +16,9 @@ class GlobalData extends BaseMapper
         'taxRates' => 'TaxRate',
         'customerGroups' => 'CustomerGroup'
     ];
+
+    public static function getModels()
+    {
+        return array_values((new GlobalData())->pull);
+    }
 }

@@ -6,7 +6,9 @@
  * Time: 12:35
  */
 
-namespace jtl\Connector\OpenCart\Controller;
+namespace jtl\Connector\OpenCart\Controller\GlobalData;
+
+use jtl\Connector\OpenCart\Controller\BaseController;
 
 
 class CustomerGroup extends BaseController

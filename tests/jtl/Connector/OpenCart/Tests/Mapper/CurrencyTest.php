@@ -2,7 +2,7 @@
 
 namespace jtl\Connector\OpenCart\Tests\Mapper;
 
-use jtl\Connector\OpenCart\Mapper\Currency;
+use jtl\Connector\OpenCart\Mapper\GlobalData\Currency;
 
 class CurrencyTest extends AbstractMapper
 {

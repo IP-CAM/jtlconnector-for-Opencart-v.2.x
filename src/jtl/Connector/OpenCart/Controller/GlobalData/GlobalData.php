@@ -4,7 +4,9 @@
  * @package jtl\Connector\OpenCart\Controller
  */
 
-namespace jtl\Connector\OpenCart\Controller;
+namespace jtl\Connector\OpenCart\Controller\GlobalData;
+
+use jtl\Connector\OpenCart\Controller\BaseController;
 
 class DGlobalData extends BaseController
 {
