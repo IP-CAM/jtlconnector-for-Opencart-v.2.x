@@ -45,17 +45,17 @@ class Product extends BaseMapper
         'upc' => 'upc',
         'vat' => 'double',
         'width' => 'width',
-        'attributes' => 'ProductAttr',
-        'categories' => 'Product2Category',
+        'attributes' => 'Product\ProductAttr',
+        'categories' => 'Product\Product2Category',
 //        'checksums' => '\jtl\Connector\Model\ProductChecksum',
 //        'configGroups' => '\jtl\Connector\Model\ProductConfigGroup',
 //        'customerGroupPackagingQuantities' => '\jtl\Connector\Model\CustomerGroupPackagingQuantity',
-        'fileDownloads' => 'ProductFileDownload',
-        'i18ns' => 'ProductI18n',
-        'prices' => 'ProductPrice',
-        'specialPrices' => 'ProductSpecialPrice',
+        'fileDownloads' => 'Product\ProductFileDownload',
+        'i18ns' => 'Product\ProductI18n',
+        'prices' => 'Product\ProductPrice',
+        'specialPrices' => 'Product\ProductSpecialPrice',
 //        'specifics' => '\jtl\Connector\Model\ProductSpecific',
-        'varCombinations' => 'ProductVarCombination',
-        'variations' => 'ProductVariation'
+        'varCombinations' => 'Product\ProductVarCombination',
+        'variations' => 'Product\ProductVariation'
     ];
 }

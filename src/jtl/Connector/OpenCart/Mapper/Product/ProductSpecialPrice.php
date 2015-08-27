@@ -14,7 +14,7 @@ class ProductSpecialPrice extends BaseMapper
         'activeUntilDate' => 'date_end',
         'considerDateLimit' => null,
         'isActive' => null,
-        'items' => 'ProductSpecialPriceItem'
+        'items' => 'Product\ProductSpecialPriceItem'
     ];
 
     protected function considerDateLimit($data)

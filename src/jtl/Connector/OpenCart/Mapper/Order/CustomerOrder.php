@@ -13,15 +13,15 @@ class CustomerOrder extends I18nBaseMapper
     protected $pull = [
         'id' => 'order_id',
         'customerId' => 'customer_id',
-        'billingAddress' => 'CustomerOrderBillingAddress',
+        'billingAddress' => 'Order\CustomerOrderBillingAddress',
         'creationDate' => 'date_added',
         'currencyIso' => 'currency_code',
         'languageISO' => null,
         'note' => 'comment',
-        'shippingAddress' => 'CustomerOrderShippingAddress',
+        'shippingAddress' => 'Order\CustomerOrderShippingAddress',
         'totalSum' => 'total',
         // TODO: Error
-        'items' => 'CustomerOrderItem',
+        'items' => 'Order\CustomerOrderItem',
         // TODO: invoice_no und invoice_prefix
         // 'order_no' => '',
         // History ?

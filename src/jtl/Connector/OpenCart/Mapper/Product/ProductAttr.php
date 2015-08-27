@@ -10,7 +10,7 @@ class ProductAttr extends BaseMapper
         'id' => 'attribute_id',
         'productId' => 'product_id',
         'isTranslated' => null,
-        'i18ns' => 'ProductAttrI18n'
+        'i18ns' => 'Product\ProductAttrI18n'
     ];
 
     protected function isTranslated()

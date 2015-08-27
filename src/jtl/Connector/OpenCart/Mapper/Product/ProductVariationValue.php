@@ -11,7 +11,7 @@ class ProductVariationValue extends BaseMapper
         'productVariationId' => 'product_option_id',
         'extraWeight' => null,
         'stockLevel' => 'quantity',
-        'i18ns' => 'ProductVariationValueI18n'
+        'i18ns' => 'Product\ProductVariationValueI18n'
         //'extra_charges' =>
     ];
 

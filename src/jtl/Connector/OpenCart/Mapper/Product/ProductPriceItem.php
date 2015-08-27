@@ -8,10 +8,11 @@ namespace jtl\Connector\OpenCart\Mapper\Product;
 
 use jtl\Connector\OpenCart\Mapper\BaseMapper;
 
-class ProductPrice extends BaseMapper
+class ProductPriceItem extends BaseMapper
 {
     protected $pull = [
-        'productId' => 'product_id',
-        'items' => 'Product\ProductPriceItem'
+        'productPriceId' => 'product_id',
+        'netPrice' => 'price',
+        'quantity' => 'subtract'
     ];
 }
