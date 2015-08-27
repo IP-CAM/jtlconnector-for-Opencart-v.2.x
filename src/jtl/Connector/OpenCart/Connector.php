@@ -47,6 +47,9 @@ class Connector extends BaseConnector
     public function canHandle()
     {
         $controller = RpcMethod::buildController($this->getMethod()->getController());
+        if ($this->startsWith($controller, 'Product')) {
+            $controller = 'Product' . DIRECTORY_SEPARATOR . $controller;
+        }
         $class = Constants::CONTROLLER_NAMESPACE . $controller;
         if (class_exists($class)) {
             $this->controller = $class::getInstance();
@@ -54,6 +57,12 @@ class Connector extends BaseConnector
             return is_callable(array($this->controller, $this->action));
         }
         return false;
+    }
+
+    private function startsWith($haystack, $needle)
+    {
+        // search backwards starting from haystack length characters from the end
+        return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
     }
 
     /**

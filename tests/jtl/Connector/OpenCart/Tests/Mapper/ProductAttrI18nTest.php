@@ -2,7 +2,7 @@
 
 namespace jtl\Connector\OpenCart\Tests\Mapper;
 
-use jtl\Connector\OpenCart\Mapper\ProductAttrI18n;
+use jtl\Connector\OpenCart\Mapper\Product\ProductAttrI18n;
 
 class ProductAttrI18nTest extends AbstractMapper
 {

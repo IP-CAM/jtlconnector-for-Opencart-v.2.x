@@ -4,7 +4,9 @@
  * @package jtl\Connector\OpenCart\Mapper
  */
 
-namespace jtl\Connector\OpenCart\Mapper;
+namespace jtl\Connector\OpenCart\Mapper\Product;
+
+use jtl\Connector\OpenCart\Mapper\I18nBaseMapper;
 
 class ProductI18n extends I18nBaseMapper
 {

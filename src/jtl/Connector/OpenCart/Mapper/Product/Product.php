@@ -4,7 +4,9 @@
  * @package jtl\Connector\OpenCart\Mapper
  */
 
-namespace jtl\Connector\OpenCart\Mapper;
+namespace jtl\Connector\OpenCart\Mapper\Product;
+
+use jtl\Connector\OpenCart\Mapper\BaseMapper;
 
 class Product extends BaseMapper
 {
@@ -50,8 +52,8 @@ class Product extends BaseMapper
 //        'customerGroupPackagingQuantities' => '\jtl\Connector\Model\CustomerGroupPackagingQuantity',
         'fileDownloads' => 'ProductFileDownload',
         'i18ns' => 'ProductI18n',
-//        'prices' => 'ProductPrice',
-//        'specialPrices' => '\jtl\Connector\Model\ProductSpecialPrice',
+        'prices' => 'ProductPrice',
+        'specialPrices' => 'ProductSpecialPrice',
 //        'specifics' => '\jtl\Connector\Model\ProductSpecific',
         'varCombinations' => 'ProductVarCombination',
         'variations' => 'ProductVariation'

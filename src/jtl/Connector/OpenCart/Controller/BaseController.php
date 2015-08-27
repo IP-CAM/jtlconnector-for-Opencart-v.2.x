@@ -13,7 +13,6 @@ use jtl\Connector\Core\Model\QueryFilter;
 use jtl\Connector\Core\Rpc\Error;
 use jtl\Connector\Formatter\ExceptionFormatter;
 use jtl\Connector\Model\Statistic;
-use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\OpenCart\Utility\Db;
 use jtl\Connector\Result\Action;
 
@@ -28,8 +27,10 @@ abstract class BaseController extends Controller
     {
         $this->database = Db::getInstance();
         $reflect = new \ReflectionClass($this);
-        $this->controllerName = $reflect->getShortName();
-        $mapperClass = Constants::MAPPER_NAMESPACE . $reflect->getShortName();
+        $shortName = $reflect->getShortName();
+        $this->controllerName = $shortName;
+        $mapperClass = str_replace('Controller', 'Mapper',
+                $reflect->getNamespaceName()) . DIRECTORY_SEPARATOR . $shortName;
         if (class_exists($mapperClass)) {
             $this->mapper = new $mapperClass();
         }

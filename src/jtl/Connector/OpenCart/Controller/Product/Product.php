@@ -4,9 +4,10 @@
  * @package jtl\Connector\OpenCart\Controller
  */
 
-namespace jtl\Connector\OpenCart\Controller;
+namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\OpenCart\Controller\MainEntityController;
 
 class Product extends MainEntityController
 {

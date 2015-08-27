@@ -9,6 +9,7 @@ namespace jtl\Connector\OpenCart\Mapper;
 use jtl\Connector\Core\Utilities\Singleton;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Utility\Constants;
+use jtl\Connector\OpenCart\Utility\Date;
 use jtl\Connector\OpenCart\Utility\Db;
 
 abstract class BaseMapper extends Singleton
@@ -32,9 +33,6 @@ abstract class BaseMapper extends Singleton
     public function toHost($data)
     {
         $model = new $this->model();
-        if ($this->model === '\jtl\Connector\Model\CrossSelling') {
-            //var_dump($data);
-        }
         foreach ($this->pull as $host => $endpoint) {
             $setter = 'set' . ucfirst($host);
             $fnName = strtolower($host);
@@ -58,7 +56,7 @@ abstract class BaseMapper extends Singleton
                 } elseif ($property->getType() == 'double') {
                     $value = floatval($value);
                 } elseif ($property->getType() == 'DateTime') {
-                    $value = $value == '0000-00-00' || $value == '0000-00-00 00:00:00' ? null : new \DateTime($value);
+                    $value = Date::open_date($value) ? null : new \DateTime($value);
                 }
             }
             if (!empty($value)) {
