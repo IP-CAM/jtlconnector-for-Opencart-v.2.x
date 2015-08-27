@@ -1,6 +1,8 @@
 <?php
 
-namespace jtl\Connector\OpenCart\Controller;
+namespace jtl\Connector\OpenCart\Controller\Order;
+
+use jtl\Connector\OpenCart\Controller\BaseController;
 
 class CustomerOrderItem extends BaseController
 {

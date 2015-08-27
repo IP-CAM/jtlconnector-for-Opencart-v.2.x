@@ -4,7 +4,9 @@
  * @package jtl\Connector\OpenCart\Mapper
  */
 
-namespace jtl\Connector\OpenCart\Mapper;
+namespace jtl\Connector\OpenCart\Mapper\Order;
+
+use jtl\Connector\OpenCart\Mapper\BaseMapper;
 
 class CustomerOrderShippingAddress extends BaseMapper
 {

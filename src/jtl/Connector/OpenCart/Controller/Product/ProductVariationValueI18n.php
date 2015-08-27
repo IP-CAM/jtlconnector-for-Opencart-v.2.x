@@ -1,5 +1,7 @@
 <?php
-namespace jtl\Connector\OpenCart\Controller;
+namespace jtl\Connector\OpenCart\Controller\Product;
+
+use jtl\Connector\OpenCart\Controller\BaseController;
 
 
 class ProductVariationValueI18n extends BaseController

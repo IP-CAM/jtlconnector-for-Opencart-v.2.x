@@ -4,9 +4,10 @@
  * @package jtl\Connector\OpenCart\Controller
  */
 
-namespace jtl\Connector\OpenCart\Controller;
+namespace jtl\Connector\OpenCart\Controller\Order;
 
 use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\OpenCart\Controller\MainEntityController;
 use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class CustomerOrder extends MainEntityController

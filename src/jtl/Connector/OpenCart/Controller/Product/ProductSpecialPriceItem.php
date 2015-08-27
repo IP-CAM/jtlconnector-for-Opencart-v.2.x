@@ -1,6 +1,7 @@
 <?php
-namespace jtl\Connector\OpenCart\Controller;
+namespace jtl\Connector\OpenCart\Controller\Product;
 
+use jtl\Connector\OpenCart\Controller\BaseController;
 use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class ProductSpecialPriceItem extends BaseController

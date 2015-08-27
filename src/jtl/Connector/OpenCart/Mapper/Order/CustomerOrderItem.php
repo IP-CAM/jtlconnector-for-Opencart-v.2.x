@@ -4,9 +4,10 @@
  * @package jtl\Connector\OpenCart\Mapper
  */
 
-namespace jtl\Connector\OpenCart\Mapper;
+namespace jtl\Connector\OpenCart\Mapper\Order;
 
 use jtl\Connector\Model\CustomerOrderItem as COI;
+use jtl\Connector\OpenCart\Mapper\BaseMapper;
 
 class CustomerOrderItem extends BaseMapper
 {
