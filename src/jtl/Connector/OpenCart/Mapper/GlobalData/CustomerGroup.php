@@ -13,7 +13,7 @@ class CustomerGroup extends BaseMapper
     protected $pull = [
         'id' => 'customer_group_id',
         'isDefault' => null,
-        'i18ns' => 'CustomerGroupI18n'
+        'i18ns' => 'GlobalData\CustomerGroupI18n'
     ];
 
     protected function isDefault($data)
