@@ -11,14 +11,14 @@ use jtl\Connector\OpenCart\Mapper\BaseMapper;
 class GlobalData extends BaseMapper
 {
     protected $pull = [
-        'languages' => 'Language',
-        'currencies' => 'Currency',
-        'taxRates' => 'TaxRate',
-        'customerGroups' => 'CustomerGroup'
+        'languages' => 'GlobalData\Language',
+        'currencies' => 'GlobalData\Currency',
+        'taxRates' => 'GlobalData\TaxRate',
+        'customerGroups' => 'GlobalData\CustomerGroup'
     ];
 
     public static function getModels()
     {
-        return array_values((new GlobalData())->pull);
+        return ['Language', 'Currency', 'TaxRate', 'CustomerGroup'];
     }
 }

@@ -8,7 +8,7 @@ namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
 
-class DGlobalData extends BaseController
+class GlobalData extends BaseController
 {
 
     public function pullData($data, $model, $limit = null)
