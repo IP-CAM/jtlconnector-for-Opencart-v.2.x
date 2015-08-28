@@ -54,7 +54,7 @@ class Image extends MainEntityController
         return sprintf('
             SELECT pi.image, pi.sort_order, pi.product_image_id as id, pi.product_id as foreign_key
             FROM oc_product_image pi
-            LEFT JOIN jtl_connector_link l ON l.endpointId = pi.product_image_id AND l.relation_type = %d AND l.type = %d
+            LEFT JOIN jtl_connector_link l ON l.endpointId = pi.product_image_id AND l.relationType = %d AND l.type = %d
             WHERE l.hostId IS NULL
             LIMIT %d',
             IdentityLinker::TYPE_PRODUCT, IdentityLinker::TYPE_IMAGE, $limit
@@ -66,7 +66,7 @@ class Image extends MainEntityController
         return sprintf('
             SELECT c.image, c.sort_order, c.category_id as id, c.category_id as foreign_key
             FROM oc_category c
-            LEFT JOIN jtl_connector_link l ON l.endpointId = c.category_id AND l.relation_type = %d AND l.type = %d
+            LEFT JOIN jtl_connector_link l ON l.endpointId = c.category_id AND l.relationType = %d AND l.type = %d
             WHERE l.hostId IS NULL AND c.image IS NOT NULL AND c.image != ""
             LIMIT %d',
             IdentityLinker::TYPE_CATEGORY, IdentityLinker::TYPE_IMAGE, $limit
@@ -78,7 +78,7 @@ class Image extends MainEntityController
         return sprintf('
             SELECT m.image, m.sort_order, m.manufacturer_id as id, m.manufacturer_id as foreign_key
             FROM oc_manufacturer m
-            LEFT JOIN jtl_connector_link l ON l.endpointId = m.manufacturer_id AND l.relation_type = %d AND l.type = %d
+            LEFT JOIN jtl_connector_link l ON l.endpointId = m.manufacturer_id AND l.relationType = %d AND l.type = %d
             WHERE l.hostId IS NULL AND m.image IS NOT NULL AND m.image != ""
             LIMIT %d',
             IdentityLinker::TYPE_MANUFACTURER, IdentityLinker::TYPE_IMAGE, $limit
@@ -90,7 +90,7 @@ class Image extends MainEntityController
         return sprintf('
             SELECT v.image, v.sort_order, v.option_value_id as id, v.option_value_id as foreign_key
             FROM oc_option_value v
-            LEFT JOIN jtl_connector_link l ON l.endpointId = v.option_value_id AND l.relation_type = %d AND l.type = %d
+            LEFT JOIN jtl_connector_link l ON l.endpointId = v.option_value_id AND l.relationType = %d AND l.type = %d
             WHERE l.hostId IS NULL AND v.image IS NOT NULL AND v.image != ""
             LIMIT %d',
             IdentityLinker::TYPE_SPECIFIC_VALUE, IdentityLinker::TYPE_IMAGE, $limit
@@ -111,8 +111,8 @@ class Image extends MainEntityController
     {
         switch ($data->getRelationType()) {
             case ImageRelationType::TYPE_PRODUCT:
-                $where = sprintf('WHERE product__image_id = %s', $data->getId()->getEndpoint());
-                $this->database->query(sprintf('DELETE FROM oc_product_image %s'), $where);
+                $where = sprintf('WHERE product_image_id = %s', $data->getId()->getEndpoint());
+                $this->database->query(sprintf('DELETE FROM oc_product_image %s', $where));
                 break;
             case ImageRelationType::TYPE_CATEGORY:
                 $this->database->update($data, 'oc_category', 'image', null);

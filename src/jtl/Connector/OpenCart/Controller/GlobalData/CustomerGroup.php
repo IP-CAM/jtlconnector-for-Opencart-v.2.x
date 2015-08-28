@@ -20,8 +20,6 @@ class CustomerGroup extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return 'SELECT c.*, l.code
-            FROM oc_customer_group c
-            LEFT JOIN oc_language l ON c.language_id = l.language_id';
+        return 'SELECT * FROM oc_customer_group';
     }
 }

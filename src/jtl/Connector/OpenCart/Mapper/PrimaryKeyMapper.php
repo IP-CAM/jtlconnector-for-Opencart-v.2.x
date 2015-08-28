@@ -6,8 +6,8 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-use jtl\Connector\Core\Database\Mysql;
 use jtl\Connector\Mapper\IPrimaryKeyMapper;
+use jtl\Connector\OpenCart\Utility\Db;
 
 class PrimaryKeyMapper implements IPrimaryKeyMapper
 {
@@ -15,15 +15,7 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
 
     public function __construct()
     {
-        $mysql = Mysql::getInstance();
-        $mysql->connect([
-            'host' => DB_HOSTNAME,
-            'name' => DB_DATABASE,
-            'user' => DB_USERNAME,
-            'password' => DB_PASSWORD
-        ]);
-        $mysql->DB()->set_charset("utf8");
-        $this->db = $mysql;
+        $this->db = Db::getInstance();
     }
 
     /**
@@ -35,9 +27,13 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      */
     public function getHostId($endpointId, $type)
     {
-        $query = sprintf('SELECT hostId FROM jtl_connector_link WHERE endpointId = %s AND type = %s', $endpointId,
-            $type);
-        return $this->db->query($query)[0];
+        $query = sprintf('
+            SELECT hostId
+            FROM jtl_connector_link
+            WHERE endpointId = %s AND type = %s',
+            $endpointId, $type
+        );
+        return $this->db->queryOne($query);
     }
 
     /**
@@ -50,11 +46,13 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      */
     public function getEndpointId($hostId, $type, $relationType = null)
     {
-        // @todo: type 16 (Image) switch via $relationType
-
-        return $this->db->query(sprintf('SELECT endpointId FROM jtl_connector_link WHERE hostId = %s AND type = %s',
-            $hostId,
-            $type))[0];
+        $query = sprintf('
+            SELECT endpointId
+            FROM jtl_connector_link
+            WHERE hostId = %s AND type = %s AND relationType = %s',
+            $hostId, $type, $relationType
+        );
+        return $this->db->queryOne($query);
     }
 
     /**
@@ -67,11 +65,12 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      */
     public function save($endpointId, $hostId, $type)
     {
-        $id = $this->db->query(sprintf('
+        $query = sprintf('
             INSERT INTO jtl_connector_link (endpointId, hostId, type)
             VALUES (%s, %s, %s)',
             $endpointId, $hostId, $type
-        ));
+        );
+        $id = $this->db->query($query);
         return $id !== false;
     }
 

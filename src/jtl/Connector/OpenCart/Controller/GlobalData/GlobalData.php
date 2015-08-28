@@ -13,7 +13,7 @@ class GlobalData extends MainEntityController
 
     public function pullData($data, $model, $limit = null)
     {
-        $model = $this->mapper->toHost();
+        $model = $this->mapper->toHost([]);
         return [$model];
     }
 
@@ -34,6 +34,11 @@ class GlobalData extends MainEntityController
 
     protected function getStats()
     {
-        // TODO: Implement getStats() method.
+        $query = 'SELECT
+            (SELECT COUNT(*) FROM oc_currency) +
+            (SELECT COUNT(*) FROM oc_customer_group) +
+            (SELECT COUNT(*) FROM oc_language) +
+            (SELECT COUNT(*) FROM oc_tax_rate)';
+        return $this->database->queryOne($query);
     }
 }

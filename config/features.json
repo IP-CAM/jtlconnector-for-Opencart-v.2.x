@@ -320,31 +320,31 @@
       "push": false,
       "delete": false
     },
-    //    "ProductVarCombination": {
-    //      "pull": false,
-    //      "push": true,
-    //      "delete": false
-    //    },
-    //    "ProductVariation": {
-    //      "pull": true,
-    //      "push": true,
-    //      "delete": false
-    //    },
-    //    "ProductVariationI18n": {
-    //      "pull": true,
-    //      "push": true,
-    //      "delete": false
-    //    },
-    //    "ProductVariationInvisibility": {
-    //      "pull": false,
-    //      "push": false,
-    //      "delete": false
-    //    },
-    //    "ProductVariationValue": {
-    //      "pull": true,
-    //      "push": true,
-    //      "delete": false
-    //    },
+    "ProductVarCombination": {
+      "pull": true,
+      "push": true,
+      "delete": false
+    },
+    "ProductVariation": {
+      "pull": true,
+      "push": true,
+      "delete": false
+    },
+    "ProductVariationI18n": {
+      "pull": true,
+      "push": true,
+      "delete": false
+    },
+    "ProductVariationInvisibility": {
+      "pull": false,
+      "push": false,
+      "delete": false
+    },
+    "ProductVariationValue": {
+      "pull": true,
+      "push": true,
+      "delete": false
+    },
     "ProductVariationValueDependency": {
       "pull": false,
       "push": false,
@@ -380,36 +380,36 @@
       "push": false,
       "delete": false
     },
-    //    "ShippingMethod": {
-    //      "pull": true,
-    //      "push": false,
-    //      "delete": false
-    //    },
-    //    "Specific": {
-    //      "pull": false,
-    //      "push": false,
-    //      "delete": false
-    //    },
-    //    "SpecificI18n": {
-    //      "pull": false,
-    //      "push": false,
-    //      "delete": false
-    //    },
-    //    "SpecificValue": {
-    //      "pull": false,
-    //      "push": false,
-    //      "delete": false
-    //    },
-    //    "SpecificValueI18n": {
-    //      "pull": false,
-    //      "push": false,
-    //      "delete": false
-    //    },
-    //    "StatusChange": {
-    //      "pull": false,
-    //      "push": true,
-    //      "delete": false
-    //    },
+    "ShippingMethod": {
+      "pull": false,
+      "push": false,
+      "delete": false
+    },
+    "Specific": {
+      "pull": false,
+      "push": false,
+      "delete": false
+    },
+    "SpecificI18n": {
+      "pull": false,
+      "push": false,
+      "delete": false
+    },
+    "SpecificValue": {
+      "pull": false,
+      "push": false,
+      "delete": false
+    },
+    "SpecificValueI18n": {
+      "pull": false,
+      "push": false,
+      "delete": false
+    },
+    "StatusChange": {
+      "pull": true,
+      "push": true,
+      "delete": false
+    },
     "TaxClass": {
       "pull": true,
       "push": false,
@@ -420,16 +420,16 @@
       "push": false,
       "delete": false
     },
-    //    "TaxZone": {
-    //      "pull": false,
-    //      "push": false,
-    //      "delete": false
-    //    },
-    //    "TaxZoneCountry": {
-    //      "pull": false,
-    //      "push": false,
-    //      "delete": false
-    //    },
+    "TaxZone": {
+      "pull": false,
+      "push": false,
+      "delete": false
+    },
+    "TaxZoneCountry": {
+      "pull": false,
+      "push": false,
+      "delete": false
+    },
     "Unit": {
       "pull": false,
       "push": false,
@@ -447,21 +447,21 @@
     }
   },
   "flags": {
-    //    "can_reactivate_customer_order": false,
-    //    "can_update_customer_order": false,
+    "can_reactivate_customer_order": false,
+    "can_update_customer_order": false,
     "category_images_supported": true,
     "config_group_images_supported": false,
-    //    "customer_order_partially_payable": false,
-    //    "free_field_supported": false,
+    "customer_order_partially_payable": false,
+    "free_field_supported": false,
     "manufacturer_images_supported": true,
-    //    "needs_finish_call": false,
+    "needs_finish_call": false,
     "product_images_supported": true,
-    //    "product_variation_value_images_supported": false,
-    //    "set_articles_supported": false,
-    //"specific_images_supported": false,
-    //"specific_value_images_supported": true,
-    //    "var_combination_child_first": false,
+    "product_variation_value_images_supported": false,
+    "set_articles_supported": false,
+    "specific_images_supported": false,
+    "specific_value_images_supported": false,
+    "var_combination_child_first": true,
     "variation_combinations_supported": true,
-    //    "variation_products_supported": false
+    "variation_products_supported": false
   }
 }

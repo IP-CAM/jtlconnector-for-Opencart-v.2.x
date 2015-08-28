@@ -11,7 +11,6 @@ class Category extends BaseMapper
     protected $pull = [
         'id' => 'category_id',
         'parentCategoryId' => 'parent_id',
-        'level' => 'column',
         'isActive' => 'status',
         'sort' => 'sort_order',
         'i18ns' => 'CategoryI18n'
@@ -19,18 +18,9 @@ class Category extends BaseMapper
 
     protected $push = [
         'category_id' => 'id',
-        'parent_id' => null,
-        'column' => 'level',
+        'parent_id' => 'parentCategoryId',
         'status' => 'isActive',
         'sort_order' => 'sort',
         'CategoryI18n' => 'i18ns'
     ];
-
-    protected function parent_id($data)
-    {
-        // TODO: Implementation based on OpenCart Model or not.
-        //$parent = $data->getParentCategoryId()->getEndpoint();
-        //return empty($parent) ? 0 : $parent;
-    }
-
 }

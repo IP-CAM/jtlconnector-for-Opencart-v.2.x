@@ -36,8 +36,12 @@ class Db
 
     public function queryOne($query)
     {
-        $result = mysqli_fetch_row(mysqli_query($this->db->DB(), $query))[0];
-        return $result;
+        $return = 0;
+        $result = mysqli_query($this->db->DB(), $query);
+        if ($result !== false) {
+            $return = mysqli_fetch_row($result)[0];
+        }
+        return $return;
     }
 
     public function insert($obj, $table)

@@ -42,15 +42,6 @@ class Connector extends Controller
         ];
 
         foreach ($mainControllers as $mainController) {
-            /*try {
-                $controller = Mmc::getController($mainController);
-                $result = $controller->statistic($queryFilter);
-                if ($result !== null && $result->isHandled() && !$result->isError()) {
-                    $results[] = $result->getResult();
-                }
-            } catch (\Exception $exc) {
-                Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
-            }*/
             $class = Constants::CONTROLLER_NAMESPACE . $mainController;
             if (class_exists($class)) {
                 try {
