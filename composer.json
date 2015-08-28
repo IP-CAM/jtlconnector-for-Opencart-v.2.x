@@ -1,14 +1,14 @@
 {
   "name": "jtl/connector/opencart",
   "type": "APP",
-  "description": "OpenCart Connector",
+  "description": "OpenCart Connector based on jtl/connector",
   "keywords": [
     "jtl",
     "connector",
-    "example"
+    "OpenCart"
   ],
   "homepage": "http://www.jtl-software.de",
-  "license": "LGPL",
+  "license": "GPL",
   "authors": [
     {
       "name": "Sven Mäurer",

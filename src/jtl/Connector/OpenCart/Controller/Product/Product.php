@@ -41,6 +41,12 @@ class Product extends MainEntityController
 
     protected function getStats()
     {
-        // TODO: Implement getStats() method.
+        return $this->database->queryOne(sprintf('
+			SELECT COUNT(*)
+			FROM oc_product p
+			LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_PRODUCT
+        ));
     }
 }

@@ -6,9 +6,9 @@
 
 namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
-use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Controller\MainEntityController;
 
-class GlobalData extends BaseController
+class GlobalData extends MainEntityController
 {
 
     public function pullData($data, $model, $limit = null)
@@ -25,5 +25,15 @@ class GlobalData extends BaseController
     protected function pushData($data, $model)
     {
         // TODO: Implement pushData() method.
+    }
+
+    protected function deleteData($data, $model)
+    {
+        // TODO: Implement deleteData() method.
+    }
+
+    protected function getStats()
+    {
+        // TODO: Implement getStats() method.
     }
 }

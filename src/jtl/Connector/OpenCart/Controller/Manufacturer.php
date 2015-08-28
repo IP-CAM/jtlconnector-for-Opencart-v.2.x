@@ -39,7 +39,7 @@ class Manufacturer extends MainEntityController
 
     protected function getStats()
     {
-        return $this->database->query(sprintf('
+        return $this->database->queryOne(sprintf('
 			SELECT COUNT(*)
 			FROM oc_manufacturer m
 			LEFT JOIN jtl_connector_link l ON m.manufacturer_id = l.endpointId AND l.type = %d
