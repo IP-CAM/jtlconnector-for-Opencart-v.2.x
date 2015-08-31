@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright 2010-2013 JTL-Software GmbH
+ * @package jtl\Connector\OpenCart\Controller\Order
+ */
 
 namespace jtl\Connector\OpenCart\Controller\Order;
 

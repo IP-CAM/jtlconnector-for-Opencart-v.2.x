@@ -16,11 +16,18 @@ class Currency extends BaseMapper
         'factor' => 'value',
         'name' => 'title',
         'iso' => 'code',
-        'hasCurrencySignBeforeValue' => null
+        'hasCurrencySignBeforeValue' => null,
+        'nameHTML' => null
     ];
 
     protected function hasCurrencySignBeforeValue($data)
     {
         return isset($data['symbol_left']);
+    }
+
+    protected function nameHTML($data)
+    {
+        $symbol = (isset($data['symbol_left'])) ? $data['symbol_left'] : $data['symbol_right'];
+        return html_entity_decode($symbol);
     }
 }

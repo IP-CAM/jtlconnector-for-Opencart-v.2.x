@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Mapper
+ * @package jtl\Connector\OpenCart\Mapper\Order
  */
 
 namespace jtl\Connector\OpenCart\Mapper\Order;
@@ -12,6 +12,7 @@ class CustomerOrder extends I18nBaseMapper
 {
     protected $pull = [
         'id' => 'order_id',
+        'orderNumber' => 'order_id',
         'customerId' => 'customer_id',
         'billingAddress' => 'Order\CustomerOrderBillingAddress',
         'creationDate' => 'date_added',
@@ -22,8 +23,6 @@ class CustomerOrder extends I18nBaseMapper
         'totalSum' => 'total',
         // TODO: Error
         'items' => 'Order\CustomerOrderItem',
-        // TODO: invoice_no und invoice_prefix
-        // 'order_no' => '',
         // History ?
         //'paymentDate' => 'DateTime',
         // See PaymentTypes ?

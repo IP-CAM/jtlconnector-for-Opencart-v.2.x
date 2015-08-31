@@ -1,8 +1,9 @@
 <?php
 
-namespace jtl\Connector\OpenCart\Tests\Mapper;
+namespace jtl\Connector\OpenCart\Tests\Mapper\GlobalData;
 
 use jtl\Connector\OpenCart\Mapper\GlobalData\Currency;
+use jtl\Connector\OpenCart\Tests\Mapper\AbstractMapper;
 
 class CurrencyTest extends AbstractMapper
 {

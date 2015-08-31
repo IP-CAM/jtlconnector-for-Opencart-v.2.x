@@ -14,8 +14,8 @@ use jtl\Connector\OpenCart\Utility\Db;
 
 abstract class BaseMapper extends Singleton
 {
-    private $model = null;
-    private $type = null;
+    protected $model = null;
+    protected $type = null;
     protected $database = null;
     protected $endpointModel = null;
     protected $push = [];

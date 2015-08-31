@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Sven
- * Date: 19.08.2015
- * Time: 12:35
+ * @copyright 2010-2013 JTL-Software GmbH
+ * @package jtl\Connector\OpenCart\Controller\GlobalData
  */
 
 namespace jtl\Connector\OpenCart\Controller\GlobalData;
