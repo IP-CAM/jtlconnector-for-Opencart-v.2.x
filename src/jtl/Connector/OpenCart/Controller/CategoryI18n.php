@@ -1,14 +1,16 @@
 <?php
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Core\Model\DataModel;
+
 class CategoryI18n extends BaseController
 {
-    public function pullData($data, $model, $limit = null)
+    public function pullData(DataModel $data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $model);
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(DataModel $data, $limit = null)
     {
         return sprintf('
             SELECT c.*, l.code
@@ -19,7 +21,7 @@ class CategoryI18n extends BaseController
         );
     }
 
-    public function pushData($data, $model)
+    public function pushData(DataModel $data, $model)
     {
         return $this->mapper->toEndpoint($data);
     }

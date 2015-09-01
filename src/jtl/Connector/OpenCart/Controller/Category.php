@@ -6,18 +6,19 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\Linker\IdentityLinker;
 
 class Category extends MainEntityController
 {
     private static $idCache = [];
 
-    public function pullData($data, $model, $limit = null)
+    public function pullData(DataModel $data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $model, $limit);
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(DataModel $data, $limit = null)
     {
         return sprintf('
             SELECT c.*
@@ -29,7 +30,7 @@ class Category extends MainEntityController
         );
     }
 
-    public function pushData($data, $model)
+    public function pushData(DataModel $data, $model)
     {
         /*$category = OpenCart::getInstance()->loadModel('catalog/category');
 
@@ -60,7 +61,7 @@ class Category extends MainEntityController
         return $data;*/
     }
 
-    protected function deleteData($data, $model)
+    protected function deleteData(DataModel $data, $model)
     {
         /*$id = intval($data->getId()->getEndpoint());
         $category = OpenCart::getInstance()->loadModel('catalog/category');

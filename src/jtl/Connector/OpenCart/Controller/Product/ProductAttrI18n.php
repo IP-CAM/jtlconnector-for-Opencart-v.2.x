@@ -2,11 +2,12 @@
 
 namespace jtl\Connector\OpenCart\Controller\Product;
 
+use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\OpenCart\Controller\BaseController;
 
 class ProductAttrI18n extends BaseController
 {
-    public function pullData($data, $model, $limit = null)
+    public function pullData(DataModel $data, $model, $limit = null)
     {
         $return = [];
         $query = $this->pullQuery($data);
@@ -19,7 +20,7 @@ class ProductAttrI18n extends BaseController
         return $return;
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(DataModel $data, $limit = null)
     {
         return sprintf('
             SELECT ad.name, l.code, ad.attribute_id

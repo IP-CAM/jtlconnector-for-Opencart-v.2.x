@@ -6,12 +6,13 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\Model\CrossSellingItem as CrossSellingItemModel;
 use jtl\Connector\Model\Identity;
 
 class CrossSellingItem extends BaseController
 {
-    public function pullData($data, $model, $limit = null)
+    public function pullData(DataModel $data, $model, $limit = null)
     {
         $query = $this->pullQuery($data, $limit);
         $result = $this->database->query($query);
@@ -25,7 +26,7 @@ class CrossSellingItem extends BaseController
         return [$model];
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(DataModel $data, $limit = null)
     {
         return sprintf('
             SELECT related_id

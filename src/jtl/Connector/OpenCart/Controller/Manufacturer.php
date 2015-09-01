@@ -6,16 +6,17 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\Linker\IdentityLinker;
 
 class Manufacturer extends MainEntityController
 {
-    public function pullData($data, $model, $limit = null)
+    public function pullData(DataModel $data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $model, $limit);
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(DataModel $data, $limit = null)
     {
         return sprintf('
             SELECT m.*
@@ -27,12 +28,12 @@ class Manufacturer extends MainEntityController
         );
     }
 
-    public function pushData($data, $model)
+    public function pushData(DataModel $data, $model)
     {
         // TODO: Implement pushData() method.
     }
 
-    protected function deleteData($data, $model)
+    protected function deleteData(DataModel $data, $model)
     {
         // TODO: Implement deleteData() method.
     }
