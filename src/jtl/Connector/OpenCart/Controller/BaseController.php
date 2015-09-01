@@ -111,7 +111,7 @@ abstract class BaseController extends Controller
         return $action;
     }
 
-    public function pullDataDefault(DataModel $data, $model, $limit = null)
+    public function pullDataDefault($data, $model, $limit = null)
     {
         $return = [];
         $query = $this->pullQuery($data, $limit);
@@ -126,21 +126,19 @@ abstract class BaseController extends Controller
     /**
      * Called on a pull on the main model controllers including their sub model controllers.
      *
-     * @param $data  DataModel  For sub models their parent models data.
-     * @param $model object     For sub models their parent model.
-     * @param $limit integer    The limit.
-     *
+     * @param $data  array  For sub models their parent models data.
+     * @param $model object For sub models their parent model.
+     * @param $limit int    The limit.
      * @return array A list of models resulting from the pull query.
      */
-    public abstract function pullData(DataModel $data, $model, $limit = null);
+    public abstract function pullData($data, $model, $limit = null);
 
     /**
      * Just return the query for the the pulling of data.
      *
-     * @param $data  DataModel  The data.
-     * @param $limit integer    The limit.
-     *
+     * @param $data  array The data.
+     * @param $limit int   The limit.
      * @return string The query.
      */
-    protected abstract function pullQuery(DataModel $data, $limit = null);
+    protected abstract function pullQuery($data, $limit = null);
 }

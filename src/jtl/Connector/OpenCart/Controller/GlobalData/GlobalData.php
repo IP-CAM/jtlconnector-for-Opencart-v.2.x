@@ -6,19 +6,18 @@
 
 namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
-use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class GlobalData extends BaseController
 {
-    public function pullData(DataModel $data, $model, $limit = null)
+    public function pullData($data, $model, $limit = null)
     {
         $model = $this->mapper->toHost([]);
         return [$model];
     }
 
-    protected function pullQuery(DataModel $data, $limit = null)
+    protected function pullQuery($data, $limit = null)
     {
         throw new OperationNotPermitedException("Just pull the different global data childs.");
     }

@@ -6,7 +6,6 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\Drawing\ImageRelationType;
 use jtl\Connector\Linker\IdentityLinker;
 use Symfony\Component\Finder\Exception\OperationNotPermitedException;
@@ -20,7 +19,7 @@ class Image extends MainEntityController
         'specificValuePullQuery' => ImageRelationType::TYPE_SPECIFIC_VALUE
     ];
 
-    public function pullData(DataModel $data, $model, $limit = null)
+    public function pullData($data, $model, $limit = null)
     {
         $return = [];
         reset($this->methods);
@@ -98,17 +97,17 @@ class Image extends MainEntityController
         );
     }
 
-    protected function pullQuery(DataModel $data, $limit = null)
+    protected function pullQuery($data, $limit = null)
     {
         throw new OperationNotPermitedException("Use the queries for the specific types.");
     }
 
-    protected function pushData(DataModel $data, $model)
+    protected function pushData($data, $model)
     {
         // TODO: Implement pushData() method.
     }
 
-    protected function deleteData(DataModel $data, $model)
+    protected function deleteData($data, $model)
     {
         switch ($data->getRelationType()) {
             case ImageRelationType::TYPE_PRODUCT:

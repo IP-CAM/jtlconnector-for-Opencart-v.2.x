@@ -6,17 +6,16 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\Linker\IdentityLinker;
 
 class CrossSelling extends MainEntityController
 {
-    public function pullData(DataModel $data, $model, $limit = null)
+    public function pullData($data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $model, $limit);
     }
 
-    protected function pullQuery(DataModel $data, $limit = null)
+    protected function pullQuery($data, $limit = null)
     {
         return sprintf('
             SELECT DISTINCT pr.product_id
@@ -28,12 +27,12 @@ class CrossSelling extends MainEntityController
         );
     }
 
-    protected function pushData(DataModel $data, $model)
+    protected function pushData($data, $model)
     {
         // TODO: Implement pushData() method.
     }
 
-    protected function deleteData(DataModel $data, $model)
+    protected function deleteData($data, $model)
     {
         $id = $data->getProductId()->getEndpoint();
         if (!is_null($id)) {

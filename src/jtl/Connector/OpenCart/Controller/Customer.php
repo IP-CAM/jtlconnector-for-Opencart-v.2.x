@@ -6,18 +6,17 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\OpenCart\Utility\OpenCart;
 
 class Customer extends MainEntityController
 {
-    public function pullData(DataModel $data, $model, $limit = null)
+    public function pullData($data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $model, $limit);
     }
 
-    protected function pullQuery(DataModel $data, $limit = null)
+    protected function pullQuery($data, $limit = null)
     {
         return sprintf('
             SELECT c.*, a.company, a.address_1, a.city, a.postcode, a.country_id, co.iso_code_2, co.name
@@ -31,12 +30,12 @@ class Customer extends MainEntityController
         );
     }
 
-    protected function pushData(DataModel $data, $model)
+    protected function pushData($data, $model)
     {
         // TODO: Implement pushData() method.
     }
 
-    protected function deleteData(DataModel $data, $model)
+    protected function deleteData($data, $model)
     {
         $customer = OpenCart::getInstance()->loadModel('sale/customer');
         $customer->deleteCustomer($data->getId()->getEndpoint());
