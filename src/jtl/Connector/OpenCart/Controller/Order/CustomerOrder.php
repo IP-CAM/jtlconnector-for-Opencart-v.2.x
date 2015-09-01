@@ -6,18 +6,19 @@
 
 namespace jtl\Connector\OpenCart\Controller\Order;
 
+use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
 use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class CustomerOrder extends MainEntityController
 {
-    public function pullData($data, $model, $limit = null)
+    public function pullData(DataModel $data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $model, $limit);
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(DataModel $data, $limit = null)
     {
         return sprintf('
             SELECT o.*, l.code, c.iso_code_3
@@ -31,16 +32,6 @@ class CustomerOrder extends MainEntityController
         );
     }
 
-    protected function pushData($data, $model)
-    {
-        throw new OperationNotPermitedException("Orders should after pulling be handled in the Wawi.");
-    }
-
-    protected function deleteData($data, $model)
-    {
-        throw new OperationNotPermitedException("Orders should after pulling be handled in the Wawi.");
-    }
-
     protected function getStats()
     {
         return $this->database->queryOne(sprintf('
@@ -50,5 +41,15 @@ class CustomerOrder extends MainEntityController
             WHERE l.hostId IS NULL',
             IdentityLinker::TYPE_CUSTOMER_ORDER
         ));
+    }
+
+    protected function pushData(DataModel $data, $model)
+    {
+        throw new OperationNotPermitedException("Orders should after pulling be handled in the Wawi.");
+    }
+
+    protected function deleteData(DataModel $data, $model)
+    {
+        throw new OperationNotPermitedException("Orders should after pulling be handled in the Wawi.");
     }
 }

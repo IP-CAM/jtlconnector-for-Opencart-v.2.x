@@ -10,6 +10,9 @@ use jtl\Connector\OpenCart\Mapper\I18nBaseMapper;
 
 class CustomerOrder extends I18nBaseMapper
 {
+    const SHIPPING_ID_SUFFIX = "_s";
+    const BILLING_ID_SUFFIX = "_b";
+
     protected $pull = [
         'id' => 'order_id',
         'orderNumber' => 'order_id',
@@ -21,7 +24,6 @@ class CustomerOrder extends I18nBaseMapper
         'note' => 'comment',
         'shippingAddress' => 'Order\CustomerOrderShippingAddress',
         'totalSum' => 'total',
-        // TODO: Error
         'items' => 'Order\CustomerOrderItem',
         // History ?
         //'paymentDate' => 'DateTime',

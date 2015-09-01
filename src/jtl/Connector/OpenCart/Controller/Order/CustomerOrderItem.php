@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller\Order;
 
+use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemDiscountMapper;
@@ -27,7 +28,7 @@ class CustomerOrderItem extends BaseController
         $this->discountMapper = new OrderItemDiscountMapper();
     }
 
-    public function pullData($data, $model, $limit = null)
+    public function pullData(DataModel $data, $model, $limit = null)
     {
         $return = [];
         $orderItemId = 1;
@@ -55,7 +56,7 @@ class CustomerOrderItem extends BaseController
         return $return;
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(DataModel $data, $limit = null)
     {
         throw new OperationNotPermitedException("Use specific pull methods.");
     }
