@@ -31,28 +31,28 @@
       "delete": false
     },
     "ConfigGroup": {
-      "pull": false,
-      "push": false,
+      "pull": true,
+      "push": true,
       "delete": false
     },
     "ConfigGroupI18n": {
-      "pull": false,
-      "push": false,
+      "pull": true,
+      "push": true,
       "delete": false
     },
     "ConfigItem": {
-      "pull": false,
-      "push": false,
+      "pull": true,
+      "push": true,
       "delete": false
     },
     "ConfigItemI18n": {
-      "pull": false,
-      "push": false,
+      "pull": true,
+      "push": true,
       "delete": false
     },
     "ConfigItemPrice": {
-      "pull": false,
-      "push": false,
+      "pull": true,
+      "push": true,
       "delete": false
     },
     "CrossSelling": {
@@ -92,7 +92,7 @@
     },
     "CustomerGroup": {
       "pull": true,
-      "push": false,
+      "push": true,
       "delete": false
     },
     "CustomerGroupAttr": {
@@ -102,7 +102,7 @@
     },
     "CustomerGroupI18n": {
       "pull": true,
-      "push": false,
+      "push": true,
       "delete": false
     },
     "CustomerGroupPackagingQuantity": {
@@ -131,7 +131,7 @@
       "delete": false
     },
     "CustomerOrderItemVariation": {
-      "pull": false,
+      "pull": true,
       "push": false,
       "delete": false
     },
@@ -321,8 +321,8 @@
       "delete": false
     },
     "ProductVarCombination": {
-      "pull": true,
-      "push": true,
+      "pull": false,
+      "push": false,
       "delete": false
     },
     "ProductVariation": {
@@ -406,8 +406,8 @@
       "delete": false
     },
     "StatusChange": {
-      "pull": true,
-      "push": true,
+      "pull": false,
+      "push": false,
       "delete": false
     },
     "TaxClass": {
@@ -460,8 +460,8 @@
     "set_articles_supported": false,
     "specific_images_supported": false,
     "specific_value_images_supported": false,
-    "var_combination_child_first": true,
-    "variation_combinations_supported": true,
-    "variation_products_supported": false
+    "var_combination_child_first": false,
+    "variation_combinations_supported": false,
+    "variation_products_supported": true
   }
 }
