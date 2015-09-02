@@ -23,7 +23,7 @@ class CategoryI18nTest extends AbstractMapper
             'categoryId' => 1,
             'name' => 'English Product Name',
             'description' => 'This is a description.',
-            'languageISO' => 'EN',
+            'languageISO' => 'eng',
             'metaDescription' => 'This is a meta description.',
             'metaKeywords' => 'These are meta keywords.'
         ];
@@ -46,8 +46,7 @@ class CategoryI18nTest extends AbstractMapper
         $this->assertEquals($this->host['categoryId'], $result->getCategoryId()->getEndpoint());
         $this->assertEquals($this->host['name'], $result->getName());
         $this->assertEquals($this->host['description'], $result->getDescription());
-        // TODO: Code and language are both not working
-        //$this->assertEquals($this->host['languageISO'], $result->getLanguageISO());
+        $this->assertEquals($this->host['languageISO'], $result->getLanguageISO());
         $this->assertEquals($this->host['metaDescription'], $result->getMetaDescription());
         $this->assertEquals($this->host['metaKeywords'], $result->getMetaKeywords());
         // Default values

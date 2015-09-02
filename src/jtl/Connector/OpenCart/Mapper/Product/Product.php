@@ -54,8 +54,6 @@ class Product extends BaseMapper
         'i18ns' => 'Product\ProductI18n',
         'prices' => 'Product\ProductPrice',
         'specialPrices' => 'Product\ProductSpecialPrice',
-//        'specifics' => '\jtl\Connector\Model\ProductSpecific',
-        'varCombinations' => 'Product\ProductVarCombination',
         'variations' => 'Product\ProductVariation'
     ];
 }

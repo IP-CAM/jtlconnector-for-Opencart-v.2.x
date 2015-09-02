@@ -20,6 +20,7 @@ class CurrencyTest extends AbstractMapper
             'factor' => 0.98,
             'name' => 'Swiss Francs',
             'iso' => 'CHF',
+            'nameHTML' => 'CHF',
             'hasCurrencySignBeforeValue' => false
         ];
     }
@@ -31,6 +32,7 @@ class CurrencyTest extends AbstractMapper
             'value' => 0.98,
             'title' => 'Swiss Francs',
             'code' => 'CHF',
+            'symbol_right' => 'CHF',
             'hasCurrencySignBeforeValue' => false
         ];
     }
@@ -41,10 +43,10 @@ class CurrencyTest extends AbstractMapper
         $this->assertEquals($this->host['factor'], $result->getFactor());
         $this->assertEquals($this->host['name'], $result->getName());
         $this->assertEquals($this->host['iso'], $result->getISO());
+        $this->assertEquals($this->host['nameHTML'], $result->getNameHTML());
         $this->assertEquals($this->host['hasCurrencySignBeforeValue'], $result->getHasCurrencySignBeforeValue());
         // Default values
         $this->assertFalse($result->getIsDefault());
-        $this->assertEmpty($result->getNameHTML());
         $this->assertEmpty($result->getDelimiterThousand());
         $this->assertEmpty($result->getDelimiterCent());
     }

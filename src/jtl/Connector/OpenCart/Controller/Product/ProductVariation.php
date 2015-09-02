@@ -14,8 +14,9 @@ class ProductVariation extends BaseController
     {
         return sprintf('
             SELECT *
-            FROM oc_product_option
-            WHERE product_id = %d',
+            FROM oc_product_option po
+            LEFT JOIN oc_option o ON po.option_id = o.option_id
+            WHERE po.product_id = %d AND o.type NOT IN ("checkbox", "file");',
             $data['product_id']
         );
     }

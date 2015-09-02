@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller\Order;
 
-use jtl\Connector\Core\Model\DataModel;
+use jtl\Connector\Model\CustomerOrderItem as COI;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemDiscountMapper;
@@ -16,9 +16,13 @@ use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class CustomerOrderItem extends BaseController
 {
+    const TYPE_METHODS = [COI::TYPE_PRODUCT, COI::TYPE_SHIPPING, COI::TYPE_DISCOUNT];
+
     private $productMapper;
     private $shippingMapper;
     private $discountMapper;
+    private $orderId;
+    private $tax;
 
     public function __construct()
     {
@@ -28,35 +32,33 @@ class CustomerOrderItem extends BaseController
         $this->discountMapper = new OrderItemDiscountMapper();
     }
 
-    public function pullData(DataModel $data, $model, $limit = null)
+    public function pullData($data, $model, $limit = null)
     {
+        $this->orderId = $data['order_id'];
+        $this->tax = doubleval($this->getTax($this->orderId));
         $return = [];
         $orderItemId = 1;
-        $orderId = $data['order_id'];
-        $tax = doubleval($this->getTax($orderId));
-        $products = $this->pullProducts($orderId);
-        foreach ($products as $product) {
-            $item = $this->productMapper->toHost($product);
-            $item->setId(new Identity($orderId . '_' . $orderItemId++));
-            $item->setVat($tax);
-            $return[] = $item;
-        }
-        $products = $this->pullShippings($orderId);
-        foreach ($products as $product) {
-            $item = $this->shippingMapper->toHost($product);
-            $item->setId(new Identity($orderId . '_' . $orderItemId++));
-            $item->setVat($tax);
-            $return[] = $item;
-        }
-        $products = $this->pullDiscounts($orderId);
-        foreach ($products as $product) {
-            $product['id'] = $orderId . '_' . $orderItemId++;
-            $return[] = $this->discountMapper->toHost($product);
+        foreach (self::TYPE_METHODS as $type) {
+            $items = $this->{'pull' . ucfirst($type) . 's'}($this->orderId);
+            foreach ($items as $item) {
+                $return[] = $this->mapItem($type, $item, $orderItemId++);
+            }
         }
         return $return;
     }
 
-    protected function pullQuery(DataModel $data, $limit = null)
+    private function mapItem($type, $item, $id)
+    {
+        $item['order_item_id'] = $this->orderId . '_' . $id;
+        $result = $this->{$type . 'Mapper'}->toHost($item);
+        $result->setId(new Identity($this->orderId . '_' . $id));
+        if ($type != COI::TYPE_DISCOUNT) {
+            $result->setVat($this->tax);
+        }
+        return $result;
+    }
+
+    protected function pullQuery($data, $limit = null)
     {
         throw new OperationNotPermitedException("Use specific pull methods.");
     }

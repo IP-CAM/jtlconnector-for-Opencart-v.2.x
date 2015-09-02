@@ -15,11 +15,11 @@ use jtl\Connector\Type\CustomerOrderItem as CustomerOrderItemType;
 class OrderItemShippingMapper extends BaseMapper
 {
     protected $pull = [
+        'id' => 'order_item_id',
         'customerOrderId' => 'order_id',
         'name' => 'title',
         'price' => 'value',
         'quantity' => null,
-        'vat' => 'vat',
         'type' => null
     ];
 

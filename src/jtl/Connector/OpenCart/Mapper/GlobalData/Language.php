@@ -14,7 +14,6 @@ class Language extends BaseMapper
         'id' => 'language_id',
         'isDefault' => null,
         'languageISO' => 'code',
-        'nameEnglish' => 'name',
         'nameGerman' => 'name'
     ];
 

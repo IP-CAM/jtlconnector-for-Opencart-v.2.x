@@ -15,16 +15,15 @@ use jtl\Connector\Type\CustomerOrderItem as CustomerOrderItemType;
 class OrderItemProductMapper extends BaseMapper
 {
     protected $pull = [
+        'id' => 'order_item_id',
         'customerOrderId' => 'order_id',
         'productId' => 'product_id',
         'name' => 'name',
         'price' => 'price',
         'quantity' => 'quantity',
-        'vat' => 'tax',
         'sku' => 'sku',
         'type' => null,
-        //TODO
-        //'variations' => '\jtl\Connector\Model\CustomerOrderItemVariation'
+        'variations' => 'Order\CustomerOrderItemVariation'
     ];
 
     public function __construct()

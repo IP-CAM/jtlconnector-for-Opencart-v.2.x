@@ -67,8 +67,8 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
     {
         $query = sprintf('
             INSERT INTO jtl_connector_link (endpointId, hostId, type)
-            VALUES (%s, %s, %s)',
-            $endpointId, $hostId, $type
+            VALUES ("%s", %s, %s)',
+            (string)$endpointId, $hostId, $type
         );
         $id = $this->db->query($query);
         return $id !== false;
