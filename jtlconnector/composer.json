@@ -1,0 +1,41 @@
+{
+  "name": "jtl/connector/opencart",
+  "type": "APP",
+  "description": "OpenCart Connector based on jtl/connector",
+  "keywords": [
+    "jtl",
+    "connector",
+    "OpenCart"
+  ],
+  "homepage": "http://www.jtl-software.de",
+  "license": "GPL",
+  "authors": [
+    {
+      "name": "Sven Mäurer",
+      "email": "sven.maeurer@jtl-software.com",
+      "homepage": "http://www.jtl-software.de",
+      "role": "Developer"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://gitlab.jtl-software.de/jtl-software-gmbh/jtlconnector.git",
+      "reference": "origin/master"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "jtl/connector": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.8.*"
+  },
+  "autoload": {
+    "psr-0": {
+      "jtl\\Connector\\OpenCart\\": "src/",
+      "jtl\\Connector\\OpenCart\\Tests\\": "tests/",
+      "": "plugins/"
+    }
+  }
+}

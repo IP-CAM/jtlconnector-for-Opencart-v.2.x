@@ -1,0 +1,25 @@
+<?php
+
+namespace jtl\Connector\OpenCart\Mapper\Product;
+
+use jtl\Connector\OpenCart\Mapper\BaseMapper;
+
+class ProductVariationValue extends BaseMapper
+{
+    protected $pull = [
+        'id' => 'product_option_value_id',
+        'productVariationId' => 'product_option_id',
+        'extraWeight' => null,
+        'stockLevel' => 'quantity',
+        'i18ns' => 'Product\ProductVariationValueI18n',
+        'extraCharges' => 'Product\ProductVariationValueExtraCharge'
+    ];
+
+    protected function extraWeight($data)
+    {
+        if ($data['weight_prefix'] == '+') {
+            return doubleval($data['weight']);
+        }
+        return 0.0;
+    }
+}
