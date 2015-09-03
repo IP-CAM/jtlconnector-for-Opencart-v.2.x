@@ -31,7 +31,7 @@ class Product extends MainEntityController
 
     protected function pushData($data, $model)
     {
-        // TODO: Implement pushData() method.
+
     }
 
     protected function deleteData($data, $model)

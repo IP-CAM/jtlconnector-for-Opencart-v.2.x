@@ -6,7 +6,10 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-class Specific extends BaseMapper
+class FileUpload extends BaseMapper
 {
-
+    protected $pull = [
+        'id' => 'upload_id',
+        'productId' => 'product_id'
+    ];
 }

@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\OpenCart\Utility\OpenCart;
 
 class Category extends MainEntityController
 {
@@ -31,10 +32,15 @@ class Category extends MainEntityController
 
     public function pushData($data, $model)
     {
-        /*$category = OpenCart::getInstance()->loadModel('catalog/category');
+        /*require_once(Path::combine(CONNECTOR_DIR, '..', 'system', 'engine', 'model.php'));
+        require_once(Path::combine(CONNECTOR_DIR, '..', 'admin', 'model', 'catalog', 'category.php'));
 
+        $category = new \ModelCatalogCategory(null);
+        */
+
+        $category = OpenCart::getInstance()->loadModel('catalog/category');
         //die(var_dump($this->mapper->toEndpoint($data)));
-
+        /*
         if (isset(static::$idCache[$data->getParentCategoryId()->getHost()])) {
             $data->getParentCategoryId()->setEndpoint(static::$idCache[$data->getParentCategoryId()->getHost()]);
         }
@@ -62,12 +68,9 @@ class Category extends MainEntityController
 
     protected function deleteData($data, $model)
     {
-        /*$id = intval($data->getId()->getEndpoint());
         $category = OpenCart::getInstance()->loadModel('catalog/category');
-        $reflection = new ReflectionObject($category);
-        var_dump($reflection->getMethods());
-        $category->deleteCategory($id);
-        return $data;*/
+        $category->deleteCategory(intval($data->getId()->getEndpoint()));
+        return $data;
     }
 
     protected function getStats()

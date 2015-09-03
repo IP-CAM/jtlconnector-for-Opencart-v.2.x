@@ -52,7 +52,7 @@ class OpenCart extends Singleton
         // Event
         $event = new \Event($this->registry);
         $this->registry->set('event', $event);
-        $query = $database->query("SELECT * FROM " . DB_PREFIX . "event");
+        $query = $database->query("SELECT * FROM " . DB_PREFIX . "EVENT");
         foreach ($query->rows as $result) {
             $event->register($result['trigger'], $result['action']);
         }
@@ -60,7 +60,17 @@ class OpenCart extends Singleton
 
     public function loadModel($model)
     {
-        $this->loader->model($model);
+        $file = DIR_APPLICATION . 'model/' . $model . '.php';
+        $class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $model);
+
+        if (file_exists($file)) {
+            include_once($file);
+
+            $this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));
+        } else {
+            trigger_error('Error: Could not load model ' . $file . '!');
+            exit();
+        }
         return $this->registry->get('model_' . str_replace('/', '_', $model));
     }
 
