@@ -47,4 +47,9 @@ crashlytics-build.properties
 
 vendor/
 composer.lock
-plugins/
+plugins/*
+
+*
+!jtlconnector
+!admin/controller/module/jtlconnector.php
+!admin/view/template/module/jtlconnector.tpl
