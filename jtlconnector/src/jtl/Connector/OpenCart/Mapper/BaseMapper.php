@@ -83,7 +83,6 @@ abstract class BaseMapper extends Singleton
                     if (class_exists($subControllerName)) {
                         $subController = new $subControllerName();
                         $subController->pushData($data, $model);
-                        break;
                     }
                 } else {
                     if ($property->isIdentity()) {

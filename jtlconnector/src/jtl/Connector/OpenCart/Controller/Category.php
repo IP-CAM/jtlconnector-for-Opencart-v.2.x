@@ -36,7 +36,7 @@ class Category extends MainEntityController
             $id = $category->addCategory($endpoint);
             $data->getId()->setEndpoint($id);
         } else {
-            $category->editCategory($data->getId()->getEndpoint(), $this->mapper->toEndpoint($data));
+            $category->editCategory($data->getId()->getEndpoint(), $endpoint);
         }
         return $data;
     }

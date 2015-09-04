@@ -24,16 +24,27 @@ class Category extends BaseMapper
         'CategoryI18n' => 'i18ns',
         'category_store' => null,
         'top' => null,
+        'column' => null,
+        'keyword' => null
     ];
 
-    protected function category_store($data)
+    protected function category_store()
     {
         return [intval(0)];
     }
 
     protected function top($data)
     {
-        $parentId = $data->getParentCategoryId()->getHost();
-        return $parentId === 0;
+        return $data->getParentCategoryId()->getHost() === 0;
+    }
+
+    protected function column()
+    {
+        return 0;
+    }
+
+    protected function keyword()
+    {
+        return "";
     }
 }

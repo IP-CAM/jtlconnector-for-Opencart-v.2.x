@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\OpenCart\Utility\OpenCart;
 
 class Manufacturer extends MainEntityController
 {
@@ -29,12 +30,22 @@ class Manufacturer extends MainEntityController
 
     public function pushData($data, $model)
     {
-        // TODO: Implement pushData() method.
+        $manufacturer = OpenCart::getInstance()->loadModel('catalog/manufacturer');
+        $endpoint = $this->mapper->toEndpoint($data);
+        if (is_null($data->getId()->getEndpoint())) {
+            $id = $manufacturer->addManufacturer($endpoint);
+            $data->getId()->setEndpoint($id);
+        } else {
+            $manufacturer->editManufacturer($data->getId()->getEndpoint(), $endpoint);
+        }
+        return $data;
     }
 
     protected function deleteData($data, $model)
     {
-        // TODO: Implement deleteData() method.
+        $manufacturer = OpenCart::getInstance()->loadModel('catalog/manufacturer');
+        $manufacturer->deleteManufacturer(intval($data->getId()->getEndpoint()));
+        return $data;
     }
 
     protected function getStats()

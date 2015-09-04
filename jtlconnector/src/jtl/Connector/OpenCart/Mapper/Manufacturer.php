@@ -13,4 +13,10 @@ class Manufacturer extends BaseMapper
         'name' => 'name',
         'sort' => 'sort_order'
     ];
+
+    protected $push = [
+        'manufacturer_id' => 'id',
+        'name' => 'name',
+        'sort_order' => 'sort'
+    ];
 }

@@ -22,6 +22,12 @@ class CategoryI18n extends I18nBaseMapper
         'name' => 'name',
         'description' => 'description',
         'meta_description' => 'metaDescription',
-        'meta_keyword' => 'metaKeywords'
+        'meta_keyword' => 'metaKeywords',
+        'meta_title' => null
     ];
+
+    protected function meta_title($data)
+    {
+        return "";
+    }
 }
