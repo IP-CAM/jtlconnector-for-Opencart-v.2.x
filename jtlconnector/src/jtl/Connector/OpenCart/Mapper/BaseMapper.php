@@ -71,8 +71,9 @@ abstract class BaseMapper extends Singleton
         $model = [];
         foreach ($this->push as $endpoint => $host) {
             $fnName = strtolower($endpoint);
+            // Extra defined methods
             if (method_exists($this, $fnName)) {
-                $value = $this->$fnName($data, $customData);
+                $model[$endpoint] = $this->$fnName($data, $customData);
             } else {
                 $getter = 'get' . ucfirst($host);
                 $value = $data->$getter();
@@ -82,14 +83,17 @@ abstract class BaseMapper extends Singleton
                     if (class_exists($subControllerName)) {
                         $subController = new $subControllerName();
                         $subController->pushData($data, $model);
+                        break;
                     }
-                } elseif ($property->isIdentity()) {
-                    $value = $value->getEndpoint();
-                } elseif ($property->getType() == 'DateTime') {
-                    $value = $value === null ? '0000-00-00 00:00:00' : $value->format('Y-m-d H:i:s');
+                } else {
+                    if ($property->isIdentity()) {
+                        $value = $value->getEndpoint();
+                    } elseif ($property->getType() == 'DateTime') {
+                        $value = $value === null ? '0000-00-00 00:00:00' : $value->format('Y-m-d H:i:s');
+                    }
+                    $model[$endpoint] = $value;
                 }
             }
-            $model[$endpoint] = $value;
         }
         return $model;
     }

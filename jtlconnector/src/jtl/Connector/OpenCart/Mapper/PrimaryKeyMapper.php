@@ -46,10 +46,11 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      */
     public function getEndpointId($hostId, $type, $relationType = null)
     {
+        $relationType = (is_null($relationType)) ? $relationType : ' AND relationType = ' . $relationType;
         $query = sprintf('
             SELECT endpointId
             FROM jtl_connector_link
-            WHERE hostId = %s AND type = %s AND relationType = %s',
+            WHERE hostId = %s AND type = %s%s',
             $hostId, $type, $relationType
         );
         return $this->db->queryOne($query);

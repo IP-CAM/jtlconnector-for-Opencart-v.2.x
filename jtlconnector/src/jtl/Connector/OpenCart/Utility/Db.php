@@ -21,7 +21,7 @@ class Db
         $mysql = Mysql::getInstance();
         $mysql->connect([
             'host' => 'localhost',
-            'name' => 'opencart',
+            'name' => 'opencart_push',
             'user' => 'opencart',
             'password' => 'Z5U2hU2xxLXQZtGK'
         ]);
@@ -36,7 +36,7 @@ class Db
 
     public function queryOne($query)
     {
-        $return = 0;
+        $return = null;
         $result = mysqli_query($this->db->DB(), $query);
         if ($result !== false) {
             $return = mysqli_fetch_row($result)[0];

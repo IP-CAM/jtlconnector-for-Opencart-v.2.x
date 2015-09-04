@@ -23,6 +23,8 @@ function modification($filename)
     return $filename;
 }
 
+require_once(modification(DIR_SYSTEM . 'library/db.php'));
+require_once(modification(DIR_SYSTEM . 'library/db/mysqli.php'));
 require_once(modification(DIR_SYSTEM . 'library/cache.php'));
 require_once(modification(DIR_SYSTEM . 'library/cache/file.php'));
 require_once(modification(DIR_SYSTEM . 'library/config.php'));
@@ -43,7 +45,7 @@ class OpenCart extends Singleton
         $this->registry = new \Registry();
         $this->config = new \Config();
         $this->registry->set('config', $this->config);
-        $database = new DB(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+        $database = new \DB(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
         $this->registry->set('db', $database);
         $this->loader = new \Loader($this->registry);
         // Cache

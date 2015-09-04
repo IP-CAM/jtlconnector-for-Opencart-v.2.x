@@ -21,7 +21,6 @@ class CategoryI18n extends I18nBaseMapper
         'category_id' => 'categoryId',
         'name' => 'name',
         'description' => 'description',
-        'language' => 'languageISO',
         'meta_description' => 'metaDescription',
         'meta_keyword' => 'metaKeywords'
     ];

@@ -21,6 +21,19 @@ class Category extends BaseMapper
         'parent_id' => 'parentCategoryId',
         'status' => 'isActive',
         'sort_order' => 'sort',
-        'CategoryI18n' => 'i18ns'
+        'CategoryI18n' => 'i18ns',
+        'category_store' => null,
+        'top' => null,
     ];
+
+    protected function category_store($data)
+    {
+        return [intval(0)];
+    }
+
+    protected function top($data)
+    {
+        $parentId = $data->getParentCategoryId()->getHost();
+        return $parentId === 0;
+    }
 }
