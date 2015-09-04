@@ -86,20 +86,6 @@ class Connector extends BaseConnector
         $this->controller->setMethod($this->getMethod());
 
         if ($this->action === Method::ACTION_PUSH || $this->action === Method::ACTION_DELETE) {
-            if ($this->action === Method::ACTION_PUSH && $this->getMethod()->getController() === 'image') {
-                return $this->controller->{$this->action}($requestpacket->getParams());
-            }
-
-//            if ($this->action === Method::ACTION_PUSH && $this->getMethod()->getController() === 'product_price') {
-//                $params = $requestpacket->getParams();
-//                $result = $this->controller->update($params);
-//                $results[] = $result->getResult();
-//            } else {
-//                foreach ($requestpacket->getParams() as $param) {
-//                    $result = $this->controller->{$this->action}($param);
-//                    $results[] = $result->getResult();
-//                }
-//            }
 
             if (!is_array($requestpacket->getParams())) {
                 throw new \Exception("Expecting request array, invalid data given");
@@ -121,9 +107,8 @@ class Connector extends BaseConnector
             }
 
             return $action;
-        } else {
-            return $this->controller->{$this->action}($requestpacket->getParams());
         }
+        return $this->controller->{$this->action}($requestpacket->getParams());
     }
 
     /**

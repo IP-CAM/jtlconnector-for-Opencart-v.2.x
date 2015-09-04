@@ -91,7 +91,12 @@ class Image extends MainEntityController
 
     protected function pushData($data, $model)
     {
-        // TODO: Implement pushData() method.
+        return $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($data);
+    }
+
+    private function pushProductImage($data)
+    {
+
     }
 
     protected function deleteData($data, $model)
@@ -99,7 +104,18 @@ class Image extends MainEntityController
         switch ($data->getRelationType()) {
             case ImageRelationType::TYPE_PRODUCT:
                 $where = sprintf('WHERE product_image_id = %s', $data->getId()->getEndpoint());
-                $this->database->query(sprintf('DELETE FROM oc_product_image %s', $where));
+                $this->database->query(sprintf('
+                    DELETE FROM oc_product_image %s',
+                    $where
+                ));
+                // TODO: get image path
+                $image = null;
+                $this->database->query(sprintf('
+                    UPDATE oc_product
+                    SET image = NULL
+                    WHERE image = "%s"',
+                    $image
+                ));
                 break;
             case ImageRelationType::TYPE_CATEGORY:
                 $this->database->update($data, 'oc_category', 'image', null);
