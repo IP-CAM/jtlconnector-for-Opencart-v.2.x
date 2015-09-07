@@ -41,7 +41,7 @@ class Category extends MainEntityController
         return $data;
     }
 
-    protected function deleteData($data, $model)
+    protected function deleteData($data)
     {
         $category = OpenCart::getInstance()->loadModel('catalog/category');
         $category->deleteCategory(intval($data->getId()->getEndpoint()));

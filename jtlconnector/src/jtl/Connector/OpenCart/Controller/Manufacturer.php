@@ -41,7 +41,7 @@ class Manufacturer extends MainEntityController
         return $data;
     }
 
-    protected function deleteData($data, $model)
+    protected function deleteData($data)
     {
         $manufacturer = OpenCart::getInstance()->loadModel('catalog/manufacturer');
         $manufacturer->deleteManufacturer(intval($data->getId()->getEndpoint()));

@@ -2,19 +2,11 @@
 namespace jtl\Connector\OpenCart\Utility;
 
 use jtl\Connector\Core\Database\Mysql;
+use jtl\Connector\Core\Utilities\Singleton;
 
-class Db
+class Db extends Singleton
 {
-    private static $instance;
     private $db;
-
-    public static function getInstance()
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self;
-        }
-        return self::$instance;
-    }
 
     public function __construct()
     {

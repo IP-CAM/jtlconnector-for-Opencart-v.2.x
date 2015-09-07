@@ -6,15 +6,20 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
+use jtl\Connector\Core\Model\Model;
 use jtl\Connector\Core\Utilities\Singleton;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\OpenCart\Utility\Date;
 use jtl\Connector\OpenCart\Utility\Db;
+use jtl\Connector\Type\DataType;
 
 abstract class BaseMapper extends Singleton
 {
     protected $model = null;
+    /**
+     * @var $type DataType
+     */
     protected $type = null;
     protected $database = null;
     protected $endpointModel = null;
@@ -24,12 +29,17 @@ abstract class BaseMapper extends Singleton
     public function __construct()
     {
         $reflect = new \ReflectionClass($this);
-        $typeClass = "\\jtl\\Connector\\Type\\{$reflect->getShortName()}";
+        $shortName = $reflect->getShortName();
+        $typeClass = "\\jtl\\Connector\\Type\\{$shortName}";
         $this->database = DB::getInstance();
-        $this->model = Constants::CORE_MODEL_NAMESPACE . $reflect->getShortName();
+        $this->model = Constants::CORE_MODEL_NAMESPACE . $shortName;
         $this->type = new $typeClass();
     }
 
+    /**
+     * @param $data array
+     * @return Model
+     */
     public function toHost($data)
     {
         $model = new $this->model();

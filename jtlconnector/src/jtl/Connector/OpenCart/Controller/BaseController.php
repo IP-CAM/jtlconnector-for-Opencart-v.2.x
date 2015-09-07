@@ -13,14 +13,23 @@ use jtl\Connector\Core\Model\QueryFilter;
 use jtl\Connector\Core\Rpc\Error;
 use jtl\Connector\Formatter\ExceptionFormatter;
 use jtl\Connector\Model\Statistic;
+use jtl\Connector\OpenCart\Mapper\BaseMapper;
 use jtl\Connector\OpenCart\Utility\Db;
 use jtl\Connector\Result\Action;
 
 abstract class BaseController extends Controller
 {
+    /**
+     * @var $database Db
+     */
     protected $database = null;
+    /**
+     * @var $mapper BaseMapper
+     */
     protected $mapper = null;
-    protected $endpoint = null;
+    /**
+     * @var $controllerName string
+     */
     private $controllerName = null;
 
     public function __construct()
@@ -81,7 +90,7 @@ abstract class BaseController extends Controller
         $action = new Action();
         $action->setHandled(true);
         try {
-            $action->setResult($this->deleteData($data, null));
+            $action->setResult($this->deleteData($data));
         } catch (\Exception $exc) {
             Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
             $err = new Error();

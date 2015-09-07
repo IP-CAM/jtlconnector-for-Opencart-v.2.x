@@ -35,7 +35,7 @@ class Customer extends MainEntityController
         // TODO: Implement pushData() method.
     }
 
-    protected function deleteData($data, $model)
+    protected function deleteData($data)
     {
         $customer = OpenCart::getInstance()->loadModel('sale/customer');
         $customer->deleteCustomer($data->getId()->getEndpoint());

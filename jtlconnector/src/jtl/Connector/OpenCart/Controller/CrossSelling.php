@@ -32,7 +32,7 @@ class CrossSelling extends MainEntityController
         // TODO: Implement pushData() method.
     }
 
-    protected function deleteData($data, $model)
+    protected function deleteData($data)
     {
         $id = $data->getProductId()->getEndpoint();
         if (!is_null($id)) {

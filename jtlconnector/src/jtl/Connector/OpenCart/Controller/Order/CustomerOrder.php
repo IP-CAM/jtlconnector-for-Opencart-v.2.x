@@ -47,7 +47,7 @@ class CustomerOrder extends MainEntityController
         throw new OperationNotPermitedException("Orders should after pulling be handled in the Wawi.");
     }
 
-    protected function deleteData($data, $model)
+    protected function deleteData($data)
     {
         throw new OperationNotPermitedException("Orders should after pulling be handled in the Wawi.");
     }

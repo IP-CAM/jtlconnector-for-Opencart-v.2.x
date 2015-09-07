@@ -34,9 +34,9 @@ class Product extends MainEntityController
 
     }
 
-    protected function deleteData($data, $model)
+    protected function deleteData($data)
     {
-        // TODO: Implement deleteData() method.
+        // TODO: Implement deleteData() method. Keep in mind that picture files are not deleted automatically.
     }
 
     protected function getStats()
