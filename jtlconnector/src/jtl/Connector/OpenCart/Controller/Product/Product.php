@@ -8,6 +8,7 @@ namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
+use jtl\Connector\OpenCart\Utility\OpenCart;
 
 class Product extends MainEntityController
 {
@@ -29,9 +30,20 @@ class Product extends MainEntityController
         );
     }
 
+    /**
+     * @param $data \jtl\Connector\Model\Product
+     */
     protected function pushData($data, $model)
     {
-
+        $product = OpenCart::getInstance()->loadModel('catalog/product');
+        $endpoint = $this->mapper->toEndpoint($data);
+        if (is_null($data->getId()->getEndpoint())) {
+            $id = $product->addProduct($endpoint);
+            $data->getId()->setEndpoint($id);
+        } else {
+            $product->editProduct($data->getId()->getEndpoint(), $endpoint);
+        }
+        return $data;
     }
 
     protected function deleteData($data)

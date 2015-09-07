@@ -60,6 +60,10 @@ class OpenCart extends Singleton
         }
     }
 
+    /**
+     * @param $model string
+     * @return \Model
+     */
     public function loadModel($model)
     {
         $file = DIR_APPLICATION . 'model/' . $model . '.php';

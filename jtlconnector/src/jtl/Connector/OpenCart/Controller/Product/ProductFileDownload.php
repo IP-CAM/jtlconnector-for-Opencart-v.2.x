@@ -2,7 +2,6 @@
 namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
-use stdClass;
 
 class ProductFileDownload extends BaseController
 {
@@ -23,7 +22,7 @@ class ProductFileDownload extends BaseController
 
     public function pushData($data)
     {
-        foreach ($data->getFileDownloads() as $download) {
+        /*foreach ($data->getFileDownloads() as $download) {
             $id = $download->getFileDownloadId()->getEndpoint();
             if (!empty($id)) {
                 $catObj = new stdClass();
@@ -31,6 +30,6 @@ class ProductFileDownload extends BaseController
                 $catObj->download_id = $id;
                 $this->database->insert($catObj, 'oc_product_to_download');
             }
-        }
+        }*/
     }
 }

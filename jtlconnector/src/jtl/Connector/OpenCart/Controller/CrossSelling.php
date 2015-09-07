@@ -27,15 +27,34 @@ class CrossSelling extends MainEntityController
         );
     }
 
+    /**
+     * @param $data \jtl\Connector\Model\CrossSelling
+     */
     protected function pushData($data, $model)
     {
-        // TODO: Implement pushData() method.
+        $this->deleteData($data);
+        $id = $data->getProductId()->getEndpoint();
+        if (!empty($id)) {
+            foreach ($data->getItems() as $item) {
+                foreach ($item->getProductIds() as $relatedId) {
+                    $item = new \stdClass();
+                    $item->product_id = $id;
+                    $item->related_id = $relatedId->getEndpoint();
+                    $this->database->insert($item, 'oc_product_related');
+                }
+            }
+        }
+        return $data;
     }
 
+    /**
+     * @param $data \jtl\Connector\Model\CrossSelling
+     * @return mixed
+     */
     protected function deleteData($data)
     {
         $id = $data->getProductId()->getEndpoint();
-        if (!is_null($id)) {
+        if (!empty($id)) {
             $this->database->query(sprintf('DELETE FROM oc_product_related WHERE product_id = %d', $id));
         }
         return $data;

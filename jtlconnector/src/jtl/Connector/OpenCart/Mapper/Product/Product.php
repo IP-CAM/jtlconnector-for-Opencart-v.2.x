@@ -43,7 +43,7 @@ class Product extends BaseMapper
 //        'considerStock' => 'boolean',
 //        'considerVariationStock' => 'boolean',
         'upc' => 'upc',
-        'vat' => 'double',
+        //'vat' => 'double',
         'width' => 'width',
         'attributes' => 'Product\ProductAttr',
         'categories' => 'Product\Product2Category',
@@ -56,4 +56,30 @@ class Product extends BaseMapper
         'specialPrices' => 'Product\ProductSpecialPrice',
         'variations' => 'Product\ProductVariation'
     ];
+
+    protected $push = [
+        'product_id' => 'id',
+        'manufacturer_id' => 'manufacturerId',
+        'date_added' => 'creationDate',
+        'date_modified' => 'modified',
+        'ean' => 'ean',
+        'status' => 'isActive',
+        'isbn' => 'isbn',
+        'date_available' => 'availableFrom',
+        'minimum' => 'minimumQuantity',
+        'location' => 'originCountry',
+        'weight' => 'productWeight',
+        'height' => 'height',
+        'length' => 'length',
+        'width' => 'width',
+        'model' => 'sku',
+        'sort_order' => 'sort',
+        'upc' => 'upc',
+        'product_store' => null
+    ];
+
+    protected function product_store()
+    {
+        return [intval(0)];
+    }
 }

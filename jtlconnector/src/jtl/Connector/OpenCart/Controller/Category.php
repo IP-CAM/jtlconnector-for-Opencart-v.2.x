@@ -28,6 +28,9 @@ class Category extends MainEntityController
         );
     }
 
+    /**
+     * @param $data \jtl\Connector\Model\Category
+     */
     public function pushData($data, $model)
     {
         $category = OpenCart::getInstance()->loadModel('catalog/category');

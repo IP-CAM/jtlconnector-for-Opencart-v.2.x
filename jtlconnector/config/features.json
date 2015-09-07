@@ -82,8 +82,8 @@
     },
     "Customer": {
       "pull": true,
-      "push": true,
-      "delete": true
+      "push": false,
+      "delete": false
     },
     "CustomerAttr": {
       "pull": false,
@@ -92,7 +92,7 @@
     },
     "CustomerGroup": {
       "pull": true,
-      "push": true,
+      "push": false,
       "delete": false
     },
     "CustomerGroupAttr": {
@@ -102,7 +102,7 @@
     },
     "CustomerGroupI18n": {
       "pull": true,
-      "push": true,
+      "push": false,
       "delete": false
     },
     "CustomerGroupPackagingQuantity": {

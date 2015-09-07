@@ -7,9 +7,8 @@
 namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
-use jtl\Connector\OpenCart\Utility\OpenCart;
 
-class Customer extends MainEntityController
+class Customer extends BaseController
 {
     public function pullData($data, $model, $limit = null)
     {
@@ -28,18 +27,6 @@ class Customer extends MainEntityController
             LIMIT %d',
             IdentityLinker::TYPE_CUSTOMER, $limit
         );
-    }
-
-    protected function pushData($data, $model)
-    {
-        // TODO: Implement pushData() method.
-    }
-
-    protected function deleteData($data)
-    {
-        $customer = OpenCart::getInstance()->loadModel('sale/customer');
-        $customer->deleteCustomer($data->getId()->getEndpoint());
-        return $data;
     }
 
     protected function getStats()

@@ -47,8 +47,8 @@ class Db extends Singleton
 
             if (is_array($members) && count($members) > 0) {
                 foreach ($members as $member) {
-                    if (!is_array($obj->$member) && !is_object($obj->$member)) {
-                        $value = $this->db->quote($obj->$member);
+                    if (!is_array($obj->{$member}) && !is_object($obj->{$member})) {
+                        $value = "'" . $obj->{$member} . "'";
                         if ($obj->$member === null) {
                             $value = "NULL";
                         }

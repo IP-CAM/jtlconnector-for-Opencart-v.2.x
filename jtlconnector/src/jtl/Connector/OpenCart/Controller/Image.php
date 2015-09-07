@@ -111,8 +111,10 @@ class Image extends MainEntityController
      */
     protected function pushData($data, $model)
     {
-        $this->deleteData($data);
         $id = $data->getForeignKey()->getEndpoint();
+        if (!is_null($id)) {
+            $this->deleteData($data);
+        }
         return $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($id, $data);
     }
 

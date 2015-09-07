@@ -2,7 +2,6 @@
 namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
-use stdClass;
 
 class Product2Category extends BaseController
 {
@@ -23,7 +22,7 @@ class Product2Category extends BaseController
 
     public function pushData($data)
     {
-        foreach ($data->getCategories() as $category) {
+        /*foreach ($data->getCategories() as $category) {
             $id = $category->getCategoryId()->getEndpoint();
             if (!empty($id)) {
                 $catObj = new stdClass();
@@ -31,6 +30,6 @@ class Product2Category extends BaseController
                 $catObj->ctaegory_id = $id;
                 $this->database->insert($catObj, 'oc_product_to_category');
             }
-        }
+        }*/
     }
 }
