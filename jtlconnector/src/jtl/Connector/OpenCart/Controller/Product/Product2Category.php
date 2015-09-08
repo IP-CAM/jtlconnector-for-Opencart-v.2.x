@@ -20,16 +20,10 @@ class Product2Category extends BaseController
         );
     }
 
-    public function pushData($data)
+    public function pushData($data, &$model)
     {
-        /*foreach ($data->getCategories() as $category) {
-            $id = $category->getCategoryId()->getEndpoint();
-            if (!empty($id)) {
-                $catObj = new stdClass();
-                $catObj->product_id = $data->getId()->getEndpoint();
-                $catObj->ctaegory_id = $id;
-                $this->database->insert($catObj, 'oc_product_to_category');
-            }
-        }*/
+        foreach ($data->getCategories() as $category) {
+            $model['product_category'][] = $category->getId()->getEndpoint();
+        }
     }
 }

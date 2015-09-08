@@ -63,6 +63,7 @@ class Product extends BaseMapper
         'date_added' => 'creationDate',
         'date_modified' => 'modified',
         'ean' => 'ean',
+        'sku' => 'sku',
         'status' => 'isActive',
         'isbn' => 'isbn',
         'date_available' => 'availableFrom',
@@ -75,8 +76,85 @@ class Product extends BaseMapper
         'model' => 'sku',
         'sort_order' => 'sort',
         'upc' => 'upc',
-        'product_store' => null
+        'product_store' => null,
+        'jan' => null,
+        'mpn' => null,
+        'quantity' => null,
+        'subtract' => null,
+        'stock_status_id' => null,
+        'shipping' => null,
+        'price' => null,
+        'points' => null,
+        'weight_class_id' => null,
+        'length_class_id' => null,
+        'tax_class_id' => null,
+        'keyword' => null,
+        'Product\Product2Category' => 'categories',
+        'Product\ProductI18n' => 'i18ns',
+        'Product\ProductAttr' => 'attributes',
+        'Product\ProductPrice' => 'prices'
     ];
+
+    protected function jan()
+    {
+        return "";
+    }
+
+    protected function mpn()
+    {
+        return "";
+    }
+
+
+    protected function quantity()
+    {
+        return 0;
+    }
+
+    protected function subtract()
+    {
+        return null;
+    }
+
+    protected function stock_status_id()
+    {
+        return null;
+    }
+
+    protected function shipping()
+    {
+        return null;
+    }
+
+    protected function price()
+    {
+        return null;
+    }
+
+    protected function points()
+    {
+        return null;
+    }
+
+    protected function weight_class_id()
+    {
+        return null;
+    }
+
+    protected function length_class_id()
+    {
+        return null;
+    }
+
+    protected function tax_class_id()
+    {
+        return null;
+    }
+
+    protected function keyword()
+    {
+        return null;
+    }
 
     protected function product_store()
     {

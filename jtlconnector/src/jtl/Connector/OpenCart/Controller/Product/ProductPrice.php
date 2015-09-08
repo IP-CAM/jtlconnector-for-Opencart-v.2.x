@@ -16,8 +16,11 @@ class ProductPrice extends BaseController
         throw new OperationNotPermitedException("Data already fetched.");
     }
 
-    public function pushData($data)
+    public function pushData($data, &$model)
     {
-        // TODO:
+        foreach ($data->getPrices() as $price) {
+            // var_dump($price);
+            // die();
+        }
     }
 }

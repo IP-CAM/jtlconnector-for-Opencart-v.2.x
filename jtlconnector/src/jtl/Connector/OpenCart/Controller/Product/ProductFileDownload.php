@@ -22,14 +22,8 @@ class ProductFileDownload extends BaseController
 
     public function pushData($data)
     {
-        /*foreach ($data->getFileDownloads() as $download) {
-            $id = $download->getFileDownloadId()->getEndpoint();
-            if (!empty($id)) {
-                $catObj = new stdClass();
-                $catObj->product_id = $data->getId()->getEndpoint();
-                $catObj->download_id = $id;
-                $this->database->insert($catObj, 'oc_product_to_download');
-            }
-        }*/
+        foreach ($data->getFileDownloads() as $download) {
+            $model['product_download'][] = $this->mapper->toEndpoint($download);
+        }
     }
 }

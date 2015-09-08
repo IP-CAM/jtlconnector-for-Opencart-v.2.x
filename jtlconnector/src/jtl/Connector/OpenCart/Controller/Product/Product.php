@@ -12,7 +12,6 @@ use jtl\Connector\OpenCart\Utility\OpenCart;
 
 class Product extends MainEntityController
 {
-
     public function pullData($data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $model, $limit);
@@ -30,25 +29,23 @@ class Product extends MainEntityController
         );
     }
 
-    /**
-     * @param $data \jtl\Connector\Model\Product
-     */
     protected function pushData($data, $model)
     {
-        $product = OpenCart::getInstance()->loadModel('catalog/product');
-        $endpoint = $this->mapper->toEndpoint($data);
-        if (is_null($data->getId()->getEndpoint())) {
-            $id = $product->addProduct($endpoint);
+        if (empty($data->getId()->getEndpoint())) {
+            $id = $this->database->query('INSERT INTO oc_product () VALUES ()');
             $data->getId()->setEndpoint($id);
-        } else {
-            $product->editProduct($data->getId()->getEndpoint(), $endpoint);
         }
+        $endpoint = $this->mapper->toEndpoint($data);
+        $product = OpenCart::getInstance()->loadModel('catalog/product');
+        $product->editProduct($data->getId()->getEndpoint(), $endpoint);
         return $data;
     }
 
     protected function deleteData($data)
     {
-        // TODO: Implement deleteData() method. Keep in mind that picture files are not deleted automatically.
+        // TODO: Keep in mind that picture files are not deleted automatically.
+        $product = OpenCart::getInstance()->loadModel('catalog/product');
+        $product->deleteProduct($data->getId()->getEndpoint());
     }
 
     protected function getStats()

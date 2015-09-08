@@ -10,4 +10,9 @@ class ProductFileDownload extends BaseMapper
         'fileDownloadId' => 'download_id',
         'productId' => 'product_id'
     ];
+
+    protected $push = [
+        'download_id' => 'fileDownloadId',
+        'product_id' => 'productId'
+    ];
 }

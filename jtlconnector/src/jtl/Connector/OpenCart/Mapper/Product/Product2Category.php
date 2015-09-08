@@ -14,4 +14,9 @@ class Product2Category extends BaseMapper
         'productId' => 'product_id',
         'categoryId' => 'category_id'
     ];
+
+    protected $push = [
+        'product_id' => 'productId',
+        'category_id' => 'categoryId'
+    ];
 }

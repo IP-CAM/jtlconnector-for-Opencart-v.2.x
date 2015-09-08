@@ -61,6 +61,14 @@ class OpenCart extends Singleton
     }
 
     /**
+     * @return OpenCart
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
      * @param $model string
      * @return \Model
      */

@@ -4,8 +4,6 @@
 namespace jtl\Connector\OpenCart\Checksum;
 
 use jtl\Connector\Checksum\IChecksumLoader;
-use jtl\Connector\Core\IO\Path;
-use jtl\Connector\Database\Sqlite3;
 
 class ChecksumLoader implements IChecksumLoader
 {
@@ -13,12 +11,12 @@ class ChecksumLoader implements IChecksumLoader
 
     public function __construct()
     {
-        $sqlite3 = Sqlite3::getInstance();
+        /*$sqlite3 = Sqlite3::getInstance();
         if (!$sqlite3->isConnected()) {
             $sqlite3->connect(array('location' => Path::combine(CONNECTOR_DIR, 'db', 'connector.s3db')));
         }
 
-        $this->db = $sqlite3;
+        $this->db = $sqlite3;*/
     }
 
     /**
@@ -30,8 +28,8 @@ class ChecksumLoader implements IChecksumLoader
      */
     public function read($endpointId, $type)
     {
-        return $this->db->fetchSingle(sprintf('SELECT checksum FROM checksum WHERE endpoint = %s AND type = %s',
-            $endpointId, $type));
+        /*return $this->db->fetchSingle(sprintf('SELECT checksum FROM checksum WHERE endpoint = %s AND type = %s',
+            $endpointId, $type));*/
     }
 
     /**
@@ -44,10 +42,10 @@ class ChecksumLoader implements IChecksumLoader
      */
     public function write($endpointId, $type, $checksum)
     {
-        $id = $this->db->insert(sprintf('INSERT INTO checksum (endpoint, type, checksum) VALUES (%s, %s, %s)',
+        /*$id = $this->db->insert(sprintf('INSERT INTO checksum (endpoint, type, checksum) VALUES (%s, %s, %s)',
             $endpointId, $type, $checksum));
 
-        return $id !== false;
+        return $id !== false;*/
     }
 
     /**
@@ -59,6 +57,7 @@ class ChecksumLoader implements IChecksumLoader
      */
     public function delete($endpointId, $type)
     {
-        return $this->db->query(sprintf('DELETE FROM checksum WHERE endpoint = %s AND type = %s', $endpointId, $type));
+        //return $this->db->query(sprintf('DELETE FROM checksum WHERE endpoint = %s AND type = %s', $endpointId,
+        // $type));
     }
 }
