@@ -18,8 +18,15 @@ class Manufacturer extends BaseMapper
         'manufacturer_id' => 'id',
         'name' => 'name',
         'sort_order' => 'sort',
+        'keyword' => null,
         'manufacturer_store' => null
     ];
+
+
+    protected function keyword()
+    {
+        return null;
+    }
 
     protected function manufacturer_store()
     {

@@ -39,7 +39,7 @@ class Product extends BaseMapper
 //        'shippingWeight' => 'double',
         'sku' => 'sku',
         'sort' => 'sort_order',
-//        'stockLevel' => 'ProductStockLevel',
+        'stockLevel' => 'Product\ProductStockLevel',
 //        'considerStock' => 'boolean',
 //        'considerVariationStock' => 'boolean',
         'upc' => 'upc',
@@ -79,7 +79,6 @@ class Product extends BaseMapper
         'product_store' => null,
         'jan' => null,
         'mpn' => null,
-        'quantity' => null,
         'subtract' => null,
         'stock_status_id' => null,
         'shipping' => null,
@@ -92,7 +91,8 @@ class Product extends BaseMapper
         'Product\Product2Category' => 'categories',
         'Product\ProductI18n' => 'i18ns',
         'Product\ProductAttr' => 'attributes',
-        'Product\ProductPrice' => 'prices'
+        'Product\ProductPrice' => 'prices',
+        'Product\ProductStockLevel' => 'stockLevel'
     ];
 
     protected function jan()
@@ -103,12 +103,6 @@ class Product extends BaseMapper
     protected function mpn()
     {
         return "";
-    }
-
-
-    protected function quantity()
-    {
-        return 0;
     }
 
     protected function subtract()

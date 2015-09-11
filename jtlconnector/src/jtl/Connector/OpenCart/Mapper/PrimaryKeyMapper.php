@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
+use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\Mapper\IPrimaryKeyMapper;
 use jtl\Connector\OpenCart\Utility\Db;
 
@@ -18,13 +19,6 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
         $this->db = Db::getInstance();
     }
 
-    /**
-     * Host ID getter
-     *
-     * @param string $endpointId
-     * @param integer $type
-     * @return integer|null
-     */
     public function getHostId($endpointId, $type)
     {
         $query = sprintf('
@@ -36,34 +30,22 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
         return $this->db->queryOne($query);
     }
 
-    /**
-     * Endpoint ID getter
-     *
-     * @param integer $hostId
-     * @param integer $type
-     * @param string $relationType
-     * @return string|null
-     */
     public function getEndpointId($hostId, $type, $relationType = null)
     {
-        $relationType = (is_null($relationType)) ? $relationType : ' AND relationType = ' . $relationType;
+        $clause = '';
+        if ($type === IdentityLinker::TYPE_IMAGE) {
+            $prefix = substr(strtolower($relationType), 0, 1);
+            $clause = " AND endpointId LIKE '{$prefix}%'";
+        }
         $query = sprintf('
             SELECT endpointId
             FROM jtl_connector_link
             WHERE hostId = %s AND type = %s%s',
-            $hostId, $type, $relationType
+            $hostId, $type, $clause
         );
         return $this->db->queryOne($query);
     }
 
-    /**
-     * Save link to database
-     *
-     * @param string $endpointId
-     * @param integer $hostId
-     * @param integer $type
-     * @return boolean
-     */
     public function save($endpointId, $hostId, $type)
     {
         $query = sprintf('
@@ -75,14 +57,6 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
         return $id !== false;
     }
 
-    /**
-     * Delete link from database
-     *
-     * @param string $endpointId
-     * @param integer $hostId
-     * @param integer $type
-     * @return boolean
-     */
     public function delete($endpointId = null, $hostId = null, $type)
     {
         $where = '';
@@ -94,24 +68,14 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
             $where = sprintf('WHERE hostId = %s AND type = %s', $hostId, $type);
         }
 
-        return $this->db->query(sprintf('DELETE FROM jtl_connector_link %s'), $where);
+        return $this->db->query("DELETE FROM jtl_connector_link {$where}");
     }
 
-    /**
-     * Clears the entire link table
-     *
-     * @return boolean
-     */
     public function clear()
     {
         return $this->db->query('DELETE FROM jtl_connector_link');
     }
 
-    /**
-     * Garbage Collect the entire link table
-     *
-     * @return boolean
-     */
     public function gc()
     {
         return true;

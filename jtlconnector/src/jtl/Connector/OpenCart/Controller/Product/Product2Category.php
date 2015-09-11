@@ -13,7 +13,7 @@ class Product2Category extends BaseController
     protected function pullQuery($data, $limit = null)
     {
         return sprintf('
-            SELECT *
+            SELECT *, CONCAT(product_id, "_", category_id) as id
             FROM oc_product_to_category
             WHERE product_id = %d',
             $data['product_id']
@@ -23,7 +23,7 @@ class Product2Category extends BaseController
     public function pushData($data, &$model)
     {
         foreach ($data->getCategories() as $category) {
-            $model['product_category'][] = $category->getId()->getEndpoint();
+            $model['product_category'][] = $category->getCategoryId()->getEndpoint();
         }
     }
 }

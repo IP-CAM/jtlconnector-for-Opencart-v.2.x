@@ -6,7 +6,6 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-use jtl\Connector\Core\IO\Path;
 use jtl\Connector\Drawing\ImageRelationType;
 use jtl\Connector\Linker\IdentityLinker;
 use Symfony\Component\Finder\Exception\OperationNotPermitedException;
@@ -106,16 +105,14 @@ class Image extends MainEntityController
         throw new OperationNotPermitedException("Use the queries for the specific types.");
     }
 
-    /**
-     * @param $data \jtl\Connector\Model\Image
-     */
     protected function pushData($data, $model)
     {
         $id = $data->getForeignKey()->getEndpoint();
-        if (!is_null($id)) {
+        if (!empty($id)) {
             $this->deleteData($data);
+            $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($id, $data);
         }
-        return $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($id, $data);
+        return $data;
     }
 
     /**
@@ -123,20 +120,20 @@ class Image extends MainEntityController
      */
     private function pushProductImage($id, $data)
     {
-        $isCover = ($data->getSort() == 1) ? 1 : 0;
+        $isCover = $data->getSort() == 1 ? true : false;
         $path = $this->saveImage($data);
         if ($path !== false) {
             if ($isCover) {
                 $this->database->query(sprintf('
                     UPDATE oc_product
-                    SET image = %s
+                    SET image = "%s"
                     WHERE product_id = %d',
                     $path, $id
                 ));
             } else {
                 $this->database->query(sprintf('
                     INSERT INTO oc_product_image (product_id, image, sort_order)
-                    values (%d, %s %d)',
+                    values (%d, "%s", %d)',
                     $id, $path, $data->getSort()
                 ));
             }
@@ -150,12 +147,11 @@ class Image extends MainEntityController
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
-            $this->database->query(sprintf('
+            $this->database->query("
                 UPDATE oc_category
-                SET image = %s
-                WHERE category_id = %s',
-                $path, $id
-            ));
+                SET image = '{$path}'
+                WHERE category_id = {$id}"
+            );
         }
     }
 
@@ -166,12 +162,11 @@ class Image extends MainEntityController
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
-            $this->database->query(sprintf('
+            $this->database->query("
                 UPDATE oc_manufacturer
-                SET image = %s
-                WHERE manufacturer_id = %s',
-                $path, $id
-            ));
+                SET image = '{$path}'
+                WHERE manufacturer_id = {$id}"
+            );
         }
     }
 
@@ -184,6 +179,8 @@ class Image extends MainEntityController
         $path = $data->getFilename();
         $filename = $this->buildImageFilename($path);
         $imagePath = $this->buildImagePath($filename, $data->getRelationType());
+        $destination = DIR_IMAGE . $imagePath;
+
         $allowed = ['jpg', 'jpeg', 'gif', 'png'];
         if (!in_array(substr(strrchr($filename, '.'), 1), $allowed)) {
             return false;
@@ -192,7 +189,7 @@ class Image extends MainEntityController
         if (preg_match('/\<\?php/i', $content)) {
             return false;
         }
-        if (move_uploaded_file($path, $imagePath)) {
+        if (copy($path, $destination)) {
             return $imagePath;
         }
         return false;
@@ -208,13 +205,18 @@ class Image extends MainEntityController
         $imagePath = $this->buildImagePath($filename, $data->getRelationType());
         switch ($data->getRelationType()) {
             case ImageRelationType::TYPE_PRODUCT:
-                $where = sprintf('WHERE product_image_id = %s', $data->getId()->getEndpoint());
-                $this->database->query(sprintf('DELETE FROM oc_product_image %s', $where));
+                if (!empty($data->getId()->getEndpoint())) {
+                    $this->database->query(sprintf('
+                        DELETE FROM oc_product_image
+                        WHERE product_image_id = %d',
+                        $data->getId()->getEndpoint()
+                    ));
+                }
                 $this->database->query(sprintf('
                     UPDATE oc_product
                     SET image = NULL
-                    WHERE image = "%s"',
-                    $imagePath
+                    WHERE product_id = %d',
+                    $data->getForeignKey()->getEndpoint()
                 ));
                 break;
             case ImageRelationType::TYPE_CATEGORY:
@@ -224,23 +226,31 @@ class Image extends MainEntityController
                 $this->database->update($data, 'oc_manufacturer', 'image', null);
                 break;
         }
-        if (file_exists($imagePath)) {
-            unlink($imagePath);
+        $absoluteImagePath = DIR_IMAGE . $imagePath;
+        if (file_exists($absoluteImagePath)) {
+            unlink($absoluteImagePath);
         }
     }
 
+    /**
+     * @param $path
+     * @return bool|string
+     */
     private function buildImageFilename($path)
     {
-        $filename = basename(html_entity_decode($path, ENT_QUOTES, 'UTF-8'));
-        if ((strlen($filename) < 3) || (strlen($filename) > 255)) {
-            return false;
-        }
-        return $filename;
+        return basename(html_entity_decode($path, ENT_QUOTES, 'UTF-8'));
     }
 
+    /**
+     * Build the path of the image that is stored in the database.
+     *
+     * @param $filename string  The name of the file including its extension.
+     * @param $type     string  The type of the file which is mirrored as folder.
+     * @return string The path that is stored in the database.
+     */
     private function buildImagePath($filename, $type)
     {
-        return Path::combine(DIR_IMAGE . 'catalog', 'wawi', $type, $filename);
+        return "catalog/wawi/{$type}/{$filename}";
     }
 
     protected function getStats()

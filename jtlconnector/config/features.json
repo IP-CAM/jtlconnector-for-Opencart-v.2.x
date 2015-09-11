@@ -311,7 +311,7 @@
       "delete": false
     },
     "ProductStockLevel": {
-      "pull": false,
+      "pull": true,
       "push": true,
       "delete": false
     },
