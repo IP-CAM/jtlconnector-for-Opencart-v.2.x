@@ -1,8 +1,10 @@
 <?php
+
 namespace jtl\Connector\OpenCart\Controller\Product;
 
+use jtl\Connector\Model\Product as ProductModel;
 use jtl\Connector\OpenCart\Controller\BaseController;
-use Symfony\Component\Finder\Exception\OperationNotPermitedException;
+use jtl\Connector\OpenCart\Exceptions\DataAlreadyFetchedException;
 
 class ProductPrice extends BaseController
 {
@@ -13,14 +15,15 @@ class ProductPrice extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        throw new OperationNotPermitedException("Data already fetched.");
+        throw new DataAlreadyFetchedException();
     }
 
-    public function pushData($data, &$model)
+    public function pushData(ProductModel $data, &$model)
     {
         foreach ($data->getPrices() as $price) {
-            // var_dump($price);
-            // die();
+            foreach ($price->getItems() as $item) {
+                $model['price'] = $item->getNetPrice();
+            }
         }
     }
 }

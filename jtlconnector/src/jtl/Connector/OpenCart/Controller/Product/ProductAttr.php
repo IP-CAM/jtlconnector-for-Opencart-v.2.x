@@ -2,6 +2,8 @@
 
 namespace jtl\Connector\OpenCart\Controller\Product;
 
+use jtl\Connector\Model\Product as ProductModel;
+use jtl\Connector\Model\ProductAttr as ProductAttribute;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Utility\OpenCart;
 use jtl\Connector\OpenCart\Utility\Utils;
@@ -10,7 +12,7 @@ class ProductAttr extends BaseController
 {
     public function pullData($data, $model, $limit = null)
     {
-        return parent::pullDataDefault($data, $model);
+        return parent::pullDataDefault($data);
     }
 
     protected function pullQuery($data, $limit = null)
@@ -23,13 +25,12 @@ class ProductAttr extends BaseController
         );
     }
 
-    public function pushData($data, &$model)
+    public function pushData(ProductModel $data, &$model)
     {
         $model['product_attribute'] = [];
         foreach ($data->getAttributes() as $attr) {
-            $productId = $attr->getProductId()->getEndpoint();
             list($values, $descriptions) = $this->buildI18ns($attr);
-            $attributeId = $this->getOrCreateAttribute($productId, $descriptions);
+            $attributeId = $this->getOrCreateAttribute($descriptions);
             $model['product_attribute'][] = [
                 'attribute_id' => $attributeId,
                 'product_attribute_description' => $values
@@ -37,7 +38,11 @@ class ProductAttr extends BaseController
         }
     }
 
-    private function buildI18ns($attr)
+    /**
+     * Build for each of the internationalized product attributes the OpenCart specific attribute_description =>
+     * descriptions and product_attribute_description => values.
+     */
+    private function buildI18ns(ProductAttribute $attr)
     {
         $values = [];
         $descriptions = [];
@@ -55,14 +60,24 @@ class ProductAttr extends BaseController
         return array($values, $descriptions);
     }
 
-    private function getOrCreateAttribute($productId, $descriptions)
+    /**
+     * Check if there is already an attribute existing based on its descriptions.
+     */
+    private function getOrCreateAttribute(array $descriptions)
     {
-        $attributeId = $this->database->query(sprintf('
-            SELECT attribute_id
-            FROM oc_product_attribute
-            WHERE product_id = %s',
-            $productId
-        ));
+        $attributeId = null;
+        foreach ($descriptions as $languageId => $desc) {
+            $attributeId = $this->database->queryOne(sprintf('
+                SELECT a.attribute_id
+                FROM oc_attribute a
+                LEFT JOIN oc_attribute_description ad ON a.attribute_id = ad.attribute_id
+                WHERE ad.language_id = %d AND ad.name = "%s"',
+                $languageId, $desc['name']
+            ));
+            if (!is_null($attributeId)) {
+                break;
+            }
+        }
         if (is_null($attributeId)) {
             $attribute = OpenCart::getInstance()->loadModel('catalog/attribute');
             $attributeId = $attribute->addAttribute([

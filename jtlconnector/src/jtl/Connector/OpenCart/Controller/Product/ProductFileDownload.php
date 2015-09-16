@@ -7,7 +7,7 @@ class ProductFileDownload extends BaseController
 {
     public function pullData($data, $model, $limit = null)
     {
-        return parent::pullDataDefault($data, $model);
+        return parent::pullDataDefault($data);
     }
 
     protected function pullQuery($data, $limit = null)

@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper\Product;
 
+use jtl\Connector\Model\Product as ProductModel;
 use jtl\Connector\OpenCart\Mapper\BaseMapper;
 
 class Product extends BaseMapper
@@ -28,7 +29,7 @@ class Product extends BaseMapper
 //        'considerBasePrice' => 'boolean',
         'length' => 'length',
 //        'manufacturerNumber' => 'string',
-        'minimumQuantity' => 'minimum',
+        'minimumOrderQuantity' => 'minimum',
         'modified' => 'date_modified',
 //        'nextAvailableInflowDate' => 'DateTime',
 //        'nextAvailableInflowQuantity' => 'double',
@@ -67,7 +68,7 @@ class Product extends BaseMapper
         'status' => 'isActive',
         'isbn' => 'isbn',
         'date_available' => 'availableFrom',
-        'minimum' => 'minimumQuantity',
+        'minimum' => 'minimumOrderQuantity',
         'location' => 'originCountry',
         'weight' => 'productWeight',
         'height' => 'height',
@@ -92,7 +93,8 @@ class Product extends BaseMapper
         'Product\ProductI18n' => 'i18ns',
         'Product\ProductAttr' => 'attributes',
         'Product\ProductPrice' => 'prices',
-        'Product\ProductStockLevel' => 'stockLevel'
+        'Product\ProductStockLevel' => 'stockLevel',
+        'Product\ProductVariation' => 'variations'
     ];
 
     protected function jan()
@@ -105,9 +107,13 @@ class Product extends BaseMapper
         return "";
     }
 
-    protected function subtract()
+    protected function subtract(ProductModel $data)
     {
-        return null;
+        if ($data->getConsiderStock() === false) {
+            return null;
+        } else {
+            return $data->getMinimumOrderQuantity();
+        }
     }
 
     protected function stock_status_id()

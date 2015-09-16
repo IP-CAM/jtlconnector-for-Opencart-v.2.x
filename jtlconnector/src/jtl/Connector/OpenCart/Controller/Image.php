@@ -8,6 +8,7 @@ namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Drawing\ImageRelationType;
 use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\Model\Image as ImageModel;
 use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class Image extends MainEntityController
@@ -115,10 +116,7 @@ class Image extends MainEntityController
         return $data;
     }
 
-    /**
-     * @param $data \jtl\Connector\Model\Image
-     */
-    private function pushProductImage($id, $data)
+    private function pushProductImage($id, ImageModel $data)
     {
         $isCover = $data->getSort() == 1 ? true : false;
         $path = $this->saveImage($data);
@@ -140,10 +138,7 @@ class Image extends MainEntityController
         }
     }
 
-    /**
-     * @param $data \jtl\Connector\Model\Image
-     */
-    private function pushCategoryImage($id, $data)
+    private function pushCategoryImage($id, ImageModel $data)
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
@@ -155,10 +150,7 @@ class Image extends MainEntityController
         }
     }
 
-    /**
-     * @param $data \jtl\Connector\Model\Image
-     */
-    private function pushManufacturerImage($id, $data)
+    private function pushManufacturerImage($id, ImageModel $data)
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
@@ -170,11 +162,7 @@ class Image extends MainEntityController
         }
     }
 
-    /**
-     * @param $data \jtl\Connector\Model\Image
-     * @return string the extracted image path or false on failure.
-     */
-    private function saveImage($data)
+    private function saveImage(ImageModel $data)
     {
         $path = $data->getFilename();
         $filename = $this->buildImageFilename($path);
@@ -196,7 +184,7 @@ class Image extends MainEntityController
     }
 
     /**
-     * @param $data \jtl\Connector\Model\Image
+     * @param $data ImageModel
      */
     protected function deleteData($data)
     {
@@ -205,19 +193,21 @@ class Image extends MainEntityController
         $imagePath = $this->buildImagePath($filename, $data->getRelationType());
         switch ($data->getRelationType()) {
             case ImageRelationType::TYPE_PRODUCT:
-                if (!empty($data->getId()->getEndpoint())) {
+                $isCover = $data->getSort() == 1 ? true : false;
+                if ($isCover) {
+                    $this->database->query(sprintf('
+                        UPDATE oc_product
+                        SET image = NULL
+                        WHERE product_id = %d',
+                        $data->getForeignKey()->getEndpoint()
+                    ));
+                } else {
                     $this->database->query(sprintf('
                         DELETE FROM oc_product_image
                         WHERE product_image_id = %d',
                         $data->getId()->getEndpoint()
                     ));
                 }
-                $this->database->query(sprintf('
-                    UPDATE oc_product
-                    SET image = NULL
-                    WHERE product_id = %d',
-                    $data->getForeignKey()->getEndpoint()
-                ));
                 break;
             case ImageRelationType::TYPE_CATEGORY:
                 $this->database->update($data, 'oc_category', 'image', null);
@@ -227,14 +217,16 @@ class Image extends MainEntityController
                 break;
         }
         $absoluteImagePath = DIR_IMAGE . $imagePath;
-        if (file_exists($absoluteImagePath)) {
+        if (!is_dir($absoluteImagePath) && file_exists($absoluteImagePath)) {
             unlink($absoluteImagePath);
         }
     }
 
     /**
-     * @param $path
-     * @return bool|string
+     * Build the image filename that can be used in the database.
+     *
+     * @param $path string The image path.
+     * @return string The filename ready for the database.
      */
     private function buildImageFilename($path)
     {

@@ -17,7 +17,14 @@ class ProductSpecialPrice extends BaseMapper
         'items' => 'Product\ProductSpecialPriceItem'
     ];
 
-    protected function considerDateLimit($data)
+    protected $push = [
+        'product_id' => 'productId',
+        'date_start' => 'activeFromDate',
+        'date_end' => 'considerDateLimit',
+        'Product\ProductSpecialPriceItem' => 'items'
+    ];
+
+    protected function considerDateLimit()
     {
         return true;
     }
@@ -30,5 +37,8 @@ class ProductSpecialPrice extends BaseMapper
         return Date::is_open_time_frame($start, $end) || Date::between($today, $start, $end);
     }
 
-
+    protected function priority()
+    {
+        return 1;
+    }
 }

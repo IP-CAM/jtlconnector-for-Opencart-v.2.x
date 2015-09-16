@@ -41,4 +41,21 @@ class Utils
             return $id;
         }
     }
+
+    /**
+     * Removes an item from the array and returns its value.
+     *
+     * @param $arr array  The input array
+     * @param $key string The key pointing to the desired value
+     * @return mixed The value mapped to $key or null if none
+     */
+    public function array_remove(array &$arr, $key)
+    {
+        if (array_key_exists($key, $arr)) {
+            $val = $arr[$key];
+            unset($arr[$key]);
+            return $val;
+        }
+        return null;
+    }
 }

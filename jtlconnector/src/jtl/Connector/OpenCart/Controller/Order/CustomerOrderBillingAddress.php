@@ -7,7 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller\Order;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
-use Symfony\Component\Finder\Exception\OperationNotPermitedException;
+use jtl\Connector\OpenCart\Exceptions\DataAlreadyFetchedException;
 
 class CustomerOrderBillingAddress extends BaseController
 {
@@ -18,6 +18,6 @@ class CustomerOrderBillingAddress extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        throw new OperationNotPermitedException("Data already fetched.");
+        throw new DataAlreadyFetchedException();
     }
 }

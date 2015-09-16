@@ -11,4 +11,10 @@ class ProductSpecialPriceItem extends BaseMapper
         'productSpecialPriceId' => 'product_special_id',
         'priceNet' => 'price'
     ];
+
+    protected $push = [
+        'customer_group_id' => 'customerGroupId',
+        'product_special_id' => 'productSpecialPriceId',
+        'price' => 'priceNet'
+    ];
 }

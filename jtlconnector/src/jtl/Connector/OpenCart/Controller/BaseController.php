@@ -15,6 +15,7 @@ use jtl\Connector\Formatter\ExceptionFormatter;
 use jtl\Connector\Model\Statistic;
 use jtl\Connector\OpenCart\Mapper\BaseMapper;
 use jtl\Connector\OpenCart\Utility\Db;
+use jtl\Connector\OpenCart\Utility\Utils;
 use jtl\Connector\Result\Action;
 
 abstract class BaseController extends Controller
@@ -120,7 +121,7 @@ abstract class BaseController extends Controller
         return $action;
     }
 
-    public function pullDataDefault($data, $model, $limit = null)
+    protected function pullDataDefault($data, $limit = null)
     {
         $return = [];
         $query = $this->pullQuery($data, $limit);
@@ -130,6 +131,20 @@ abstract class BaseController extends Controller
             $return[] = $host;
         }
         return $return;
+    }
+
+    protected function pushDataI18n($data, &$model, $key)
+    {
+        if (!method_exists($data, 'getI18ns')) {
+            return;
+        }
+        foreach ($data->getI18ns() as $i18n) {
+            $languageId = Utils::getInstance()->getLanguageId($i18n->getLanguageISO());
+            if ($languageId !== false) {
+                $endpoint = $this->mapper->toEndpoint($i18n);
+                $model[$key][intval($languageId)] = $endpoint;
+            }
+        }
     }
 
     /**

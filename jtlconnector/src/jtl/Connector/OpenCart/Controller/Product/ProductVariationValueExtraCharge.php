@@ -2,8 +2,7 @@
 namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
-use Symfony\Component\Finder\Exception\OperationNotPermitedException;
-
+use jtl\Connector\OpenCart\Exceptions\DataAlreadyFetchedException;
 
 class ProductVariationValueExtraCharge extends BaseController
 {
@@ -14,7 +13,7 @@ class ProductVariationValueExtraCharge extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        throw new OperationNotPermitedException('Date already fetched.');
+        throw new DataAlreadyFetchedException();
     }
 
     public function pushData($data)

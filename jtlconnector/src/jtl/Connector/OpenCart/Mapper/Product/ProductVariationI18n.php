@@ -11,4 +11,8 @@ class ProductVariationI18n extends I18nBaseMapper
         'languageISO' => null,
         'name' => 'name'
     ];
+
+    protected $push = [
+        'name' => 'name'
+    ];
 }

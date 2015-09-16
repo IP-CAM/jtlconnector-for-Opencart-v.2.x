@@ -11,6 +11,8 @@ use jtl\Connector\OpenCart\Utility\OpenCart;
 
 class Category extends MainEntityController
 {
+    private static $idCache = [];
+
     public function pullData($data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $model, $limit);
@@ -31,10 +33,14 @@ class Category extends MainEntityController
     public function pushData($data, $model)
     {
         $category = OpenCart::getInstance()->loadModel('catalog/category');
+        if (isset(self::$idCache[$data->getParentCategoryId()->getHost()])) {
+            $data->getParentCategoryId()->setEndpoint(self::$idCache[$data->getParentCategoryId()->getHost()]);
+        }
         $endpoint = $this->mapper->toEndpoint($data);
         if (is_null($data->getId()->getEndpoint())) {
             $id = $category->addCategory($endpoint);
             $data->getId()->setEndpoint($id);
+            self::$idCache[$data->getId()->getHost()] = $id;
         } else {
             $category->editCategory($data->getId()->getEndpoint(), $endpoint);
         }

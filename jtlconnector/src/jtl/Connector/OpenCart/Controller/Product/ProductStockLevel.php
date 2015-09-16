@@ -2,7 +2,7 @@
 namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
-use Symfony\Component\Finder\Exception\OperationNotPermitedException;
+use jtl\Connector\OpenCart\Exceptions\DataAlreadyFetchedException;
 
 class ProductStockLevel extends BaseController
 {
@@ -13,7 +13,7 @@ class ProductStockLevel extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        throw new OperationNotPermitedException("Data already fetched.");
+        throw new DataAlreadyFetchedException();
     }
 
     public function pushData($data, &$model)

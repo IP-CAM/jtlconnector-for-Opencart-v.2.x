@@ -1,6 +1,7 @@
 <?php
 namespace jtl\Connector\OpenCart\Controller\Product;
 
+use jtl\Connector\Model\ProductVariationValue as PVVModel;
 use jtl\Connector\OpenCart\Controller\BaseController;
 
 
@@ -8,7 +9,7 @@ class ProductVariationValueI18n extends BaseController
 {
     public function pullData($data, $model, $limit = null)
     {
-        return parent::pullDataDefault($data, $model);
+        return parent::pullDataDefault($data);
     }
 
     protected function pullQuery($data, $limit = null)
@@ -23,8 +24,8 @@ class ProductVariationValueI18n extends BaseController
         );
     }
 
-    public function pushData($data)
+    public function pushData(PVVModel $data, &$model)
     {
-        // TODO:
+        parent::pushDataI18n($data, $model, 'option_value');
     }
 }
