@@ -25,6 +25,6 @@ class ProductVariationI18n extends BaseController
 
     public function pushData(ProductVariationModel $data, &$model)
     {
-        parent::pushDataI18n($data, $model, 'option_description');
+
     }
 }

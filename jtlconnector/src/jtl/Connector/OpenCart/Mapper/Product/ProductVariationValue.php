@@ -19,8 +19,6 @@ class ProductVariationValue extends BaseMapper
     protected $push = [
         'product_option_value_id' => 'id',
         'quantity' => 'stockLevel',
-        'Product\ProductVariationValueI18n' => 'i18ns',
-        'Product\ProductVariationValueExtraCharge' => 'extraCharges',
         'weight' => null,
         'weight_prefix' => null,
         'subtract' => null,
@@ -40,7 +38,7 @@ class ProductVariationValue extends BaseMapper
 
     protected function subtract()
     {
-        return 1;
+        return 0;
     }
 
     protected function weight(PVVModel $data)

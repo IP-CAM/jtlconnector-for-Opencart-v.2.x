@@ -3,7 +3,10 @@ namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\Model\Product as ProductModel;
 use jtl\Connector\Model\ProductVariation as ProductVariationModel;
+use jtl\Connector\Model\ProductVariationI18n;
+use jtl\Connector\Model\ProductVariationValueI18n;
 use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Mapper\Product\ProductVariationValue as ProductVariationValueMapper;
 use jtl\Connector\OpenCart\Utility\OpenCart;
 use jtl\Connector\OpenCart\Utility\Utils;
 
@@ -44,38 +47,40 @@ class ProductVariation extends BaseController
     {
         $model['product_option'] = [];
         foreach ($data->getVariations() as $variation) {
-            $endpoint = $this->mapper->toEndpoint($variation);
-            $optionId = $this->getOrCreateOption($variation, $endpoint);
-            $endpoint['option_id'] = $optionId;
-            $model['product_option'][] = $endpoint;
+            $option = $this->mapper->toEndpoint($variation);
+            $optionId = $this->buildOptionDescriptions($variation, $option);
+            $this->buildOptionValues($variation, $option);
+            $ocOption = $this->oc->loadModel('catalog/option');
+            if (is_null($optionId)) {
+                $optionId = $ocOption->addOption($option);
+            } else {
+                $ocOption->editOption($optionId, $option);
+            }
+            $productOption = $this->mapper->toEndpoint($variation);
+            $productOption['option_id'] = $optionId;
+            $this->buildProductOptionValues($variation, $productOption);
+            $model['product_option'][] = $productOption;
         }
     }
 
-    /**
-     * Check if there is already an option existing based on its descriptions.
-     */
-    private function getOrCreateOption(ProductVariationModel $variation, array &$endpoint)
+    private function buildOptionDescriptions(ProductVariationModel $variation, &$option)
     {
         $optionId = null;
         foreach ($variation->getI18ns() as $i18n) {
-            $optionId = $this->findExistingOption($i18n);
-            if (!is_null($optionId)) {
-                break;
+            $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
+            if ($languageId !== false) {
+                $option['option_description'][intval($languageId)] = [
+                    'name' => $i18n->getName()
+                ];
+            }
+            if (is_null($optionId)) {
+                $optionId = $this->findExistingOption($i18n);
             }
         }
-        $model = $this->buildOption($variation, $endpoint);
-        $option = $this->oc->loadModel('catalog/option');
-
-        // TODO: do it like with the product and create it and then call update as
-        if (!is_null($optionId)) {
-            $option->editOption($optionId, $model);
-            return $optionId;
-        }
-        $optionId = $option->addOption($model);
         return $optionId;
     }
 
-    private function findExistingOption($i18n)
+    private function findExistingOption(ProductVariationI18n $i18n)
     {
         $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
         $optionId = $this->database->queryOne(sprintf('
@@ -88,23 +93,80 @@ class ProductVariation extends BaseController
         return $optionId;
     }
 
-    private function buildOption(ProductVariationModel $variation, array &$endpoint)
+    private function buildOptionValues(ProductVariationModel $variation, &$option)
     {
-        $model = [
-            'sort_order' => $variation->getSort(),
-            'type' => count($variation->getValues()) > 1 ? 'select' : 'text',
-            'option_description' => $this->utils->array_remove($endpoint, 'option_description')
-        ];
-        foreach ($endpoint['product_option_value'] as $pov) {
-            $optionValueDescriptions = $this->utils->array_remove($pov, 'option_value');
-            $optionValues = [
-                'image' => null,
-                'sort_order' => 0,
-                'option_value_id' => $pov['option_value_id'],
-                'option_value_description' => $optionValueDescriptions
+        foreach ($variation->getValues() as $value) {
+            $optionValueId = null;
+            $optionValue = [
+                'image' => '',
+                'sort_order' => $value->getSort()
             ];
-            $model['option_value'][] = $optionValues;
+            foreach ($value->getI18ns() as $i18n) {
+                $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
+                if ($languageId !== false) {
+                    $optionValue['option_value_description'][intval($languageId)] = [
+                        'name' => $i18n->getName()
+                    ];
+                }
+                if (is_null($optionValueId)) {
+                    $optionValueId = $this->findExistingOptionValue($i18n);
+                }
+            }
+            $optionValue['option_value_id'] = $optionValueId;
+            $option['option_value'][] = $optionValue;
         }
-        return $model;
+    }
+
+    private function findExistingOptionValue(ProductVariationValueI18n $i18n)
+    {
+        $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
+        $optionValueId = $this->database->queryOne(sprintf('
+            SELECT ov.option_value_id
+            FROM oc_option_value ov LEFT JOIN oc_option_value_description ovd ON ovd.option_value_id = ov.option_value_id
+            WHERE ovd.language_id = %d AND ovd.name = "%s"',
+            $languageId, $i18n->getName()
+        ));
+        return $optionValueId;
+    }
+
+    private function buildProductOptionValues(ProductVariationModel $variation, &$productOption)
+    {
+        if (in_array($variation->getType(),
+            [ProductVariationModel::TYPE_FREE_TEXT, ProductVariationModel::TYPE_FREE_TEXT_OBLIGATORY])) {
+            $this->buildSingleProductOptionValue($variation, $productOption);
+        } else {
+            $this->buildMultipleProductOptionValue($variation, $productOption);
+        }
+    }
+
+    private function buildMultipleProductOptionValue(ProductVariationModel $variation, &$productOption)
+    {
+        foreach ($variation->getValues() as $value) {
+            $optionValueId = null;
+            $mapper = new ProductVariationValueMapper();
+            $productOptionValue = $mapper->toEndpoint($value);
+            foreach ($value->getI18ns() as $i18n) {
+                $optionValueId = $this->findExistingOptionValue($i18n);
+                if (!is_null($optionValueId)) {
+                    break;
+                }
+            }
+            $productOptionValue['option_value_id'] = $optionValueId;
+            $productOption['product_option_value'][] = $productOptionValue;
+        }
+    }
+
+    private function buildSingleProductOptionValue(ProductVariationModel $variation, &$productOption)
+    {
+        $productOption['product_option_value']['value'] = "";
+        // Anstatt produt_option_values nur value
+        /*$variation->getValues()[0]->getI18ns()[0]->get
+        [1 => [
+            'product_option_id' => '',
+            'option_id' => '57',
+            'required' => '1',
+            'value' => ''
+        ]
+        ];*/
     }
 }

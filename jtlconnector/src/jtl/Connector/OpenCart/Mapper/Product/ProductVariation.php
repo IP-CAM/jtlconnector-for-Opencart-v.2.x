@@ -16,22 +16,28 @@ class ProductVariation extends BaseMapper
     ];
 
     protected $push = [
-        'product_option_id' => 'id',
-        //'product_id' => 'productId',
-        //'sort_order' => 'sort',
+        'sort_order' => 'sort',
         'type' => null,
-        'required' => null,
-        'Product\ProductVariationI18n' => 'i18ns',
-        'Product\ProductVariationValue' => 'values'
+        'required' => null
     ];
 
     protected function type(ProductVariationModel $data)
     {
-        return count($data->getValues()) > 1 ? 'select' : 'text';
+        switch ($data->getType()) {
+            case ProductVariationModel::TYPE_IMAGE_SWATCHES:
+                return 'select';
+            case ProductVariationModel::TYPE_TEXTBOX:
+                return 'select';
+            case ProductVariationModel::TYPE_FREE_TEXT:
+                return 'text';
+            case ProductVariationModel::TYPE_FREE_TEXT_OBLIGATORY:
+                return 'text';
+        }
+        return $data->getType();
     }
 
-    protected function required()
+    protected function required(ProductVariationModel $data)
     {
-        return true;
+        return $data->getType() !== ProductVariationModel::TYPE_FREE_TEXT;
     }
 }
