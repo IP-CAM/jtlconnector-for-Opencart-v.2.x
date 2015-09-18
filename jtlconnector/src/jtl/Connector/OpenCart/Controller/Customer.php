@@ -12,7 +12,7 @@ class Customer extends BaseController
 {
     public function pullData($data, $model, $limit = null)
     {
-        return parent::pullDataDefault($data, $model, $limit);
+        return parent::pullDataDefault($data, $limit);
     }
 
     protected function pullQuery($data, $limit = null)
@@ -39,6 +39,4 @@ class Customer extends BaseController
             IdentityLinker::TYPE_CUSTOMER
         ));
     }
-
-
 }

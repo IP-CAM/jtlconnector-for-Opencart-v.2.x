@@ -12,7 +12,7 @@ class CrossSelling extends MainEntityController
 {
     public function pullData($data, $model, $limit = null)
     {
-        return parent::pullDataDefault($data, $model, $limit);
+        return parent::pullDataDefault($data, $limit);
     }
 
     protected function pullQuery($data, $limit = null)
@@ -27,9 +27,6 @@ class CrossSelling extends MainEntityController
         );
     }
 
-    /**
-     * @param $data \jtl\Connector\Model\CrossSelling
-     */
     protected function pushData($data, $model)
     {
         $this->deleteData($data);
@@ -47,15 +44,15 @@ class CrossSelling extends MainEntityController
         return $data;
     }
 
-    /**
-     * @param $data \jtl\Connector\Model\CrossSelling
-     * @return mixed
-     */
     protected function deleteData($data)
     {
         $id = $data->getProductId()->getEndpoint();
         if (!empty($id)) {
-            $this->database->query(sprintf('DELETE FROM oc_product_related WHERE product_id = %d', $id));
+            $this->database->query(sprintf('
+                DELETE FROM oc_product_related
+                WHERE product_id = %d',
+                $id
+            ));
         }
         return $data;
     }

@@ -28,9 +28,6 @@ class Manufacturer extends MainEntityController
         );
     }
 
-    /**
-     * @param $data \jtl\Connector\Model\Manufacturer
-     */
     public function pushData($data, $model)
     {
         $manufacturer = OpenCart::getInstance()->loadModel('catalog/manufacturer');
@@ -44,9 +41,6 @@ class Manufacturer extends MainEntityController
         return $data;
     }
 
-    /**
-     * @param $data \jtl\Connector\Model\Image
-     */
     protected function deleteData($data)
     {
         $manufacturer = OpenCart::getInstance()->loadModel('catalog/manufacturer');

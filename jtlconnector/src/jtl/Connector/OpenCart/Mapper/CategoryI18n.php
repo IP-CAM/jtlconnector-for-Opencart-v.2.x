@@ -26,7 +26,7 @@ class CategoryI18n extends I18nBaseMapper
         'meta_title' => null
     ];
 
-    protected function meta_title($data)
+    protected function meta_title()
     {
         return "";
     }

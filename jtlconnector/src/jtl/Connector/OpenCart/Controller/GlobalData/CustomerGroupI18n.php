@@ -25,6 +25,4 @@ class CustomerGroupI18n extends BaseController
             $data['customer_group_id']
         );
     }
-
-
 }

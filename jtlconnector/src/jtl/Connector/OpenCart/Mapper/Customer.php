@@ -50,12 +50,12 @@ class Customer extends BaseMapper
         'has_customer_account' => 'hasCustomerAccount'
     ];
 
-    protected function hasCustomerAccount($data)
+    protected function hasCustomerAccount()
     {
         return true;
     }
 
-    protected function has_customer_account($data)
+    protected function has_customer_account()
     {
         return true;
     }

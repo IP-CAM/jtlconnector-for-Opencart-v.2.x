@@ -3,6 +3,7 @@
 namespace jtl\Connector\OpenCart\Authentication;
 
 use jtl\Connector\Authentication\ITokenLoader;
+use jtl\Connector\OpenCart\Utility\OpenCart;
 
 class TokenLoader implements ITokenLoader
 {
@@ -14,8 +15,6 @@ class TokenLoader implements ITokenLoader
      */
     public function load()
     {
-        // Static example token
-        // TODO: Replace by a more secure one
-        return 'miesu5eicaech6ohy5aigh0aiz6toh7O';
+        return OpenCart::getInstance()->getConfig('connector-password');
     }
 }

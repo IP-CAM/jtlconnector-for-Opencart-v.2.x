@@ -25,14 +25,6 @@ class CustomerOrder extends I18nBaseMapper
         'shippingAddress' => 'Order\CustomerOrderShippingAddress',
         'totalSum' => 'total',
         'items' => 'Order\CustomerOrderItem',
-        // History ?
-        //'paymentDate' => 'DateTime',
-        // See PaymentTypes ?
-        //'paymentModuleCode' => 'string',
-        //'paymentStatus' => 'string',
-        //'shippingDate' => 'DateTime',
-        'shippingMethodName' => 'shipping_method',
-        // Shipping: const in Custom Order
-        //'status' => 'string',
+        'shippingMethodName' => 'shipping_method'
     ];
 }

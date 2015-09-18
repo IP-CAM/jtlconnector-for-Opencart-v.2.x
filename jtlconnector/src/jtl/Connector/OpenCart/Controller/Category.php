@@ -12,10 +12,18 @@ use jtl\Connector\OpenCart\Utility\OpenCart;
 class Category extends MainEntityController
 {
     private static $idCache = [];
+    private $ocCategory;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->ocCategory = OpenCart::getInstance()->loadModel('catalog/category');
+    }
+
 
     public function pullData($data, $model, $limit = null)
     {
-        return parent::pullDataDefault($data, $model, $limit);
+        return parent::pullDataDefault($data, $limit);
     }
 
     protected function pullQuery($data, $limit = null)
@@ -32,25 +40,24 @@ class Category extends MainEntityController
 
     public function pushData($data, $model)
     {
-        $category = OpenCart::getInstance()->loadModel('catalog/category');
+
         if (isset(self::$idCache[$data->getParentCategoryId()->getHost()])) {
             $data->getParentCategoryId()->setEndpoint(self::$idCache[$data->getParentCategoryId()->getHost()]);
         }
-        $endpoint = $this->mapper->toEndpoint($data);
+        $category = $this->mapper->toEndpoint($data);
         if (is_null($data->getId()->getEndpoint())) {
-            $id = $category->addCategory($endpoint);
+            $id = $this->ocCategory->addCategory($category);
             $data->getId()->setEndpoint($id);
             self::$idCache[$data->getId()->getHost()] = $id;
         } else {
-            $category->editCategory($data->getId()->getEndpoint(), $endpoint);
+            $this->ocCategory->editCategory($data->getId()->getEndpoint(), $category);
         }
         return $data;
     }
 
     protected function deleteData($data)
     {
-        $category = OpenCart::getInstance()->loadModel('catalog/category');
-        $category->deleteCategory(intval($data->getId()->getEndpoint()));
+        $this->ocCategory->deleteCategory(intval($data->getId()->getEndpoint()));
         return $data;
     }
 

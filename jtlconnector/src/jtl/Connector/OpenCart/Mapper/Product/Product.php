@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Mapper
+ * @package jtl\Connector\OpenCart\Mapper\Product
  */
 
 namespace jtl\Connector\OpenCart\Mapper\Product;
@@ -13,6 +13,12 @@ class Product extends BaseMapper
 {
     protected $pull = [
 //        'basePriceUnitId' => 'Identity',
+//        'basePriceDivisor' => 'double',
+//        'basePriceFactor' => 'double',
+//        'basePriceQuantity' => 'double',
+//        'basePriceUnitCode' => 'string',
+//        'basePriceUnitName' => 'string',
+//        'considerBasePrice' => 'boolean',
         'id' => 'product_id',
         'manufacturerId' => 'manufacturer_id',
         'creationDate' => 'date_added',
@@ -21,36 +27,25 @@ class Product extends BaseMapper
         'isActive' => 'status',
         'isbn' => 'isbn',
         'availableFrom' => 'date_available',
-//        'basePriceDivisor' => 'double',
-//        'basePriceFactor' => 'double',
-//        'basePriceQuantity' => 'double',
-//        'basePriceUnitCode' => 'string',
-//        'basePriceUnitName' => 'string',
-//        'considerBasePrice' => 'boolean',
         'length' => 'length',
-//        'manufacturerNumber' => 'string',
         'minimumOrderQuantity' => 'minimum',
         'modified' => 'date_modified',
-//        'nextAvailableInflowDate' => 'DateTime',
-//        'nextAvailableInflowQuantity' => 'double',
         'originCountry' => 'location',
-//        'packagingQuantity' => 'double',
         'productWeight' => 'weight',
         'serialNumber' => 'model',
-//        'shippingWeight' => 'double',
         'sku' => 'sku',
         'sort' => 'sort_order',
         'stockLevel' => 'Product\ProductStockLevel',
-//        'considerStock' => 'boolean',
-//        'considerVariationStock' => 'boolean',
+        'considerStock' => 'subtract',
+        'considerVariationStock' => null,
         'upc' => 'upc',
-        //'vat' => 'double',
+        'vat' => 'rate',
         'width' => 'width',
         'attributes' => 'Product\ProductAttr',
         'categories' => 'Product\Product2Category',
-//        'checksums' => '\jtl\Connector\Model\ProductChecksum',
+        'checksums' => 'Product\ProductChecksum',
+        // TODO: not supported yet
 //        'configGroups' => '\jtl\Connector\Model\ProductConfigGroup',
-//        'customerGroupPackagingQuantities' => '\jtl\Connector\Model\CustomerGroupPackagingQuantity',
         'fileDownloads' => 'Product\ProductFileDownload',
         'i18ns' => 'Product\ProductI18n',
         'prices' => 'Product\ProductPrice',
@@ -77,17 +72,16 @@ class Product extends BaseMapper
         'model' => 'sku',
         'sort_order' => 'sort',
         'upc' => 'upc',
+        'subtract' => 'considerStock',
         'product_store' => null,
         'jan' => null,
         'mpn' => null,
-        'subtract' => null,
         'stock_status_id' => null,
         'shipping' => null,
         'price' => null,
         'points' => null,
         'weight_class_id' => null,
         'length_class_id' => null,
-        'tax_class_id' => null,
         'keyword' => null,
         'Product\Product2Category' => 'categories',
         'Product\ProductI18n' => 'i18ns',
@@ -107,15 +101,6 @@ class Product extends BaseMapper
         return "";
     }
 
-    protected function subtract(ProductModel $data)
-    {
-        if ($data->getConsiderStock() === false) {
-            return null;
-        } else {
-            return $data->getMinimumOrderQuantity();
-        }
-    }
-
     protected function stock_status_id()
     {
         return null;
@@ -126,8 +111,11 @@ class Product extends BaseMapper
         return null;
     }
 
-    protected function price()
+    protected function price(ProductModel $data)
     {
+        if (!empty($data->getPrices()) && !empty($data->getPrices()[0]->getItems())) {
+            return $data->getPrices()[0]->getItems()[0]->getNetPrice();
+        }
         return null;
     }
 
@@ -146,11 +134,6 @@ class Product extends BaseMapper
         return null;
     }
 
-    protected function tax_class_id()
-    {
-        return null;
-    }
-
     protected function keyword()
     {
         return null;
@@ -159,5 +142,10 @@ class Product extends BaseMapper
     protected function product_store()
     {
         return [intval(0)];
+    }
+
+    protected function considerVariationStock()
+    {
+        return true;
     }
 }

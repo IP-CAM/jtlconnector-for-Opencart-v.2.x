@@ -31,28 +31,28 @@
       "delete": false
     },
     "ConfigGroup": {
-      "pull": true,
-      "push": true,
+      "pull": false,
+      "push": false,
       "delete": false
     },
     "ConfigGroupI18n": {
-      "pull": true,
-      "push": true,
+      "pull": false,
+      "push": false,
       "delete": false
     },
     "ConfigItem": {
-      "pull": true,
-      "push": true,
+      "pull": false,
+      "push": false,
       "delete": false
     },
     "ConfigItemI18n": {
-      "pull": true,
-      "push": true,
+      "pull": false,
+      "push": false,
       "delete": false
     },
     "ConfigItemPrice": {
-      "pull": true,
-      "push": true,
+      "pull": false,
+      "push": false,
       "delete": false
     },
     "CrossSelling": {
@@ -407,7 +407,7 @@
     },
     "StatusChange": {
       "pull": false,
-      "push": false,
+      "push": true,
       "delete": false
     },
     "TaxClass": {

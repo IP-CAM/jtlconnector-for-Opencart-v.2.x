@@ -6,6 +6,8 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
+use jtl\Connector\Model\Category as CategoryModel;
+
 class Category extends BaseMapper
 {
     protected $pull = [
@@ -33,7 +35,7 @@ class Category extends BaseMapper
         return [intval(0)];
     }
 
-    protected function top($data)
+    protected function top(CategoryModel $data)
     {
         return $data->getParentCategoryId()->getHost() === 0;
     }

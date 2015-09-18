@@ -1,7 +1,6 @@
 <?php
 namespace jtl\Connector\OpenCart\Controller\Product;
 
-use jtl\Connector\Model\ProductVariation as ProductVariationModel;
 use jtl\Connector\OpenCart\Controller\BaseController;
 
 class ProductVariationI18n extends BaseController
@@ -21,10 +20,5 @@ class ProductVariationI18n extends BaseController
             WHERE po.product_option_id = %d',
             $data['product_option_id']
         );
-    }
-
-    public function pushData(ProductVariationModel $data, &$model)
-    {
-
     }
 }

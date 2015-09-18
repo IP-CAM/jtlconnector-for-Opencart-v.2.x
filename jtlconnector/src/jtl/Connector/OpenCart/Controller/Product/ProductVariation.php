@@ -159,14 +159,5 @@ class ProductVariation extends BaseController
     private function buildSingleProductOptionValue(ProductVariationModel $variation, &$productOption)
     {
         $productOption['product_option_value']['value'] = "";
-        // Anstatt produt_option_values nur value
-        /*$variation->getValues()[0]->getI18ns()[0]->get
-        [1 => [
-            'product_option_id' => '',
-            'option_id' => '57',
-            'required' => '1',
-            'value' => ''
-        ]
-        ];*/
     }
 }

@@ -15,9 +15,4 @@ class ProductVariationValueExtraCharge extends BaseController
     {
         throw new DataAlreadyFetchedException();
     }
-
-    public function pushData($data)
-    {
-        // TODO:
-    }
 }

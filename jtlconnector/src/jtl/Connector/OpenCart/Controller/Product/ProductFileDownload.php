@@ -1,6 +1,7 @@
 <?php
 namespace jtl\Connector\OpenCart\Controller\Product;
 
+use jtl\Connector\Model\Product as ProductModel;
 use jtl\Connector\OpenCart\Controller\BaseController;
 
 class ProductFileDownload extends BaseController
@@ -20,10 +21,15 @@ class ProductFileDownload extends BaseController
         );
     }
 
-    public function pushData($data)
+    public function pushData(ProductModel $data, &$model)
     {
-        foreach ($data->getFileDownloads() as $download) {
-            $model['product_download'][] = $this->mapper->toEndpoint($download);
+        foreach ($data->getFileDownloads() as $fileDownload) {
+            $download = $this->mapper->toEndpoint($fileDownload);
+            foreach ($fileDownload->getI18ns() as $i18n) {
+
+            }
+            $model['product_download'][] = $download;
         }
+        var_dump($model['product_download']);
     }
 }

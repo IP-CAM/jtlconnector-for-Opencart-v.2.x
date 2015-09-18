@@ -68,10 +68,6 @@ class OpenCart extends Singleton
         return parent::getInstance();
     }
 
-    /**
-     * @param $model string
-     * @return \Model
-     */
     public function loadModel($model)
     {
         $file = DIR_APPLICATION . 'model/' . $model . '.php';
@@ -88,4 +84,8 @@ class OpenCart extends Singleton
         return $this->registry->get('model_' . str_replace('/', '_', $model));
     }
 
+    public function getConfig($key)
+    {
+        $this->config->get($key);
+    }
 }

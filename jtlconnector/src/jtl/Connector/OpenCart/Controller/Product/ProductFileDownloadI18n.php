@@ -1,8 +1,8 @@
 <?php
 namespace jtl\Connector\OpenCart\Controller\Product;
 
-use jtl\Connector\Model\ProductFileDownload;
 use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Exceptions\DataAlreadyFetchedException;
 
 class ProductFileDownloadI18n extends BaseController
 {
@@ -20,11 +20,8 @@ class ProductFileDownloadI18n extends BaseController
         );
     }
 
-    /**
-     * @param $data ProductFileDownload
-     */
     public function pushData($data)
     {
-        // TODO: gibt es nicht, aber wo passiert das speichern?
+        throw new DataAlreadyFetchedException();
     }
 }
