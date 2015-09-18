@@ -2,6 +2,7 @@
 
 namespace jtl\Connector\OpenCart\Utility;
 
+use jtl\Connector\Core\IO\Path;
 use jtl\Connector\Core\Utilities\Singleton;
 
 function modification($filename)
@@ -29,6 +30,7 @@ require_once(modification(DIR_SYSTEM . 'library/cache.php'));
 require_once(modification(DIR_SYSTEM . 'library/cache/file.php'));
 require_once(modification(DIR_SYSTEM . 'library/config.php'));
 require_once(modification(DIR_SYSTEM . 'engine/event.php'));
+require_once(modification(DIR_SYSTEM . 'engine/controller.php'));
 require_once(modification(DIR_SYSTEM . 'engine/model.php'));
 require_once(modification(DIR_SYSTEM . 'engine/loader.php'));
 require_once(modification(DIR_SYSTEM . 'engine/registry.php'));
@@ -84,8 +86,16 @@ class OpenCart extends Singleton
         return $this->registry->get('model_' . str_replace('/', '_', $model));
     }
 
-    public function getConfig($key)
+    public function loadToken()
     {
-        $this->config->get($key);
+        require_once(Path::combine(DIR_APPLICATION, 'controller', 'module', 'jtlconnector.php'));
+        return $this->getConfig(\ControllerModuleJtlconnector::CONFIG_KEY,
+            \ControllerModuleJtlconnector::CONFIG_PASSWORD_KEY);
+    }
+
+    public function getConfig($code, $key)
+    {
+        $settings = $this->loadModel('setting/setting');
+        return $settings->getSetting($code)[$key];
     }
 }

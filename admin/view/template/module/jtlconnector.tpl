@@ -41,7 +41,8 @@
                         <label class="col-sm-2 control-label" for="connector-password"><?= $text_password ?></label>
 
                         <div class="col-sm-10">
-                            <input class="form-control" name="connector-password" id="connector-password"/>
+                            <input class="form-control" name="connector_password" value="<?= $connector_password ?>"
+                                   id="connector-password"/>
                         </div>
                     </div>
                 </form>

@@ -15,6 +15,6 @@ class TokenLoader implements ITokenLoader
      */
     public function load()
     {
-        return OpenCart::getInstance()->getConfig('connector-password');
+        return OpenCart::getInstance()->loadToken();
     }
 }
