@@ -2,15 +2,18 @@
 
 class ControllerModuleJtlconnector extends Controller
 {
+    const SEPARATOR = '_';
     const CONNECTOR_VERSION = '1.0';
     const CONFIG_KEY = 'connector';
-    const CONFIG_PASSWORD_KEY = 'connector_password';
+    const CONFIG_PASSWORD_KEY = self::CONFIG_KEY . self::SEPARATOR . 'password';
+    const CONFIG_ATTRIBUTE_GROUP = self::CONFIG_KEY . self::SEPARATOR . 'attribute_group';
     private $error = [];
 
     public function __construct($registry)
     {
         parent::__construct($registry);
         $this->load->model('setting/setting');
+        $this->load->model('catalog/attribute_group');
     }
 
     public function index()
@@ -20,7 +23,8 @@ class ControllerModuleJtlconnector extends Controller
         $this->document->setTitle($this->language->get('heading_title'));
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-            $this->model_setting_setting->editSetting(self::CONFIG_KEY, $this->request->post);
+            $this->model_setting_setting->editSettingValue(self::CONFIG_KEY, self::CONFIG_PASSWORD_KEY,
+                $this->request->post[self::CONFIG_PASSWORD_KEY]);
 
             $this->session->data['success'] = $this->language->get('text_success');
 
@@ -35,7 +39,7 @@ class ControllerModuleJtlconnector extends Controller
         $data['text_password'] = $this->language->get('text_password');
         $data['text_version'] = $this->language->get('text_version');
 
-        $data['url'] = $this->config->get('config_url') . 'jtlconnector/';
+        $data['url'] = HTTP_CATALOG . 'jtlconnector/';
         $data['version'] = self::CONNECTOR_VERSION;
 
         $data['button_save'] = $this->language->get('button_save');
@@ -47,22 +51,22 @@ class ControllerModuleJtlconnector extends Controller
             $data['error_warning'] = '';
         }
 
-        $data['breadcrumbs'] = array();
+        $data['breadcrumbs'] = [];
 
-        $data['breadcrumbs'][] = array(
+        $data['breadcrumbs'][] = [
             'text' => $this->language->get('text_home'),
             'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], 'SSL')
-        );
+        ];
 
-        $data['breadcrumbs'][] = array(
+        $data['breadcrumbs'][] = [
             'text' => $this->language->get('text_module'),
             'href' => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL')
-        );
+        ];
 
-        $data['breadcrumbs'][] = array(
+        $data['breadcrumbs'][] = [
             'text' => $this->language->get('heading_title'),
             'href' => $this->url->link('module/jtlconnector', 'token=' . $this->session->data['token'], 'SSL')
-        );
+        ];
 
         $data['action'] = $this->url->link('module/jtlconnector', 'token=' . $this->session->data['token'], 'SSL');
 
@@ -103,12 +107,31 @@ class ControllerModuleJtlconnector extends Controller
 
         // TODO: product checksum, unit, delivery note, payment
 
-        $this->model_setting_setting->editSetting(self::CONFIG_KEY, [self::CONFIG_PASSWORD_KEY => '']);
+        $result = $this->db->query('SELECT * FROM oc_language');
+        $groupDescriptions = [];
+        foreach ($result->rows as $row) {
+            if ($row['code'] === 'de') {
+                $groupDescriptions[$row['language_id']] = ['name' => 'Produkt Eigenschaften'];
+            } else {
+                $groupDescriptions[$row['language_id']] = ['name' => 'Product Specifications'];
+            }
+        }
+        $groupId = $this->model_catalog_attribute_group->addAttributeGroup([
+            'sort_order' => 0,
+            'attribute_group_description' => $groupDescriptions
+        ]);
+
+        $this->model_setting_setting->editSetting(self::CONFIG_KEY, [
+            self::CONFIG_PASSWORD_KEY => '',
+            self::CONFIG_ATTRIBUTE_GROUP => $groupId
+        ]);
     }
 
     public function uninstall()
     {
         $this->db->query('DROP TABLE jtl_connector_link');
+        $configs = $this->model_setting_setting->getSetting(self::CONFIG_KEY);
+        $this->model_catalog_attribute_group->deleteAttributeGroup($configs[self::CONFIG_ATTRIBUTE_GROUP]);
         $this->model_setting_setting->deleteSetting(self::CONFIG_KEY);
     }
 

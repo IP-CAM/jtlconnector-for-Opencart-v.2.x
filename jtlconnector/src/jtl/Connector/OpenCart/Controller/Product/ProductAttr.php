@@ -79,10 +79,11 @@ class ProductAttr extends BaseController
             }
         }
         if (is_null($attributeId)) {
+            $groupId = OpenCart::getInstance()->getConfig(\ControllerModuleJtlconnector::CONFIG_ATTRIBUTE_GROUP);
             $attribute = OpenCart::getInstance()->loadModel('catalog/attribute');
             $attributeId = $attribute->addAttribute([
                 'sort_order' => 0,
-                'attribute_group_id' => 0,
+                'attribute_group_id' => $groupId,
                 'attribute_description' => $descriptions
             ]);
         }

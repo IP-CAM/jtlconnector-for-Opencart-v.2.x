@@ -35,7 +35,6 @@ class Product extends BaseMapper
         'serialNumber' => 'model',
         'sku' => 'sku',
         'sort' => 'sort_order',
-        'stockLevel' => 'Product\ProductStockLevel',
         'considerStock' => 'subtract',
         'considerVariationStock' => null,
         'upc' => 'upc',
@@ -44,13 +43,14 @@ class Product extends BaseMapper
         'attributes' => 'Product\ProductAttr',
         'categories' => 'Product\Product2Category',
         'checksums' => 'Product\ProductChecksum',
-        // TODO: not supported yet
-//        'configGroups' => '\jtl\Connector\Model\ProductConfigGroup',
-        'fileDownloads' => 'Product\ProductFileDownload',
         'i18ns' => 'Product\ProductI18n',
         'prices' => 'Product\ProductPrice',
         'specialPrices' => 'Product\ProductSpecialPrice',
-        'variations' => 'Product\ProductVariation'
+        'variations' => 'Product\ProductVariation',
+        'stockLevel' => 'Product\ProductStockLevel',
+        // TODO: not supported yet
+        // 'fileDownloads' => 'Product\ProductFileDownload',
+        // 'configGroups' => '\jtl\Connector\Model\ProductConfigGroup',
     ];
 
     protected $push = [
@@ -88,7 +88,9 @@ class Product extends BaseMapper
         'Product\ProductAttr' => 'attributes',
         'Product\ProductPrice' => 'prices',
         'Product\ProductStockLevel' => 'stockLevel',
-        'Product\ProductVariation' => 'variations'
+        'Product\ProductSpecialPrice' => 'specialPrices',
+        'Product\ProductVariation' => 'variations',
+        'Product\ProductChecksum' => 'checksums'
     ];
 
     protected function jan()

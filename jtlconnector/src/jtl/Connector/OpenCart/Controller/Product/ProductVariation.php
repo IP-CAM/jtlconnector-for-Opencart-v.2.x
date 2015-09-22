@@ -58,6 +58,7 @@ class ProductVariation extends BaseController
             }
             $productOption = $this->mapper->toEndpoint($variation);
             $productOption['option_id'] = $optionId;
+            $productOption['product_option_id'] = "";
             $this->buildProductOptionValues($variation, $productOption);
             $model['product_option'][] = $productOption;
         }
@@ -74,21 +75,21 @@ class ProductVariation extends BaseController
                 ];
             }
             if (is_null($optionId)) {
-                $optionId = $this->findExistingOption($i18n);
+                $optionId = $this->findExistingOption($i18n, $variation->getType());
             }
         }
         return $optionId;
     }
 
-    private function findExistingOption(ProductVariationI18n $i18n)
+    private function findExistingOption(ProductVariationI18n $i18n, $type)
     {
         $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
         $optionId = $this->database->queryOne(sprintf('
             SELECT o.option_id
             FROM oc_option o
             LEFT JOIN oc_option_description od ON o.option_id = od.option_id
-            WHERE od.language_id = %d AND od.name = "%s"',
-            $languageId, $i18n->getName()
+            WHERE od.language_id = %d AND od.name = "%s" AND o.type = "%s"',
+            $languageId, $i18n->getName(), $type
         ));
         return $optionId;
     }

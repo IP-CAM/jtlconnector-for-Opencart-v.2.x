@@ -1,0 +1,111 @@
+<project name="JTL-Connector-OpenCart-Endpoint" default="clean">
+    <target name="build">
+        <delete dir="./dist"/>
+        <mkdir dir="./dist"/>
+        <mkdir dir="./dist/admin/"/>
+        <mkdir dir="./dist/jtlconnector/"/>
+        <mkdir dir="./dist/jtlconnector/config"/>
+        <mkdir dir="./dist/jtlconnector/db"/>
+        <mkdir dir="./dist/jtlconnector/logs"/>
+        <mkdir dir="./dist/jtlconnector/plugins"/>
+
+        <copy todir="./dist">
+            <fileset dir=".">
+                <include name="admin"/>
+            </fileset>
+        </copy>
+
+        <copy todir="./dist/jtlconnector/config">
+            <fileset dir="./jtlconnector/config">
+                <include name="features.json"/>
+                <include name="config.json"/>
+                <include name=".htaccess"/>
+            </fileset>
+        </copy>
+        <copy todir="./dist/jtlconnector/logs">
+            <fileset dir="./jtlconnector/logs">
+                <include name=".gitkeep"/>
+            </fileset>
+        </copy>
+        <copy todir="./dist/jtlconnector/plugins">
+            <fileset dir="./jtlconnector/plugins">
+                <include name=".gitkeep"/>
+            </fileset>
+        </copy>
+
+        <chmod file="./dist/jtlconnector/config" mode="0777"/>
+        <chmod file="./dist/jtlconnector/db" mode="0777"/>
+        <chmod file="./dist/jtlconnector/logs" mode="0777"/>
+
+        <mkdir dir="./dist/admin/controller/module"/>
+        <mkdir dir="./dist/admin/view/template/module"/>
+        <mkdir dir="./dist/admin/language/english/module"/>
+        <copy todir="./dist/admin/controller/module/">
+            <fileset dir="./admin/controller/module">
+                <include name="jtlconnector.php"/>
+            </fileset>
+        </copy>
+        <copy todir="./dist/admin/view/template/module/">
+            <fileset dir="./admin/view/template/module">
+                <include name="jtlconnector.tpl"/>
+            </fileset>
+        </copy>
+        <copy todir="./dist/admin/language/english/module/">
+            <fileset dir="./admin/language/english/module">
+                <include name="jtlconnector.php"/>
+            </fileset>
+        </copy>
+        <!-- Deutsche Sprache hinzufügen -->
+
+        <delete dir="./build"/>
+        <mkdir dir="./build"/>
+        <copy todir="./build/jtlconnector">
+            <fileset dir="./jtlconnector">
+                <include name="src/"/>
+                <include name="vendor/"/>
+                <include name="index.php"/>
+                <include name="version"/>
+            </fileset>
+        </copy>
+        <copy todir="./build/">
+            <fileset dir="./dist/">
+                <include name="admin/"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="package" depends="build">
+        <loadfile property="version" file="version"/>
+        <pharpackage
+                destfile="./dist/index.phar"
+                basedir="./build"
+                compression="gzip"
+                stub="./stub.php"
+                signature="sha256">
+            <fileset dir="./build">
+                <include name="**/**"/>
+            </fileset>
+            <metadata>
+                <element name="version" value="${version}"/>
+                <element name="authors">
+                    <element name="Sven Mäurer">
+                        <element name="email" value="sven.maeurer@jtl-software.com"/>
+                    </element>
+                </element>
+            </metadata>
+        </pharpackage>
+        <move file="./dist/index.phar" tofile="./dist/index.php"/>
+        <phingcall target="zip">
+            <property name="version" value="${version}"/>
+        </phingcall>
+    </target>
+
+    <target name="zip">
+        <zip destfile="./dist/jtl-connector-opencart-${version}.zip" basedir="./dist" prefix="jtl-connector/"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="./build"/>
+        <delete dir="./dist"/>
+    </target>
+</project>

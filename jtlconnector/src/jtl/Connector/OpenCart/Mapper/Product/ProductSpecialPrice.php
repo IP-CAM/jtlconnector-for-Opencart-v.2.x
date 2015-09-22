@@ -24,8 +24,8 @@ class ProductSpecialPrice extends BaseMapper
     protected $push = [
         'product_id' => 'productId',
         'date_start' => 'activeFromDate',
-        'date_end' => 'considerDateLimit',
-        'Product\ProductSpecialPriceItem' => 'items'
+        'date_end' => 'activeUntilDate',
+        'priority' => null
     ];
 
     protected function considerDateLimit()

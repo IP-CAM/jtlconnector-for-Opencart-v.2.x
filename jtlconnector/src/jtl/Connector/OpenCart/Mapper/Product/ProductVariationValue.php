@@ -57,16 +57,12 @@ class ProductVariationValue extends BaseMapper
 
     protected function price_prefix(PVVModel $data)
     {
-        return ($this->price($data) >= 0) ? '+' : '-';
+        return ($this->getRelativePrice($data) >= 0) ? '+' : '-';
     }
 
     protected function price(PVVModel $data)
     {
-        $price = 0;
-        foreach ($data->getExtraCharges() as $extra) {
-            $price += $extra->getExtraChargeNet();
-        }
-        return $price;
+        return abs($this->getRelativePrice($data));
     }
 
     protected function points_prefix()
@@ -77,5 +73,14 @@ class ProductVariationValue extends BaseMapper
     protected function points()
     {
         return 0;
+    }
+
+    protected function getRelativePrice(PVVModel $data)
+    {
+        $price = 0;
+        foreach ($data->getExtraCharges() as $extra) {
+            $price += $extra->getExtraChargeNet();
+        }
+        return $price;
     }
 }

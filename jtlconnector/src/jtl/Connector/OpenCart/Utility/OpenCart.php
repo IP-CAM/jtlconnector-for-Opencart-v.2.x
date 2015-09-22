@@ -34,6 +34,7 @@ require_once(modification(DIR_SYSTEM . 'engine/controller.php'));
 require_once(modification(DIR_SYSTEM . 'engine/model.php'));
 require_once(modification(DIR_SYSTEM . 'engine/loader.php'));
 require_once(modification(DIR_SYSTEM . 'engine/registry.php'));
+require_once(Path::combine(DIR_APPLICATION, 'controller', 'module', 'jtlconnector.php'));
 
 class OpenCart extends Singleton
 {
@@ -88,14 +89,12 @@ class OpenCart extends Singleton
 
     public function loadToken()
     {
-        require_once(Path::combine(DIR_APPLICATION, 'controller', 'module', 'jtlconnector.php'));
-        return $this->getConfig(\ControllerModuleJtlconnector::CONFIG_KEY,
-            \ControllerModuleJtlconnector::CONFIG_PASSWORD_KEY);
+        return $this->getConfig(\ControllerModuleJtlconnector::CONFIG_PASSWORD_KEY);
     }
 
-    public function getConfig($code, $key)
+    public function getConfig($key)
     {
         $settings = $this->loadModel('setting/setting');
-        return $settings->getSetting($code)[$key];
+        return $settings->getSetting(\ControllerModuleJtlconnector::CONFIG_KEY)[$key];
     }
 }

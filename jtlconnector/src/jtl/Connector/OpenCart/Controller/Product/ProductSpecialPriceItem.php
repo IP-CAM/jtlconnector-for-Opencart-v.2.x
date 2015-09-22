@@ -2,7 +2,6 @@
 
 namespace jtl\Connector\OpenCart\Controller\Product;
 
-use jtl\Connector\Model\ProductSpecialPrice;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Exceptions\DataAlreadyFetchedException;
 
@@ -16,11 +15,5 @@ class ProductSpecialPriceItem extends BaseController
     protected function pullQuery($data, $limit = null)
     {
         throw new DataAlreadyFetchedException();
-    }
-
-    public function pushData(ProductSpecialPrice $data, &$model)
-    {
-        $endpoint = $this->mapper->toEndpoint($data);
-        $model = array_merge($model, $endpoint);
     }
 }
