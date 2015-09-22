@@ -1,0 +1,8 @@
+- Category and Manufacturer can only have one picture
+- Payment und Shipping are not supported
+- Base price is not supported
+- Units are not supported
+- Warehouse is not supported
+- Attribute groups are not supported by the Wawi yet
+- Configuration articles are not supported by the Wawi yet
+- File Downloads are not supported by the Wawi yet

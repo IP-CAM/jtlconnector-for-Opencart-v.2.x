@@ -1,19 +1,14 @@
 <project name="JTL-Connector-OpenCart-Endpoint" default="clean">
     <target name="build">
         <phingcall target="clean"/>
-        <mkdir dir="./dist"/>
         <mkdir dir="./dist/admin/"/>
-        <mkdir dir="./dist/jtlconnector/"/>
+        <mkdir dir="./dist/image/catalog/wawi/product"/>
+        <mkdir dir="./dist/image/catalog/wawi/category"/>
+        <mkdir dir="./dist/image/catalog/wawi/manufacturer"/>
         <mkdir dir="./dist/jtlconnector/config"/>
         <mkdir dir="./dist/jtlconnector/db"/>
         <mkdir dir="./dist/jtlconnector/logs"/>
         <mkdir dir="./dist/jtlconnector/plugins"/>
-
-        <copy todir="./dist">
-            <fileset dir=".">
-                <include name="admin"/>
-            </fileset>
-        </copy>
 
         <copy todir="./dist/jtlconnector/config">
             <fileset dir="./jtlconnector/config">
@@ -70,6 +65,7 @@
         <copy todir="./build/">
             <fileset dir="./dist/">
                 <include name="admin/"/>
+                <include name="image/"/>
             </fileset>
         </copy>
     </target>
