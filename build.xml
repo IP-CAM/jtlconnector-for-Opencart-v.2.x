@@ -1,6 +1,6 @@
 <project name="JTL-Connector-OpenCart-Endpoint" default="clean">
     <target name="build">
-        <delete dir="./dist"/>
+        <phingcall target="clean"/>
         <mkdir dir="./dist"/>
         <mkdir dir="./dist/admin/"/>
         <mkdir dir="./dist/jtlconnector/"/>
@@ -94,7 +94,7 @@
                 </element>
             </metadata>
         </pharpackage>
-        <move file="./dist/index.phar" tofile="./dist/index.php"/>
+        <move file="./dist/index.phar" tofile="./dist/connector.phar"/>
         <phingcall target="zip">
             <property name="version" value="${version}"/>
         </phingcall>
