@@ -61,7 +61,7 @@ class Image extends MainEntityController
     {
         $model = $this->mapper->toHost($picture);
         $model->setRelationType($type);
-        $model->setRemoteURL(HTTP_SERVER . 'image/' . $model->getFilename());
+        $model->setRemoteURL(HTTP_CATALOG . 'image/' . $model->getFilename());
         return $model;
     }
 
@@ -220,6 +220,7 @@ class Image extends MainEntityController
         if (!is_dir($absoluteImagePath) && file_exists($absoluteImagePath)) {
             unlink($absoluteImagePath);
         }
+        return $data;
     }
 
     /**

@@ -40,7 +40,7 @@ class Product extends MainEntityController
         }
         $endpoint = $this->mapper->toEndpoint($data);
         $endpoint['tax_class_id'] = $this->getTaxClassId($data->getVat());
-        $product = OpenCart::getInstance()->loadModel('catalog/product');
+        $product = OpenCart::getInstance()->loadAdminModel('catalog/product');
         $product->editProduct($data->getId()->getEndpoint(), $endpoint);
         return $data;
     }
@@ -48,8 +48,9 @@ class Product extends MainEntityController
     protected function deleteData($data)
     {
         // TODO: Keep in mind that picture files are not deleted automatically.
-        $product = OpenCart::getInstance()->loadModel('catalog/product');
+        $product = OpenCart::getInstance()->loadAdminModel('catalog/product');
         $product->deleteProduct($data->getId()->getEndpoint());
+        return $data;
     }
 
     protected function getStats()

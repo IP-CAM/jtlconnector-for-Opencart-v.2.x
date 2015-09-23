@@ -12,6 +12,9 @@ class I18nBaseMapper extends BaseMapper
 {
     protected function languageISO($data)
     {
+        if (is_null($data['code'])) {
+            return null;
+        }
         return Language::convert($data['code']);
     }
 }

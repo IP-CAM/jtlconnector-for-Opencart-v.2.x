@@ -30,7 +30,7 @@ class Manufacturer extends MainEntityController
 
     public function pushData($data, $model)
     {
-        $manufacturer = OpenCart::getInstance()->loadModel('catalog/manufacturer');
+        $manufacturer = OpenCart::getInstance()->loadAdminModel('catalog/manufacturer');
         $endpoint = $this->mapper->toEndpoint($data);
         if (is_null($data->getId()->getEndpoint())) {
             $id = $manufacturer->addManufacturer($endpoint);
@@ -43,7 +43,7 @@ class Manufacturer extends MainEntityController
 
     protected function deleteData($data)
     {
-        $manufacturer = OpenCart::getInstance()->loadModel('catalog/manufacturer');
+        $manufacturer = OpenCart::getInstance()->loadAdminModel('catalog/manufacturer');
         $manufacturer->deleteManufacturer(intval($data->getId()->getEndpoint()));
         return $data;
     }

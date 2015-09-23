@@ -63,28 +63,31 @@ class OpenCart extends Singleton
         }
     }
 
-    /**
-     * @return OpenCart
-     */
-    public static function getInstance()
-    {
-        return parent::getInstance();
-    }
-
-    public function loadModel($model)
+    public function loadAdminModel($model)
     {
         $file = DIR_APPLICATION . 'model/' . $model . '.php';
+        return $this->loadOcModel($file, $model);
+    }
+
+    public function loadFrontendModel($model)
+    {
+        $file = DIR_CATALOG . 'model/' . $model . '.php';
+        return $this->loadOcModel($file, $model);
+    }
+
+    private function loadOcModel($file, $model)
+    {
         $class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $model);
 
         if (file_exists($file)) {
             include_once($file);
-
-            $this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));
+            $ocModel = new $class($this->registry);
+            $this->registry->set('model_' . str_replace('/', '_', $model), $ocModel);
         } else {
             trigger_error('Error: Could not load model ' . $file . '!');
             exit();
         }
-        return $this->registry->get('model_' . str_replace('/', '_', $model));
+        return $ocModel;
     }
 
     public function loadToken()
@@ -94,7 +97,7 @@ class OpenCart extends Singleton
 
     public function getConfig($key)
     {
-        $settings = $this->loadModel('setting/setting');
+        $settings = $this->loadAdminModel('setting/setting');
         return $settings->getSetting(\ControllerModuleJtlconnector::CONFIG_KEY)[$key];
     }
 }

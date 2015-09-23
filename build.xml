@@ -1,4 +1,5 @@
 <project name="JTL-Connector-OpenCart-Endpoint" default="clean">
+
     <target name="build">
         <phingcall target="clean"/>
         <mkdir dir="./dist/admin/"/>
@@ -19,12 +20,18 @@
         </copy>
         <copy todir="./dist/jtlconnector/logs">
             <fileset dir="./jtlconnector/logs">
-                <include name=".gitkeep"/>
+                <include name=".htaccess"/>
             </fileset>
         </copy>
-        <copy todir="./dist/jtlconnector/plugins">
-            <fileset dir="./jtlconnector/plugins">
-                <include name=".gitkeep"/>
+        <copy todir="./dist/jtlconnector/db">
+            <fileset dir="./jtlconnector">
+                <include name=".htaccess"/>
+            </fileset>
+        </copy>
+        <copy todir="./dist/jtlconnector/">
+            <fileset dir="./jtlconnector">
+                <include name="LICENSE"/>
+                <include name="CHANGELOG.md"/>
             </fileset>
         </copy>
 
@@ -72,8 +79,9 @@
 
     <target name="package" depends="build">
         <loadfile property="version" file="version"/>
+        <!--
         <pharpackage
-                destfile="./dist/index.phar"
+                destfile="./dist/jtlconnector/index.phar"
                 basedir="./build"
                 compression="gzip"
                 stub="./stub.php"
@@ -90,14 +98,15 @@
                 </element>
             </metadata>
         </pharpackage>
-        <move file="./dist/index.phar" tofile="./dist/connector.phar"/>
+        <move file="./dist/jtlconnector/index.phar" tofile="./dist/jtlconnector/connector.phar"/>
+        -->
         <phingcall target="zip">
             <property name="version" value="${version}"/>
         </phingcall>
     </target>
 
     <target name="zip">
-        <zip destfile="./dist/jtl-connector-opencart-${version}.zip" basedir="./dist" prefix="jtl-connector/"/>
+        <zip destfile="./dist/jtl-connector-opencart-${version}.zip" basedir="./dist"/>
     </target>
 
     <target name="clean">

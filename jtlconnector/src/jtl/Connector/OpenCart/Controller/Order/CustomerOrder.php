@@ -115,7 +115,7 @@ class CustomerOrder extends MainEntityController
             $id, implode($paymentStatus, ',')
         ));
         if (!empty($result)) {
-            $order->setPaymentStatus($result[0]['comment']);
+            $order->setPaymentStatus(trim(str_replace('Payment:', '', $result[0]['comment'])));
             $order->setPaymentDate(date_create_from_format("Y-m-d H:i:s", $result[0]['date_added']));
         }
     }

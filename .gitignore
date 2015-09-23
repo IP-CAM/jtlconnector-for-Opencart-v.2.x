@@ -6,3 +6,5 @@
 !/jtlconnector/logs/.gitkeep
 composer.lock
 jtlconnector/vendor/**
+build/
+dist/

@@ -28,18 +28,14 @@ class StatusChange extends BaseController
     {
         $customerOrderId = $data->getCustomerOrderId()->getEndpoint();
         if (!empty($customerOrderId)) {
-            $ocOrder = OpenCart::getInstance()->loadModel('checkout/oder');
-            $customerOrder = $ocOrder->getOrder($customerOrderId);
+            $customerOrder = $this->database->queryOne(sprintf('
+                SELECT count(*) FROM oc_order WHERE order_id = %d', $customerOrderId
+            ));
             if ($customerOrder !== null) {
-                $statusId = $this->mapOrderStatus($data);
+                $statusId = $this->mapShippingStatus($data);
                 $this->database->query(sprintf('
                     INSERT INTO oc_order_history (order_id, order_status_id, notify, comment, date_added)
-                    VALUES (%d, %d, %d, %s, NOW())',
-                    $customerOrderId, $statusId, 0, ''
-                ));
-                $this->database->query(sprintf('
-                    INSERT INTO oc_order_history (order_id, order_status_id, notify, comment, date_added)
-                    VALUES (%d, %d, %d, %s, NOW())',
+                    VALUES (%d, %d, %d, "Payment: %s", NOW())',
                     $customerOrderId, $statusId, 0, $data->getPaymentStatus()
                 ));
                 $this->database->query(sprintf('
@@ -56,31 +52,34 @@ class StatusChange extends BaseController
         throw new DatabaseException('Customer Order Endpoint Id cannot be empty');
     }
 
-    private function mapOrderStatus(StatusChangeModel $data)
+    private function mapShippingStatus(StatusChangeModel $data)
     {
         $status = null;
         switch ($data->getOrderStatus()) {
             case CustomerOrder::STATUS_NEW:
-                $status = 'Pending';
+                $status = 1;
                 break;
             case CustomerOrder::STATUS_CANCELLED:
-                $status = 'Canceled';
+                $status = 7;
                 break;
             case CustomerOrder::STATUS_PARTIALLY_SHIPPED:
-                $status = 'Processing';
+                $status = 2;
                 break;
             case CustomerOrder::STATUS_SHIPPED:
-                $status = 'Shipped';
+                $status = 3;
                 break;
         }
-        $status = $this->database->queryOne(sprintf('
-            SELECT os.order_status_id
-            FROM oc_settings s
-            LEFT JOIN oc_language l ON l.code = s.config_admin_language
-            LEFT JOIN oc_order_status os ON os.language_id = l.language_id
-            WHERE os.name = %s',
-            $status
-        ));
+        if (is_null($status)) {
+            return $this->database->queryOne('
+                SELECT oh.order_status_id
+                FROM oc_order_status os
+                LEFT JOIN oc_order_history oh ON oh.order_status_id = os.order_status_id
+                WHERE oh.order_id = %d
+                ORDER BY oh.date_added
+                LIMIT 1',
+                $data->getCustomerOrderId()->getEndpoint()
+            );
+        }
         return $status;
     }
 }

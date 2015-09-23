@@ -17,7 +17,7 @@ class Category extends MainEntityController
     public function __construct()
     {
         parent::__construct();
-        $this->ocCategory = OpenCart::getInstance()->loadModel('catalog/category');
+        $this->ocCategory = OpenCart::getInstance()->loadAdminModel('catalog/category');
     }
 
 

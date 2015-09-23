@@ -11,7 +11,7 @@ class Date
 
     public static function open_date($date)
     {
-        return ($date === '0000-00-00' || is_null($date));
+        return ($date === '0000-00-00' || $date === '0000-00-00 00:00:00' || is_null($date));
     }
 
     public static function between($date, $start, $end)
