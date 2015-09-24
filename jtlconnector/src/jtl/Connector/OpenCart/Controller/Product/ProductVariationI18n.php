@@ -2,6 +2,7 @@
 namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class ProductVariationI18n extends BaseController
 {
@@ -12,13 +13,7 @@ class ProductVariationI18n extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT po.product_option_id, od.name, l.code
-            FROM oc_option_description od
-            LEFT JOIN oc_product_option po ON po.option_id = od.option_id
-            LEFT JOIN oc_language l ON l.language_id = od.language_id
-            WHERE po.product_option_id = %d',
-            $data['product_option_id']
+        return sprintf(SQLs::PRODUCT_VARIATION_I18N_PULL, $data['product_option_id']
         );
     }
 }

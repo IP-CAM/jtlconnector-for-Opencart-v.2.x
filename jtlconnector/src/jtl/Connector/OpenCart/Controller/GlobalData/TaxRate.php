@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class TaxRate extends BaseController
 {
@@ -17,6 +18,6 @@ class TaxRate extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return 'SELECT * FROM oc_tax_rate';
+        return SQLs::TAX_RATE_PULL;
     }
 }

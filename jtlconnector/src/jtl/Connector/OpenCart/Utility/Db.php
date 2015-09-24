@@ -21,47 +21,19 @@ class Db extends Singleton
         $this->db = $mysql;
     }
 
-    public function query($query)
+    public function query($query, ...$params)
     {
-        return $this->db->query($query);
+        return $this->db->query(sprintf($query, $params));
     }
 
-    public function queryOne($query)
+    public function queryOne($query, ...$params)
     {
         $return = null;
-        $result = mysqli_query($this->db->DB(), $query);
+        $result = mysqli_query($this->db->DB(), sprintf($query, $params));
         if ($result !== false) {
             $return = mysqli_fetch_row($result)[0];
         }
         return $return;
-    }
-
-    public function insert($obj, $table)
-    {
-        if (is_object($obj) && strlen($table) > 0) {
-            $query = "INSERT INTO " . $table . " SET ";
-
-            $sets = array();
-
-            $members = array_keys(get_object_vars($obj));
-
-            if (is_array($members) && count($members) > 0) {
-                foreach ($members as $member) {
-                    if (!is_array($obj->{$member}) && !is_object($obj->{$member})) {
-                        $value = "'" . $obj->{$member} . "'";
-                        if ($obj->$member === null) {
-                            $value = "NULL";
-                        }
-
-                        $sets[] = "{$member} = {$value}";
-                    }
-                }
-            }
-
-            $query .= implode(', ', $sets);
-
-            return $this->db->query($query);
-        }
     }
 
     public function update($obj, $table, $key, $value, array $ignores = null)

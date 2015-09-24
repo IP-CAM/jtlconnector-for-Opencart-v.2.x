@@ -10,7 +10,7 @@ use jtl\Connector\Core\Exception\DatabaseException;
 use jtl\Connector\Model\CustomerOrder;
 use jtl\Connector\Model\StatusChange as StatusChangeModel;
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
-use jtl\Connector\OpenCart\Utility\OpenCart;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class StatusChange extends BaseController
 {
@@ -28,22 +28,12 @@ class StatusChange extends BaseController
     {
         $customerOrderId = $data->getCustomerOrderId()->getEndpoint();
         if (!empty($customerOrderId)) {
-            $customerOrder = $this->database->queryOne(sprintf('
-                SELECT count(*) FROM oc_order WHERE order_id = %d', $customerOrderId
-            ));
+            $customerOrder = $this->database->queryOne(SQLs::STATUS_CHANGE_BY_ORDER, $customerOrderId
+            );
             if ($customerOrder !== null) {
                 $statusId = $this->mapShippingStatus($data);
-                $this->database->query(sprintf('
-                    INSERT INTO oc_order_history (order_id, order_status_id, notify, comment, date_added)
-                    VALUES (%d, %d, %d, "Payment: %s", NOW())',
-                    $customerOrderId, $statusId, 0, $data->getPaymentStatus()
-                ));
-                $this->database->query(sprintf('
-                    UPDATE oc_order
-                    SET order_status_id = %d, date_modified = NOW()
-                    WHERE order_id = %d',
-                    $statusId, $customerOrderId
-                ));
+                $this->database->query(SQLs::STATUS_CHANGE_ADD, $customerOrderId, $statusId, $data->getPaymentStatus());
+                $this->database->query(SQLs::CUSTOMER_ORDER_STATUS, $statusId, $customerOrderId);
                 return $data;
             }
             throw new DatabaseException(sprintf('Customer Order with Endpoint Id (%s) cannot be found',
@@ -70,15 +60,8 @@ class StatusChange extends BaseController
                 break;
         }
         if (is_null($status)) {
-            return $this->database->queryOne('
-                SELECT oh.order_status_id
-                FROM oc_order_status os
-                LEFT JOIN oc_order_history oh ON oh.order_status_id = os.order_status_id
-                WHERE oh.order_id = %d
-                ORDER BY oh.date_added
-                LIMIT 1',
-                $data->getCustomerOrderId()->getEndpoint()
-            );
+            return $this->database->queryOne(SQLs::CUSTOMER_ORDER_SHIPPING_STATUS_ID,
+                $data->getCustomerOrderId()->getEndpoint());
         }
         return $status;
     }

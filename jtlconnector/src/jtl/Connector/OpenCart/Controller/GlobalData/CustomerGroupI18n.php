@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class CustomerGroupI18n extends BaseController
 {
@@ -17,12 +18,6 @@ class CustomerGroupI18n extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT c.*, l.code
-            FROM oc_customer_group_description c
-            LEFT JOIN oc_language l ON c.language_id = l.language_id
-            WHERE c.customer_group_id = %d',
-            $data['customer_group_id']
-        );
+        return sprintf(SQLs::CUSTOMER_GROUP_I18N_PULL, $data['customer_group_id']);
     }
 }

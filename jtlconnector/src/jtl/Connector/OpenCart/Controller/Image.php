@@ -9,6 +9,7 @@ namespace jtl\Connector\OpenCart\Controller;
 use jtl\Connector\Drawing\ImageRelationType;
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\Model\Image as ImageModel;
+use jtl\Connector\OpenCart\Utility\SQLs;
 use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class Image extends MainEntityController
@@ -67,38 +68,17 @@ class Image extends MainEntityController
 
     private function productPullQuery($limit)
     {
-        return sprintf('
-            SELECT pi.image, pi.sort_order, CONCAT("p", pi.product_image_id) as id, pi.product_id as foreign_key
-            FROM oc_product_image pi
-            LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("p", pi.product_image_id) AND l.type = %d
-            WHERE l.hostId IS NULL
-            LIMIT %d',
-            IdentityLinker::TYPE_IMAGE, $limit
-        );
+        return sprintf(SQLs::IMAGE_PRODUCT_PULL, IdentityLinker::TYPE_IMAGE, $limit);
     }
 
     private function categoryPullQuery($limit)
     {
-        return sprintf('
-            SELECT c.image, c.sort_order, CONCAT("c", c.category_id) as id, c.category_id as foreign_key
-            FROM oc_category c
-            LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("c", c.category_id) AND l.type = %d
-            WHERE l.hostId IS NULL AND c.image IS NOT NULL AND c.image != ""
-            LIMIT %d',
-            IdentityLinker::TYPE_IMAGE, $limit
-        );
+        return sprintf(SQLs::IMAGE_CATEGORY_PULL, IdentityLinker::TYPE_IMAGE, $limit);
     }
 
     private function manufacturerPullQuery($limit)
     {
-        return sprintf('
-            SELECT m.image, m.sort_order, CONCAT("m", m.manufacturer_id) as id, m.manufacturer_id as foreign_key
-            FROM oc_manufacturer m
-            LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("m", m.manufacturer_id) AND l.type = %d
-            WHERE l.hostId IS NULL AND m.image IS NOT NULL AND m.image != ""
-            LIMIT %d',
-            IdentityLinker::TYPE_IMAGE, $limit
-        );
+        return sprintf(SQLs::IMAGE_MANUFACTURER_PULL, IdentityLinker::TYPE_IMAGE, $limit);
     }
 
     protected function pullQuery($data, $limit = null)
@@ -122,18 +102,9 @@ class Image extends MainEntityController
         $path = $this->saveImage($data);
         if ($path !== false) {
             if ($isCover) {
-                $this->database->query(sprintf('
-                    UPDATE oc_product
-                    SET image = "%s"
-                    WHERE product_id = %d',
-                    $path, $id
-                ));
+                $this->database->query(SQLs::PRODUCT_SET_COVER, $path, $id);
             } else {
-                $this->database->query(sprintf('
-                    INSERT INTO oc_product_image (product_id, image, sort_order)
-                    values (%d, "%s", %d)',
-                    $id, $path, $data->getSort()
-                ));
+                $this->database->query(SQLs::PRODUCT_ADD_IMAGE, $id, $path, $data->getSort());
             }
         }
     }
@@ -142,11 +113,7 @@ class Image extends MainEntityController
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
-            $this->database->query("
-                UPDATE oc_category
-                SET image = '{$path}'
-                WHERE category_id = {$id}"
-            );
+            $this->database->query(SQLs::IMAGE_CATEGORY_PUSH, $path, $id);
         }
     }
 
@@ -154,11 +121,7 @@ class Image extends MainEntityController
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
-            $this->database->query("
-                UPDATE oc_manufacturer
-                SET image = '{$path}'
-                WHERE manufacturer_id = {$id}"
-            );
+            $this->database->query(SQLs::IMAGE_MANUFACTURER_PUSH, $path, $id);
         }
     }
 
@@ -183,9 +146,6 @@ class Image extends MainEntityController
         return false;
     }
 
-    /**
-     * @param $data ImageModel
-     */
     protected function deleteData($data)
     {
         $path = $data->getFilename();
@@ -195,18 +155,9 @@ class Image extends MainEntityController
             case ImageRelationType::TYPE_PRODUCT:
                 $isCover = $data->getSort() == 1 ? true : false;
                 if ($isCover) {
-                    $this->database->query(sprintf('
-                        UPDATE oc_product
-                        SET image = NULL
-                        WHERE product_id = %d',
-                        $data->getForeignKey()->getEndpoint()
-                    ));
+                    $this->database->query(SQLs::PRODUCT_SET_COVER, null, $data->getForeignKey()->getEndpoint());
                 } else {
-                    $this->database->query(sprintf('
-                        DELETE FROM oc_product_image
-                        WHERE product_image_id = %d',
-                        $data->getId()->getEndpoint()
-                    ));
+                    $this->database->query(SQLs::IMAGE_PRODUCT_DELETE, $data->getId()->getEndpoint());
                 }
                 break;
             case ImageRelationType::TYPE_CATEGORY:

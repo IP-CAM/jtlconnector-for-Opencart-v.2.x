@@ -7,7 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
-use jtl\Connector\OpenCart\Utility\OpenCart;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class Category extends MainEntityController
 {
@@ -17,7 +17,7 @@ class Category extends MainEntityController
     public function __construct()
     {
         parent::__construct();
-        $this->ocCategory = OpenCart::getInstance()->loadAdminModel('catalog/category');
+        $this->ocCategory = $this->oc->loadAdminModel('catalog/category');
     }
 
 
@@ -28,14 +28,7 @@ class Category extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT c.*
-            FROM oc_category c
-            LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL
-            LIMIT %d',
-            IdentityLinker::TYPE_CATEGORY, $limit
-        );
+        return sprintf(SQLs::CATEGORY_PULL, IdentityLinker::TYPE_CATEGORY, $limit);
     }
 
     public function pushData($data, $model)
@@ -63,12 +56,6 @@ class Category extends MainEntityController
 
     protected function getStats()
     {
-        return $this->database->queryOne(sprintf('
-			SELECT COUNT(*)
-			FROM oc_category c
-			LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL',
-            IdentityLinker::TYPE_CATEGORY
-        ));
+        return $this->database->queryOne(SQLs::CATEGORY_STATS, IdentityLinker::TYPE_CATEGORY);
     }
 }

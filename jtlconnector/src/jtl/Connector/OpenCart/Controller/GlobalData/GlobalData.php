@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Utility\SQLs;
 use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class GlobalData extends BaseController
@@ -24,11 +25,6 @@ class GlobalData extends BaseController
 
     protected function getStats()
     {
-        $query = 'SELECT
-            (SELECT COUNT(*) FROM oc_currency) +
-            (SELECT COUNT(*) FROM oc_customer_group) +
-            (SELECT COUNT(*) FROM oc_language) +
-            (SELECT COUNT(*) FROM oc_tax_rate)';
-        return $this->database->queryOne($query);
+        return $this->database->queryOne(SQLs::GLOBAL_DATA_STATS);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\OpenCart\Utility\SQLs;
+
 class TaxClass extends BaseController
 {
     public function pullData($data, $model, $limit = null)
@@ -11,6 +13,6 @@ class TaxClass extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return 'SELECT * FROM oc_tax_class';
+        return SQLs::TAX_CLASS_PULL;
     }
 }

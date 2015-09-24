@@ -3,6 +3,7 @@
 namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class ProductI18n extends BaseController
 {
@@ -13,13 +14,7 @@ class ProductI18n extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT p.*, l.code
-            FROM oc_product_description p
-            LEFT JOIN oc_language l ON p.language_id = l.language_id
-            WHERE p.product_id = %d',
-            $data['product_id']
-        );
+        return sprintf(SQLs::PRODUCT_I18N_PULL, $data['product_id']);
     }
 
     public function pushData($data, &$model)

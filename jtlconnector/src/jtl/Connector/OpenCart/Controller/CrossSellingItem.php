@@ -8,6 +8,7 @@ namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Model\CrossSellingItem as CrossSellingItemModel;
 use jtl\Connector\Model\Identity;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class CrossSellingItem extends BaseController
 {
@@ -27,11 +28,6 @@ class CrossSellingItem extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT related_id
-            FROM oc_product_related
-            WHERE product_id = %d',
-            $data['product_id']
-        );
+        return sprintf(SQLs::CROSS_SELLING_ITEM_PULL, $data['product_id']);
     }
 }

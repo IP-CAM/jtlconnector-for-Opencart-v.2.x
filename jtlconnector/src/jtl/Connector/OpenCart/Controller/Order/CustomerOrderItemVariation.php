@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller\Order;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class CustomerOrderItemVariation extends BaseController
 {
@@ -21,16 +22,6 @@ class CustomerOrderItemVariation extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT oo.*, u.name AS filename, pov.price_prefix, pov.price
-            FROM oc_order_option oo
-            LEFT JOIN oc_product_option po ON oo.product_option_id = po.product_option_id
-            LEFT JOIN oc_option o ON o.option_id = po.option_id
-            LEFT JOIN oc_upload u ON u.code = oo.value
-            LEFT JOIN oc_product_option_value pov ON pov.product_option_value_id = oo.product_option_value_id
-            WHERE oo.order_id = %d
-            ORDER BY o.sort_order',
-            $data['order_item_id']
-        );
+        return sprintf(SQLs::CUSTOMER_ORDER_ITEM_VARIATION, $data['order_item_id']);
     }
 }

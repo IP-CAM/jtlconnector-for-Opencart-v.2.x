@@ -15,6 +15,7 @@ use jtl\Connector\Formatter\ExceptionFormatter;
 use jtl\Connector\Model\Statistic;
 use jtl\Connector\OpenCart\Mapper\BaseMapper;
 use jtl\Connector\OpenCart\Utility\Db;
+use jtl\Connector\OpenCart\Utility\OpenCart;
 use jtl\Connector\OpenCart\Utility\Utils;
 use jtl\Connector\Result\Action;
 
@@ -32,6 +33,10 @@ abstract class BaseController extends Controller
      * @var $controllerName string
      */
     private $controllerName = null;
+    /**
+     * @var $oc OpenCart
+     */
+    protected $oc = null;
 
     public function __construct()
     {
@@ -44,6 +49,7 @@ abstract class BaseController extends Controller
         if (class_exists($mapperClass)) {
             $this->mapper = new $mapperClass();
         }
+        $this->oc = OpenCart::getInstance();
     }
 
     public function pull(QueryFilter $query)

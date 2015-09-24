@@ -7,30 +7,23 @@
 namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
-use jtl\Connector\OpenCart\Utility\OpenCart;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class Manufacturer extends MainEntityController
 {
     public function pullData($data, $model, $limit = null)
     {
-        return parent::pullDataDefault($data, $model, $limit);
+        return parent::pullDataDefault($data, $limit);
     }
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT m.*
-            FROM oc_manufacturer m
-            LEFT JOIN jtl_connector_link l ON m.manufacturer_id = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL
-            LIMIT %d',
-            IdentityLinker::TYPE_MANUFACTURER, $limit
-        );
+        return sprintf(SQLs::MANUFACTURER_PULL, IdentityLinker::TYPE_MANUFACTURER, $limit);
     }
 
     public function pushData($data, $model)
     {
-        $manufacturer = OpenCart::getInstance()->loadAdminModel('catalog/manufacturer');
+        $manufacturer = $this->oc->loadAdminModel('catalog/manufacturer');
         $endpoint = $this->mapper->toEndpoint($data);
         if (is_null($data->getId()->getEndpoint())) {
             $id = $manufacturer->addManufacturer($endpoint);
@@ -43,19 +36,13 @@ class Manufacturer extends MainEntityController
 
     protected function deleteData($data)
     {
-        $manufacturer = OpenCart::getInstance()->loadAdminModel('catalog/manufacturer');
+        $manufacturer = $this->oc->loadAdminModel('catalog/manufacturer');
         $manufacturer->deleteManufacturer(intval($data->getId()->getEndpoint()));
         return $data;
     }
 
     protected function getStats()
     {
-        return $this->database->queryOne(sprintf('
-			SELECT COUNT(*)
-			FROM oc_manufacturer m
-			LEFT JOIN jtl_connector_link l ON m.manufacturer_id = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL',
-            IdentityLinker::TYPE_MANUFACTURER
-        ));
+        return $this->database->queryOne(SQLs::MANUFACTURER_STATS, IdentityLinker::TYPE_MANUFACTURER);
     }
 }

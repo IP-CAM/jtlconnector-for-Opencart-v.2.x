@@ -7,19 +7,17 @@ use jtl\Connector\Model\ProductVariationI18n;
 use jtl\Connector\Model\ProductVariationValueI18n;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Mapper\Product\ProductVariationValue as ProductVariationValueMapper;
-use jtl\Connector\OpenCart\Utility\OpenCart;
+use jtl\Connector\OpenCart\Utility\SQLs;
 use jtl\Connector\OpenCart\Utility\Utils;
 
 class ProductVariation extends BaseController
 {
-    private $oc;
     private $utils;
 
     public function __construct()
     {
         parent::__construct();
         $this->utils = Utils::getInstance();
-        $this->oc = OpenCart::getInstance();
     }
 
 
@@ -28,19 +26,11 @@ class ProductVariation extends BaseController
         return parent::pullDataDefault($data);
     }
 
-    /**
-     * Do not pull checkbox as configuration items are not supported.
-     * Do not pull file as uploads are handled extra.
-     */
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT *
-            FROM oc_product_option po
-            LEFT JOIN oc_option o ON po.option_id = o.option_id
-            WHERE po.product_id = %d AND o.type NOT IN ("checkbox", "file");',
-            $data['product_id']
-        );
+        // Do not pull checkbox as configuration items are not supported yet.
+        // Do not pull file as uploads are handled extra.
+        return sprintf(SQLs::PRODUCT_VARIATION_PULL, $data['product_id']);
     }
 
     public function pushData(ProductModel $data, &$model)
@@ -50,7 +40,7 @@ class ProductVariation extends BaseController
             $option = $this->mapper->toEndpoint($variation);
             $optionId = $this->buildOptionDescriptions($variation, $option);
             $this->buildOptionValues($variation, $option);
-            $ocOption = $this->oc->loadModel('catalog/option');
+            $ocOption = $this->oc->loadAdminModel('catalog/option');
             if (is_null($optionId)) {
                 $optionId = $ocOption->addOption($option);
             } else {
@@ -84,13 +74,7 @@ class ProductVariation extends BaseController
     private function findExistingOption(ProductVariationI18n $i18n, $type)
     {
         $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-        $optionId = $this->database->queryOne(sprintf('
-            SELECT o.option_id
-            FROM oc_option o
-            LEFT JOIN oc_option_description od ON o.option_id = od.option_id
-            WHERE od.language_id = %d AND od.name = "%s" AND o.type = "%s"',
-            $languageId, $i18n->getName(), $type
-        ));
+        $optionId = $this->database->queryOne(SQLs::OPTION_ID_BY_DESCRIPTION, $languageId, $i18n->getName(), $type);
         return $optionId;
     }
 
@@ -104,7 +88,7 @@ class ProductVariation extends BaseController
             ];
             foreach ($value->getI18ns() as $i18n) {
                 $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-                if ($languageId !== false) {
+                if (!is_null($languageId)) {
                     $optionValue['option_value_description'][intval($languageId)] = [
                         'name' => $i18n->getName()
                     ];
@@ -121,12 +105,7 @@ class ProductVariation extends BaseController
     private function findExistingOptionValue(ProductVariationValueI18n $i18n)
     {
         $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-        $optionValueId = $this->database->queryOne(sprintf('
-            SELECT ov.option_value_id
-            FROM oc_option_value ov LEFT JOIN oc_option_value_description ovd ON ovd.option_value_id = ov.option_value_id
-            WHERE ovd.language_id = %d AND ovd.name = "%s"',
-            $languageId, $i18n->getName()
-        ));
+        $optionValueId = $this->database->queryOne(SQLs::OPTION_VALUE_ID_BY_DESCRIPTION, $languageId, $i18n->getName());
         return $optionValueId;
     }
 
@@ -134,7 +113,7 @@ class ProductVariation extends BaseController
     {
         if (in_array($variation->getType(),
             [ProductVariationModel::TYPE_FREE_TEXT, ProductVariationModel::TYPE_FREE_TEXT_OBLIGATORY])) {
-            $this->buildSingleProductOptionValue($variation, $productOption);
+            $productOption['product_option_value']['value'] = "";
         } else {
             $this->buildMultipleProductOptionValue($variation, $productOption);
         }
@@ -155,10 +134,5 @@ class ProductVariation extends BaseController
             $productOptionValue['option_value_id'] = $optionValueId;
             $productOption['product_option_value'][] = $productOptionValue;
         }
-    }
-
-    private function buildSingleProductOptionValue(ProductVariationModel $variation, &$productOption)
-    {
-        $productOption['product_option_value']['value'] = "";
     }
 }

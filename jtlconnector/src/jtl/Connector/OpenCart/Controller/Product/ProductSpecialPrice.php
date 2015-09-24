@@ -5,6 +5,7 @@ namespace jtl\Connector\OpenCart\Controller\Product;
 use jtl\Connector\Model\Product as ProductModel;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Mapper\Product\ProductSpecialPriceItem;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class ProductSpecialPrice extends BaseController
 {
@@ -15,12 +16,7 @@ class ProductSpecialPrice extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT *
-            FROM oc_product_special
-            WHERE product_id = %d',
-            $data['product_id']
-        );
+        return sprintf(SQLs::PRODUCT_SPECIAL_PULL, $data['product_id']);
     }
 
     public function pushData(ProductModel $data, &$model)

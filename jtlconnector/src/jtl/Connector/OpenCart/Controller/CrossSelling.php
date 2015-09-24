@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class CrossSelling extends MainEntityController
 {
@@ -17,12 +18,7 @@ class CrossSelling extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT DISTINCT pr.product_id
-            FROM oc_product_related pr
-            LEFT JOIN jtl_connector_link l ON %s = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL
-            LIMIT %d',
+        return sprintf(SQLs::CROSS_SELLING_PULL,
             'CONCAT_WS("_", pr.product_id, pr.related_id)', IdentityLinker::TYPE_CROSSSELLING, $limit
         );
     }
@@ -48,23 +44,15 @@ class CrossSelling extends MainEntityController
     {
         $id = $data->getProductId()->getEndpoint();
         if (!empty($id)) {
-            $this->database->query(sprintf('
-                DELETE FROM oc_product_related
-                WHERE product_id = %d',
-                $id
-            ));
+            $this->database->query(SQLs::CROSS_SELLING_DELETE, $id);
         }
         return $data;
     }
 
     protected function getStats()
     {
-        return $this->database->queryOne(sprintf('
-			SELECT COUNT(DISTINCT(pr.product_id))
-			FROM oc_product_related pr
-			LEFT JOIN jtl_connector_link l ON %s = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL',
+        return $this->database->queryOne(SQLs::CROSS_SELLING_STATS,
             'CONCAT_WS("_", pr.product_id, pr.related_id)', IdentityLinker::TYPE_CROSSSELLING
-        ));
+        );
     }
 }

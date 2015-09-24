@@ -3,6 +3,7 @@
 namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class ProductVariationValue extends BaseController
 {
@@ -13,11 +14,6 @@ class ProductVariationValue extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT *
-            FROM oc_product_option_value
-            WHERE product_option_id = %d',
-            $data['product_option_id']
-        );
+        return sprintf(SQLs::PRODUCT_VARIATION_VALUE_PULL, $data['product_option_id']);
     }
 }

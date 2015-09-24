@@ -8,7 +8,7 @@ namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
-use jtl\Connector\OpenCart\Utility\OpenCart;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class Product extends MainEntityController
 {
@@ -19,19 +19,14 @@ class Product extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf('
-            SELECT p.*, tr.rate
-            FROM oc_product p
-            LEFT JOIN oc_tax_class tc ON p.tax_class_id = tc.tax_class_id
-            LEFT JOIN oc_tax_rule r ON r.tax_class_id = tc.tax_class_id
-            LEFT JOIN oc_tax_rate tr ON tr.tax_rate_id = r.tax_rate_id
-            LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL
-            LIMIT %d',
-            IdentityLinker::TYPE_PRODUCT, $limit
-        );
+        return sprintf(SQLs::PRODUCT_PULL, IdentityLinker::TYPE_PRODUCT, $limit);
     }
 
+    /**
+     * @param $data \jtl\Connector\Model\Product;
+     * @param $model
+     * @return mixed
+     */
     protected function pushData($data, $model)
     {
         if (empty($data->getId()->getEndpoint())) {
@@ -39,39 +34,47 @@ class Product extends MainEntityController
             $data->getId()->setEndpoint($id);
         }
         $endpoint = $this->mapper->toEndpoint($data);
-        $endpoint['tax_class_id'] = $this->getTaxClassId($data->getVat());
-        $product = OpenCart::getInstance()->loadAdminModel('catalog/product');
+        $endpoint['tax_class_id'] = $this->database->queryOne(SQLs::TAX_CLASS_BY_RATE, $data->getVat());
+        $product = $this->oc->loadAdminModel('catalog/product');
         $product->editProduct($data->getId()->getEndpoint(), $endpoint);
+        if ($data->getIsTopProduct()) {
+            $this->handleTopProduct($data->getId()->getEndpoin());
+        }
         return $data;
     }
 
     protected function deleteData($data)
     {
         // TODO: Keep in mind that picture files are not deleted automatically.
-        $product = OpenCart::getInstance()->loadAdminModel('catalog/product');
+        $product = $this->oc->loadAdminModel('catalog/product');
         $product->deleteProduct($data->getId()->getEndpoint());
         return $data;
     }
 
     protected function getStats()
     {
-        return $this->database->queryOne(sprintf('
-			SELECT COUNT(*)
-			FROM oc_product p
-			LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL',
-            IdentityLinker::TYPE_PRODUCT
-        ));
+        return $this->database->queryOne(SQLs::PRODUCT_STATS, IdentityLinker::TYPE_PRODUCT);
     }
 
-    private function getTaxClassId($vat)
+    private function handleTopProduct($id)
     {
-        return $this->database->queryOne(sprintf('
-            SELECT r.tax_class_id
-            FROM oc_tax_rule r
-            LEFT JOIN oc_tax_rate tr ON tr.tax_rate_id = r.tax_rate_id
-            WHERE tr.rate = %d',
-            $vat
-        ));
+        $data = [
+            'name' => 'Featured - Wawi',
+            'width' => '200',
+            'height' => '200',
+            'status' => '1'
+        ];
+        $moduleId = $this->database->queryOne(SQLs::MODULE_FEATURED_WAWI);
+        $ocModule = $this->oc->loadAdminModel('extension/module');
+        if (is_null($moduleId)) {
+            $data['product'] = [$id];
+            $data['limit'] = 1;
+            $ocModule->addModule('featured', $data);
+        } else {
+            $module = $ocModule->getModule($moduleId);
+            $data['product'] = array_merge($module['products'], [$id]);
+            $data['limit'] = count($data['product']);
+            $ocModule->editModule($moduleId, $data);
+        }
     }
 }

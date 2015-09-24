@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class Language extends BaseController
 {
@@ -17,6 +18,6 @@ class Language extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return 'SELECT * FROM oc_language WHERE status = 1';
+        return SQLs::LANGUAGE_PULL;
     }
 }

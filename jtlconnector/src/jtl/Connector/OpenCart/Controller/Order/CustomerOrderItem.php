@@ -12,6 +12,7 @@ use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemDiscountMapper;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemProductMapper;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemShippingMapper;
+use jtl\Connector\OpenCart\Utility\SQLs;
 use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class CustomerOrderItem extends BaseController
@@ -65,36 +66,17 @@ class CustomerOrderItem extends BaseController
 
     private function pullProducts($orderId)
     {
-        $query = sprintf('
-            SELECT op.*, p.sku
-            FROM oc_order_product op
-            LEFT JOIN oc_product p ON p.product_id = op.product_id
-            WHERE op.order_id = %d',
-            $orderId
-        );
-        return $this->database->query($query);
+        return $this->database->query(SQLs::CUSTOMER_ORDER_PRODUCTS, $orderId);
     }
 
     private function pullShippings($orderId)
     {
-        $query = sprintf('
-            SELECT *
-            FROM oc_order_total
-            WHERE code = "shipping" AND order_id = %d',
-            $orderId
-        );
-        return $this->database->query($query);
+        return $this->database->query(SQLs::CUSTOMER_ORDER_SHIPPINGS, $orderId);
     }
 
     private function pullDiscounts($orderId)
     {
-        $query = sprintf('
-            SELECT *
-            FROM oc_order_total
-            WHERE code IN ("coupon", "voucher") AND order_id = %d',
-            $orderId
-        );
-        return $this->database->query($query);
+        return $this->database->query(SQLs::CUSTOMER_ORDER_DISCOUNTS,$orderId);
     }
 
     private function getTax($orderId)
