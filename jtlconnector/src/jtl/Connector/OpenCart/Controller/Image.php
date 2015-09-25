@@ -15,9 +15,9 @@ use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 class Image extends MainEntityController
 {
     private $methods = [
-        'productPullQuery' => ImageRelationType::TYPE_PRODUCT,
-        'categoryPullQuery' => ImageRelationType::TYPE_CATEGORY,
-        'manufacturerPullQuery' => ImageRelationType::TYPE_MANUFACTURER
+        'productPullQueries' => ImageRelationType::TYPE_PRODUCT,
+        'categoryPullQueries' => ImageRelationType::TYPE_CATEGORY,
+        'manufacturerPullQueries' => ImageRelationType::TYPE_MANUFACTURER
     ];
 
     /**
@@ -43,11 +43,13 @@ class Image extends MainEntityController
     {
         list($method, $type) = each($methods);
         if (!is_null($method)) {
-            $query = $this->{$method}($limit);
-            $result = $this->database->query($query);
-            foreach ($result as $picture) {
-                $model = $this->mapImageToHost($picture, $type);
-                $return[] = $model;
+            $queries = $this->{$method}($limit);
+            foreach ($queries as $query) {
+                $result = $this->database->query($query);
+                foreach ($result as $picture) {
+                    $model = $this->mapImageToHost($picture, $type);
+                    $return[] = $model;
+                }
             }
             return true;
         } else {
@@ -66,19 +68,22 @@ class Image extends MainEntityController
         return $model;
     }
 
-    private function productPullQuery($limit)
+    private function productPullQueries($limit)
     {
-        return sprintf(SQLs::IMAGE_PRODUCT_PULL, IdentityLinker::TYPE_IMAGE, $limit);
+        return [
+            sprintf(SQLs::IMAGE_PRODUCT_PULL_COVER, IdentityLinker::TYPE_IMAGE),
+            sprintf(SQLs::IMAGE_PRODUCT_PULL_EXTRA, IdentityLinker::TYPE_IMAGE, $limit),
+        ];
     }
 
-    private function categoryPullQuery($limit)
+    private function categoryPullQueries($limit)
     {
-        return sprintf(SQLs::IMAGE_CATEGORY_PULL, IdentityLinker::TYPE_IMAGE, $limit);
+        return [sprintf(SQLs::IMAGE_CATEGORY_PULL, IdentityLinker::TYPE_IMAGE, $limit)];
     }
 
-    private function manufacturerPullQuery($limit)
+    private function manufacturerPullQueries($limit)
     {
-        return sprintf(SQLs::IMAGE_MANUFACTURER_PULL, IdentityLinker::TYPE_IMAGE, $limit);
+        return [sprintf(SQLs::IMAGE_MANUFACTURER_PULL, IdentityLinker::TYPE_IMAGE, $limit)];
     }
 
     protected function pullQuery($data, $limit = null)
@@ -88,40 +93,44 @@ class Image extends MainEntityController
 
     protected function pushData($data, $model)
     {
-        $id = $data->getForeignKey()->getEndpoint();
-        if (!empty($id)) {
+        $foreignKey = $data->getForeignKey()->getEndpoint();
+        if (!empty($foreignKey)) {
             $this->deleteData($data);
-            $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($id, $data);
+            $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($foreignKey, $data);
         }
         return $data;
     }
 
-    private function pushProductImage($id, ImageModel $data)
+    private function pushProductImage($foreignKey, ImageModel $data)
     {
-        $isCover = $data->getSort() == 1 ? true : false;
+        $isCover = $data->getSort() === 1 ? true : false;
         $path = $this->saveImage($data);
+        //var_dump($path);
         if ($path !== false) {
             if ($isCover) {
-                $this->database->query(sprintf(SQLs::PRODUCT_SET_COVER, $path, $id));
+                $this->database->query(sprintf(SQLs::PRODUCT_SET_COVER, $path, $foreignKey));
+                $data->getId()->setEndpoint("p_" . $foreignKey);
             } else {
-                $this->database->query(sprintf(SQLs::PRODUCT_ADD_IMAGE, $id, $path, $data->getSort()));
+                $query = sprintf(SQLs::PRODUCT_ADD_IMAGE, $foreignKey, $path, $data->getSort());
+                $result = $this->database->query($query);
+                $data->getId()->setEndpoint("p_{$foreignKey}_{$result['id']}}");
             }
         }
     }
 
-    private function pushCategoryImage($id, ImageModel $data)
+    private function pushCategoryImage($foreignKey, ImageModel $data)
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
-            $this->database->query(sprintf(SQLs::IMAGE_CATEGORY_PUSH, $path, $id));
+            $this->database->query(sprintf(SQLs::IMAGE_CATEGORY_PUSH, $path, $foreignKey));
         }
     }
 
-    private function pushManufacturerImage($id, ImageModel $data)
+    private function pushManufacturerImage($foreignKey, ImageModel $data)
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
-            $this->database->query(sprintf(SQLs::IMAGE_MANUFACTURER_PUSH, $path, $id));
+            $this->database->query(sprintf(SQLs::IMAGE_MANUFACTURER_PUSH, $path, $foreignKey));
         }
     }
 

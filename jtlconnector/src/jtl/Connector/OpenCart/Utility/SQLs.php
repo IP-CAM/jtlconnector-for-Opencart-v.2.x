@@ -207,22 +207,29 @@ final class SQLs
         WHERE l.hostId IS NULL';
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Image">
-    const IMAGE_PRODUCT_PULL = '
-        SELECT pi.image, pi.sort_order, CONCAT("p", pi.product_image_id) as id, pi.product_id as foreign_key
+    const IMAGE_PRODUCT_PULL_EXTRA = '
+        SELECT pi.image, pi.sort_order, CONCAT("p_", pi.product_id, "_", pi.product_image_id) as id, pi.product_id as
+        foreign_key
         FROM oc_product_image pi
-        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("p", pi.product_image_id) AND l.type = %d
+        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("p_", pi.product_id, "_", pi.product_image_id)
+        AND l.type = %d
         WHERE l.hostId IS NULL
         LIMIT %d';
+    const IMAGE_PRODUCT_PULL_COVER = '
+        SELECT p.image, 0 as sort_order, CONCAT("p_", p.product_id) as id, p.product_id as foreign_key
+        FROM oc_product p
+        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("p_", p.product_id) AND l.type = %d
+        WHERE l.hostId IS NULL AND p.image IS NOT NULL AND p.image !=""';
     const IMAGE_CATEGORY_PULL = '
-        SELECT c.image, c.sort_order, CONCAT("c", c.category_id) as id, c.category_id as foreign_key
+        SELECT c.image, c.sort_order, CONCAT("c_", c.category_id) as id, c.category_id as foreign_key
         FROM oc_category c
-        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("c", c.category_id) AND l.type = %d
+        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("c_", c.category_id) AND l.type = %d
         WHERE l.hostId IS NULL AND c.image IS NOT NULL AND c.image != ""
         LIMIT %d';
     const IMAGE_MANUFACTURER_PULL = '
-        SELECT m.image, m.sort_order, CONCAT("m", m.manufacturer_id) as id, m.manufacturer_id as foreign_key
+        SELECT m.image, m.sort_order, CONCAT("m_", m.manufacturer_id) as id, m.manufacturer_id as foreign_key
         FROM oc_manufacturer m
-        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("m", m.manufacturer_id) AND l.type = %d
+        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("m_", m.manufacturer_id) AND l.type = %d
         WHERE l.hostId IS NULL AND m.image IS NOT NULL AND m.image != ""
         LIMIT %d';
     const IMAGE_CATEGORY_PUSH = 'UPDATE oc_category SET image = "%s" WHERE category_id = %d';

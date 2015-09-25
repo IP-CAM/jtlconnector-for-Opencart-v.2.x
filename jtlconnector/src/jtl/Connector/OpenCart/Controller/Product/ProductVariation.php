@@ -85,7 +85,8 @@ class ProductVariation extends BaseController
             $optionValueId = null;
             $optionValue = [
                 'image' => '',
-                'sort_order' => $value->getSort()
+                'sort_order' => $value->getSort(),
+                'option_value_description' => []
             ];
             foreach ($value->getI18ns() as $i18n) {
                 $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
@@ -113,10 +114,9 @@ class ProductVariation extends BaseController
 
     private function buildProductOptionValues(ProductVariationModel $variation, &$productOption)
     {
-        if (in_array($variation->getType(),
-            [ProductVariationModel::TYPE_FREE_TEXT, ProductVariationModel::TYPE_FREE_TEXT_OBLIGATORY])) {
-            $productOption['product_option_value']['value'] = "";
-        } else {
+        if (!in_array($variation->getType(),
+            [ProductVariationModel::TYPE_FREE_TEXT, ProductVariationModel::TYPE_FREE_TEXT_OBLIGATORY])
+        ) {
             $this->buildMultipleProductOptionValue($variation, $productOption);
         }
     }

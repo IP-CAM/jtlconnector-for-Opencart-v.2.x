@@ -37,7 +37,7 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
         $clause = '';
         if ($type === IdentityLinker::TYPE_IMAGE) {
             $prefix = substr(strtolower($relationType), 0, 1);
-            $clause = " AND endpointId LIKE '{$prefix}%'";
+            $clause = " AND endpointId LIKE '{$prefix}_%'";
         }
         return $this->db->queryOne(sprintf('
             SELECT endpointId

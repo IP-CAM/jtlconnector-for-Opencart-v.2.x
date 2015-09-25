@@ -30,6 +30,6 @@ class ProductFileDownload extends BaseController
             }
             $model['product_download'][] = $download;
         }
-        var_dump($model['product_download']);
+        //var_dump($model['product_download']);
     }
 }
