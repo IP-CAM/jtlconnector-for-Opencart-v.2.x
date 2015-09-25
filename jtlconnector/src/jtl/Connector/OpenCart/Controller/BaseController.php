@@ -12,7 +12,6 @@ use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\Core\Model\QueryFilter;
 use jtl\Connector\Core\Rpc\Error;
 use jtl\Connector\Formatter\ExceptionFormatter;
-use jtl\Connector\Model\Statistic;
 use jtl\Connector\OpenCart\Mapper\BaseMapper;
 use jtl\Connector\OpenCart\Utility\Db;
 use jtl\Connector\OpenCart\Utility\OpenCart;
@@ -32,7 +31,7 @@ abstract class BaseController extends Controller
     /**
      * @var $controllerName string
      */
-    private $controllerName = null;
+    protected $controllerName = null;
     /**
      * @var $oc OpenCart
      */
@@ -74,13 +73,7 @@ abstract class BaseController extends Controller
         $action = new Action();
         $action->setHandled(true);
         try {
-            if (method_exists($this, 'prePush')) {
-                $this->prePush($data);
-            }
             $result = $this->pushData($data, null);
-            if (method_exists($this, 'postPush')) {
-                $this->postPush($data, $result);
-            }
             $action->setResult($result);
         } catch (\Exception $exc) {
             Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
@@ -103,25 +96,6 @@ abstract class BaseController extends Controller
             $err = new Error();
             $err->setCode($exc->getCode());
             $err->setMessage($exc->getFile() . ' (' . $exc->getLine() . '):' . $exc->getMessage());
-            $action->setError($err);
-        }
-        return $action;
-    }
-
-    public function statistic(QueryFilter $query)
-    {
-        $action = new Action();
-        $action->setHandled(true);
-        try {
-            $statModel = new Statistic();
-            $statModel->setAvailable(intval($this->getStats()));
-            $statModel->setControllerName(lcfirst($this->controllerName));
-            $action->setResult($statModel);
-        } catch (\Exception $exc) {
-            Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
-            $err = new Error();
-            $err->setCode($exc->getCode());
-            $err->setMessage($exc->getMessage());
             $action->setError($err);
         }
         return $action;

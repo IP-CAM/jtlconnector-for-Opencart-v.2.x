@@ -30,10 +30,7 @@ class CrossSelling extends MainEntityController
         if (!empty($id)) {
             foreach ($data->getItems() as $item) {
                 foreach ($item->getProductIds() as $relatedId) {
-                    $item = new \stdClass();
-                    $item->product_id = $id;
-                    $item->related_id = $relatedId->getEndpoint();
-                    $this->database->insert($item, 'oc_product_related');
+                    $this->database->query(sprintf(SQLs::CROSSELLING_ADD, $id, $relatedId->getEndpoint()));
                 }
             }
         }
@@ -44,15 +41,15 @@ class CrossSelling extends MainEntityController
     {
         $id = $data->getProductId()->getEndpoint();
         if (!empty($id)) {
-            $this->database->query(SQLs::CROSS_SELLING_DELETE, $id);
+            $this->database->query(sprintf(SQLs::CROSS_SELLING_DELETE, $id));
         }
         return $data;
     }
 
     protected function getStats()
     {
-        return $this->database->queryOne(SQLs::CROSS_SELLING_STATS,
+        return $this->database->queryOne(sprintf(SQLs::CROSS_SELLING_STATS,
             'CONCAT_WS("_", pr.product_id, pr.related_id)', IdentityLinker::TYPE_CROSSSELLING
-        );
+        ));
     }
 }

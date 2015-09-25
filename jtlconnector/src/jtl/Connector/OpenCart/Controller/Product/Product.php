@@ -34,11 +34,12 @@ class Product extends MainEntityController
             $data->getId()->setEndpoint($id);
         }
         $endpoint = $this->mapper->toEndpoint($data);
-        $endpoint['tax_class_id'] = $this->database->queryOne(SQLs::TAX_CLASS_BY_RATE, $data->getVat());
+        $taxClassId = $this->database->queryOne(sprintf(SQLs::TAX_CLASS_BY_RATE, $data->getVat()));
+        $endpoint['tax_class_id'] = $taxClassId;
         $product = $this->oc->loadAdminModel('catalog/product');
         $product->editProduct($data->getId()->getEndpoint(), $endpoint);
         if ($data->getIsTopProduct()) {
-            $this->handleTopProduct($data->getId()->getEndpoin());
+            $this->handleTopProduct($data->getId()->getEndpoint());
         }
         return $data;
     }
@@ -53,7 +54,7 @@ class Product extends MainEntityController
 
     protected function getStats()
     {
-        return $this->database->queryOne(SQLs::PRODUCT_STATS, IdentityLinker::TYPE_PRODUCT);
+        return $this->database->queryOne(sprintf(SQLs::PRODUCT_STATS, IdentityLinker::TYPE_PRODUCT));
     }
 
     private function handleTopProduct($id)

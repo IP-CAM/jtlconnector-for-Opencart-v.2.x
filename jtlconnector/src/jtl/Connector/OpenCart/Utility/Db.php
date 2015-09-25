@@ -21,15 +21,15 @@ class Db extends Singleton
         $this->db = $mysql;
     }
 
-    public function query($query, ...$params)
+    public function query($query)
     {
-        return $this->db->query(sprintf($query, $params));
+        return $this->db->query($query);
     }
 
-    public function queryOne($query, ...$params)
+    public function queryOne($query, $args = null, $_ = null)
     {
         $return = null;
-        $result = mysqli_query($this->db->DB(), sprintf($query, $params));
+        $result = mysqli_query($this->db->DB(), $query);
         if ($result !== false) {
             $return = mysqli_fetch_row($result)[0];
         }

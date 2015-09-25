@@ -12,6 +12,9 @@ use jtl\Connector\OpenCart\Utility\Db;
 
 class PrimaryKeyMapper implements IPrimaryKeyMapper
 {
+    /**
+     * @var Db
+     */
     protected $db;
 
     public function __construct()
@@ -21,13 +24,12 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
 
     public function getHostId($endpointId, $type)
     {
-        $query = sprintf('
+        return $this->db->queryOne(sprintf('
             SELECT hostId
             FROM jtl_connector_link
             WHERE endpointId = %s AND type = %s',
             $endpointId, $type
-        );
-        return $this->db->queryOne($query);
+        ));
     }
 
     public function getEndpointId($hostId, $type, $relationType = null)
@@ -37,23 +39,21 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
             $prefix = substr(strtolower($relationType), 0, 1);
             $clause = " AND endpointId LIKE '{$prefix}%'";
         }
-        $query = sprintf('
+        return $this->db->queryOne(sprintf('
             SELECT endpointId
             FROM jtl_connector_link
             WHERE hostId = %s AND type = %s%s',
             $hostId, $type, $clause
-        );
-        return $this->db->queryOne($query);
+        ));
     }
 
     public function save($endpointId, $hostId, $type)
     {
-        $query = sprintf('
+        $id = $this->db->query(sprintf('
             INSERT INTO jtl_connector_link (endpointId, hostId, type)
             VALUES ("%s", %s, %s)',
-            (string)$endpointId, $hostId, $type
-        );
-        $id = $this->db->query($query);
+            $endpointId, $hostId, $type
+        ));
         return $id !== false;
     }
 

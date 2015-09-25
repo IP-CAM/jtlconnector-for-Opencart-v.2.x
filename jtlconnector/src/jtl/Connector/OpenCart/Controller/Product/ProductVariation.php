@@ -74,7 +74,8 @@ class ProductVariation extends BaseController
     private function findExistingOption(ProductVariationI18n $i18n, $type)
     {
         $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-        $optionId = $this->database->queryOne(SQLs::OPTION_ID_BY_DESCRIPTION, $languageId, $i18n->getName(), $type);
+        $query = sprintf(SQLs::OPTION_ID_BY_DESCRIPTION, $languageId, $i18n->getName(), $type);
+        $optionId = $this->database->queryOne($query);
         return $optionId;
     }
 
@@ -105,7 +106,8 @@ class ProductVariation extends BaseController
     private function findExistingOptionValue(ProductVariationValueI18n $i18n)
     {
         $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-        $optionValueId = $this->database->queryOne(SQLs::OPTION_VALUE_ID_BY_DESCRIPTION, $languageId, $i18n->getName());
+        $query = sprintf(SQLs::OPTION_VALUE_ID_BY_DESCRIPTION, $languageId, $i18n->getName());
+        $optionValueId = $this->database->queryOne($query);
         return $optionValueId;
     }
 

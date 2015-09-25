@@ -56,6 +56,6 @@ class Category extends MainEntityController
 
     protected function getStats()
     {
-        return $this->database->queryOne(SQLs::CATEGORY_STATS, IdentityLinker::TYPE_CATEGORY);
+        return $this->database->queryOne(sprintf(SQLs::CATEGORY_STATS, IdentityLinker::TYPE_CATEGORY));
     }
 }

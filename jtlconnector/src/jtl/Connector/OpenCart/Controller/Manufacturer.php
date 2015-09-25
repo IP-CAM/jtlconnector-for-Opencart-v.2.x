@@ -43,6 +43,6 @@ class Manufacturer extends MainEntityController
 
     protected function getStats()
     {
-        return $this->database->queryOne(SQLs::MANUFACTURER_STATS, IdentityLinker::TYPE_MANUFACTURER);
+        return $this->database->queryOne(sprintf(SQLs::MANUFACTURER_STATS, IdentityLinker::TYPE_MANUFACTURER));
     }
 }

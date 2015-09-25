@@ -102,9 +102,9 @@ class Image extends MainEntityController
         $path = $this->saveImage($data);
         if ($path !== false) {
             if ($isCover) {
-                $this->database->query(SQLs::PRODUCT_SET_COVER, $path, $id);
+                $this->database->query(sprintf(SQLs::PRODUCT_SET_COVER, $path, $id));
             } else {
-                $this->database->query(SQLs::PRODUCT_ADD_IMAGE, $id, $path, $data->getSort());
+                $this->database->query(sprintf(SQLs::PRODUCT_ADD_IMAGE, $id, $path, $data->getSort()));
             }
         }
     }
@@ -113,7 +113,7 @@ class Image extends MainEntityController
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
-            $this->database->query(SQLs::IMAGE_CATEGORY_PUSH, $path, $id);
+            $this->database->query(sprintf(SQLs::IMAGE_CATEGORY_PUSH, $path, $id));
         }
     }
 
@@ -121,7 +121,7 @@ class Image extends MainEntityController
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
-            $this->database->query(SQLs::IMAGE_MANUFACTURER_PUSH, $path, $id);
+            $this->database->query(sprintf(SQLs::IMAGE_MANUFACTURER_PUSH, $path, $id));
         }
     }
 
@@ -155,9 +155,9 @@ class Image extends MainEntityController
             case ImageRelationType::TYPE_PRODUCT:
                 $isCover = $data->getSort() == 1 ? true : false;
                 if ($isCover) {
-                    $this->database->query(SQLs::PRODUCT_SET_COVER, null, $data->getForeignKey()->getEndpoint());
+                    $this->database->query(sprintf(SQLs::PRODUCT_RESET_COVER, $data->getForeignKey()->getEndpoint()));
                 } else {
-                    $this->database->query(SQLs::IMAGE_PRODUCT_DELETE, $data->getId()->getEndpoint());
+                    $this->database->query(sprintf(SQLs::IMAGE_PRODUCT_DELETE, $data->getId()->getEndpoint()));
                 }
                 break;
             case ImageRelationType::TYPE_CATEGORY:

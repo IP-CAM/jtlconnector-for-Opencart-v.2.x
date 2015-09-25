@@ -145,6 +145,7 @@ final class SQLs
     const PRODUCT_SPECIAL_PULL = 'SELECT * FROM oc_product_special WHERE product_id = %d';
     const PRODUCT_ATTRIBUTE_PULL = 'SELECT * FROM oc_product_attribute WHERE product_id = %d';
     const PRODUCT_SET_COVER = 'UPDATE oc_product SET image = "%s" WHERE product_id = %d';
+    const PRODUCT_RESET_COVER = 'UPDATE oc_product SET image = NULL WHERE product_id = %d';
     const PRODUCT_ADD_IMAGE = '
         INSERT INTO oc_product_image (product_id, image, sort_order)
         values (%d, "%s", %d)';
@@ -187,6 +188,7 @@ final class SQLs
         FROM oc_product_related pr
         LEFT JOIN jtl_connector_link l ON %s = l.endpointId AND l.type = %d
         WHERE l.hostId IS NULL';
+    const CROSSELLING_ADD = 'INSERT INTO oc_product_related (product_id, related_id) VALUES (%d, %d)';
     const CROSS_SELLING_ITEM_PULL = 'SELECT related_id FROM oc_product_related  WHERE product_id = %d';
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Customer">
@@ -248,6 +250,11 @@ final class SQLs
         LEFT JOIN oc_tax_rate tr ON tr.tax_rate_id = r.tax_rate_id
         WHERE tr.rate = %d';
     const TAX_CLASS_PULL = 'SELECT * FROM oc_tax_class';
+    const TAX_RATE_BY_ORDER = '
+            SELECT tr.rate
+            FROM oc_order_total ot
+            LEFT JOIN oc_tax_rate tr ON tr.name = ot.title
+            WHERE ot.code = "tax" AND ot.order_id = %d';
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Status Change">
     const STATUS_CHANGE_BY_ORDER = 'SELECT count(*) FROM oc_order WHERE order_id = %d';

@@ -50,7 +50,7 @@ class CustomerOrder extends MainEntityController
 
     protected function getStats()
     {
-        return $this->database->queryOne(SQLs::CUSTOMER_ORDER_STATS, IdentityLinker::TYPE_CUSTOMER_ORDER);
+        return $this->database->queryOne(sprintf(SQLs::CUSTOMER_ORDER_STATS, IdentityLinker::TYPE_CUSTOMER_ORDER));
     }
 
     protected function pushData($data, $model)
@@ -65,7 +65,7 @@ class CustomerOrder extends MainEntityController
 
     private function setShippingStatus($id, CustomerOrderModel &$order)
     {
-        $result = $this->database->query(SQLs::CUSTOMER_ORDER_SHIPPING_STATUS, $id);
+        $result = $this->database->query(sprintf(SQLs::CUSTOMER_ORDER_SHIPPING_STATUS, $id));
         if (!empty($result)) {
             if (in_array($result[0]['name'], self::SHIPPING_STATUS)) {
                 $order->setStatus($this->shippingStatusMapping[$result[0]['name']]);
@@ -80,7 +80,8 @@ class CustomerOrder extends MainEntityController
         foreach (self::PAYMENT_STATUS as $status) {
             $paymentStatus[] = "'{$status}'";
         }
-        $result = $this->database->query(SQLs::CUSTOMER_ORDER_PAYMENT_STATUS, $id, implode($paymentStatus, ','));
+        $query = sprintf(SQLs::CUSTOMER_ORDER_PAYMENT_STATUS, $id, implode($paymentStatus, ','));
+        $result = $this->database->query($query);
         if (!empty($result)) {
             $order->setPaymentStatus(trim(str_replace('Payment:', '', $result[0]['comment'])));
             $order->setPaymentDate(date_create_from_format("Y-m-d H:i:s", $result[0]['date_added']));
