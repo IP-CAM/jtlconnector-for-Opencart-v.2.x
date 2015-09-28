@@ -18,6 +18,11 @@ class ProductStockLevel extends BaseController
 
     public function pushData($data, &$model)
     {
-        $model['quantity'] = $data->getStockLevel()->getStockLevel();
+        $stockLevel = $data->getStockLevel();
+        if (is_null($stockLevel)) {
+            $model['quantity'] = 0;
+        } else {
+            $model['quantity'] = $stockLevel->getStockLevel();
+        }
     }
 }

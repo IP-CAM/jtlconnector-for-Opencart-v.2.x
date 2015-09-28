@@ -6,8 +6,8 @@
 
 namespace jtl\Connector\OpenCart\Mapper\GlobalData;
 
+use jtl\Connector\Model\Currency as CurrencyModel;
 use jtl\Connector\OpenCart\Mapper\BaseMapper;
-
 
 class Currency extends BaseMapper
 {
@@ -20,6 +20,16 @@ class Currency extends BaseMapper
         'nameHTML' => null
     ];
 
+    protected $push = [
+        'title' => 'name',
+        'code' => 'iso',
+        'value' => 'factor',
+        'symbol_left' => null,
+        'symbol_right' => null,
+        'decimal_place' => null,
+        'status' => null
+    ];
+
     protected function hasCurrencySignBeforeValue($data)
     {
         return isset($data['symbol_left']);
@@ -28,6 +38,32 @@ class Currency extends BaseMapper
     protected function nameHTML($data)
     {
         $symbol = (isset($data['symbol_left'])) ? $data['symbol_left'] : $data['symbol_right'];
-        return html_entity_decode($symbol);
+        return htmlentities($symbol);
+    }
+
+    protected function symbol_left(CurrencyModel $data)
+    {
+        if ($data->getHasCurrencySignBeforeValue()) {
+            return html_entity_decode($data->getNameHtml());
+        }
+        return '';
+    }
+
+    protected function symbol_right(CurrencyModel $data)
+    {
+        if (!$data->getHasCurrencySignBeforeValue()) {
+            return html_entity_decode($data->getNameHtml());
+        }
+        return '';
+    }
+
+    protected function status()
+    {
+        return 1;
+    }
+
+    protected function decimal_place()
+    {
+        return 2;
     }
 }

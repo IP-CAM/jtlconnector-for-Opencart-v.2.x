@@ -8,5 +8,4 @@ class MethodNotAllowedException extends \Exception
     {
         parent::__construct("This method isn't allowed to be called. The Wawi handles the data.");
     }
-
 }

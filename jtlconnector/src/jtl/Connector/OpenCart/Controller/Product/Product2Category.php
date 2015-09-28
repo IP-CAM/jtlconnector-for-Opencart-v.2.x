@@ -18,7 +18,7 @@ class Product2Category extends BaseController
 
     public function pushData($data, &$model)
     {
-        foreach ($data->getCategories() as $category) {
+        foreach ((array)$data->getCategories() as $category) {
             $model['product_category'][] = $category->getCategoryId()->getEndpoint();
         }
     }

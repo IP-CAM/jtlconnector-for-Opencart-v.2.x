@@ -22,11 +22,6 @@ class Product extends MainEntityController
         return sprintf(SQLs::PRODUCT_PULL, IdentityLinker::TYPE_PRODUCT, $limit);
     }
 
-    /**
-     * @param $data \jtl\Connector\Model\Product;
-     * @param $model
-     * @return mixed
-     */
     protected function pushData($data, $model)
     {
         if (empty($data->getId()->getEndpoint())) {
@@ -46,7 +41,6 @@ class Product extends MainEntityController
 
     protected function deleteData($data)
     {
-        // TODO: Keep in mind that picture files are not deleted automatically.
         $product = $this->oc->loadAdminModel('catalog/product');
         $product->deleteProduct($data->getId()->getEndpoint());
         return $data;
@@ -66,16 +60,27 @@ class Product extends MainEntityController
             'status' => '1'
         ];
         $moduleId = $this->database->queryOne(SQLs::MODULE_FEATURED_WAWI);
-        $ocModule = $this->oc->loadAdminModel('extension/module');
         if (is_null($moduleId)) {
-            $data['product'] = [$id];
-            $data['limit'] = 1;
-            $ocModule->addModule('featured', $data);
+            $this->addTopProduct($id, $data);
         } else {
-            $module = $ocModule->getModule($moduleId);
-            $data['product'] = array_merge($module['products'], [$id]);
-            $data['limit'] = count($data['product']);
-            $ocModule->editModule($moduleId, $data);
+            $this->updateTopProduct($id, $data, $moduleId);
         }
+    }
+
+    private function addTopProduct($id, $data)
+    {
+        $data['limit'] = 1;
+        $data['product'] = [$id];
+        $ocModule = $this->oc->loadAdminModel('extension/module');
+        $ocModule->addModule('featured', $data);
+    }
+
+    private function updateTopProduct($id, $data, $moduleId)
+    {
+        $ocModule = $this->oc->loadAdminModel('extension/module');
+        $module = $ocModule->getModule($moduleId);
+        $data['product'] = array_merge((array)$module['product'], [$id]);
+        $data['limit'] = count($data['product']);
+        $ocModule->editModule($moduleId, $data);
     }
 }

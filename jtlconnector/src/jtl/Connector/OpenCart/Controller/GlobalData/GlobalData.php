@@ -9,7 +9,6 @@ namespace jtl\Connector\OpenCart\Controller\GlobalData;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Utility\SQLs;
-use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class GlobalData extends MainEntityController
 {
@@ -21,7 +20,7 @@ class GlobalData extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        throw new OperationNotPermitedException("Just pull the different global data childs.");
+        throw new MethodNotAllowedException("Just pull the different global data children.");
     }
 
     protected function getStats()

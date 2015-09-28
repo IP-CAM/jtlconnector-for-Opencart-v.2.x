@@ -53,16 +53,6 @@ class CustomerOrder extends MainEntityController
         return $this->database->queryOne(sprintf(SQLs::CUSTOMER_ORDER_STATS, IdentityLinker::TYPE_CUSTOMER_ORDER));
     }
 
-    protected function pushData($data, $model)
-    {
-        throw new MethodNotAllowedException();
-    }
-
-    protected function deleteData($data)
-    {
-        throw new MethodNotAllowedException();
-    }
-
     private function setShippingStatus($id, CustomerOrderModel &$order)
     {
         $result = $this->database->query(sprintf(SQLs::CUSTOMER_ORDER_SHIPPING_STATUS, $id));
@@ -86,5 +76,15 @@ class CustomerOrder extends MainEntityController
             $order->setPaymentStatus(trim(str_replace('Payment:', '', $result[0]['comment'])));
             $order->setPaymentDate(date_create_from_format("Y-m-d H:i:s", $result[0]['date_added']));
         }
+    }
+
+    protected function pushData($data, $model)
+    {
+        throw new MethodNotAllowedException();
+    }
+
+    protected function deleteData($data)
+    {
+        throw new MethodNotAllowedException();
     }
 }

@@ -22,7 +22,7 @@ class ProductSpecialPrice extends BaseController
     public function pushData(ProductModel $data, &$model)
     {
         $specialPriceItemMapper = new ProductSpecialPriceItem();
-        foreach ($data->getSpecialPrices() as $specialPrice) {
+        foreach ((array)$data->getSpecialPrices() as $specialPrice) {
             for ($count = 0; $count <= count($specialPrice->getItems()); $count++) {
                 $special = $this->mapper->toEndpoint($specialPrice);
                 foreach ($specialPrice->getItems() as $item) {

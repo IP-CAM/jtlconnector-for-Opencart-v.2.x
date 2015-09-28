@@ -20,4 +20,16 @@ class Currency extends BaseController
     {
         return SQLs::CURRENCY_PULL;
     }
+
+    protected function pushData($data, $model)
+    {
+        $endpointId = $data->getId()->getEndpoint();
+        if (is_null($endpointId)) {
+            $currency = $this->mapper->toEndpoint($data);
+            $ocCurrency = $this->oc->loadAdminModel('localisation/currency');
+            $ocCurrency->addCurrency($currency);
+        } else {
+            $this->database->query(sprintf(SQLs::CURRENCY_UPDATE, $data->getFactor(), $endpointId));
+        }
+    }
 }

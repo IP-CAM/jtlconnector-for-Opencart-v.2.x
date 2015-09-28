@@ -46,6 +46,7 @@ final class SQLs
         LEFT JOIN oc_language l ON c.language_id = l.language_id
         WHERE c.customer_group_id = %d';
     const CURRENCY_PULL = 'SELECT * FROM oc_currency WHERE status = 1';
+    const CURRENCY_UPDATE = 'UPDATE oc_currency SET value = %d WHERE ';
     const GLOBAL_DATA_STATS = 'SELECT
         (SELECT COUNT(*) FROM oc_currency) +
         (SELECT COUNT(*) FROM oc_customer_group) +

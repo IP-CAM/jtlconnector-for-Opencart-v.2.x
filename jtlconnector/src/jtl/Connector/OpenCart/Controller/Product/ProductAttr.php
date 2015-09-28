@@ -23,7 +23,7 @@ class ProductAttr extends BaseController
     public function pushData(ProductModel $data, &$model)
     {
         $model['product_attribute'] = [];
-        foreach ($data->getAttributes() as $attr) {
+        foreach ((array)$data->getAttributes() as $attr) {
             if (!$attr->getIsCustomProperty()) {
                 list($values, $descriptions) = $this->buildI18ns($attr);
                 $attributeId = $this->getOrCreateAttribute($descriptions);

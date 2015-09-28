@@ -36,7 +36,7 @@ class ProductVariation extends BaseController
     public function pushData(ProductModel $data, &$model)
     {
         $model['product_option'] = [];
-        foreach ($data->getVariations() as $variation) {
+        foreach ((array)$data->getVariations() as $variation) {
             $option = $this->mapper->toEndpoint($variation);
             $optionId = $this->buildOptionDescriptions($variation, $option);
             $this->buildOptionValues($variation, $option);

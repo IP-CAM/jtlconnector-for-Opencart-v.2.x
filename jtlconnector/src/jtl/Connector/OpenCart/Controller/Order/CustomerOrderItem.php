@@ -9,21 +9,21 @@ namespace jtl\Connector\OpenCart\Controller\Order;
 use jtl\Connector\Model\CustomerOrderItem as COI;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemDiscountMapper;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemProductMapper;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemShippingMapper;
 use jtl\Connector\OpenCart\Utility\SQLs;
-use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class CustomerOrderItem extends BaseController
 {
     const TYPE_METHODS = [COI::TYPE_PRODUCT, COI::TYPE_SHIPPING, COI::TYPE_DISCOUNT];
 
+    private $tax;
+    private $orderId;
     private $productMapper;
     private $shippingMapper;
     private $discountMapper;
-    private $orderId;
-    private $tax;
 
     public function __construct()
     {
@@ -61,7 +61,7 @@ class CustomerOrderItem extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        throw new OperationNotPermitedException("Use specific pull methods.");
+        throw new MethodNotAllowedException("Use specific pull methods.");
     }
 
     private function pullProducts($orderId)

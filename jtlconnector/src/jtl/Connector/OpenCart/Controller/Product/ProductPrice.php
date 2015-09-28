@@ -20,8 +20,8 @@ class ProductPrice extends BaseController
 
     public function pushData(ProductModel $data, &$model)
     {
-        foreach ($data->getPrices() as $price) {
-            foreach ($price->getItems() as $item) {
+        foreach ((array)$data->getPrices() as $price) {
+            foreach ((array)$price->getItems() as $item) {
                 $model['price'] = $item->getNetPrice();
             }
         }
