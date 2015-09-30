@@ -23,6 +23,15 @@ final class SQLs
         LEFT JOIN oc_option_value_description ovd ON pov.option_value_id = ovd.option_value_id
         LEFT JOIN oc_language l ON ovd.language_id = l.language_id
         WHERE pov.product_option_value_id = %d';
+    const FILE_UPLOAD_PULL = '
+        SELECT *
+        FROM oc_product_option po
+        LEFT JOIN oc_option o ON po.option_id = o.option_id
+        LEFT JOIN oc_option_description od ON od.option_id = o.option_id
+        WHERE o.type = "file"
+        LIMIT %d';
+    const FILE_UPLOAD_PUSH = 'INSERT INTO oc_product_option (product_id, option_id, required) VALUES (%d, %d, %d)';
+    const FILE_UPLOAD_DELETE = 'DELETE FROM oc_product_option WHERE product_option_id = %d';
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Option">
     const OPTION_ID_BY_DESCRIPTION = '
@@ -46,7 +55,7 @@ final class SQLs
         LEFT JOIN oc_language l ON c.language_id = l.language_id
         WHERE c.customer_group_id = %d';
     const CURRENCY_PULL = 'SELECT * FROM oc_currency WHERE status = 1';
-    const CURRENCY_UPDATE = 'UPDATE oc_currency SET value = %d WHERE ';
+    const CURRENCY_UPDATE = 'UPDATE oc_currency SET value = %d WHERE currency_id = %d';
     const GLOBAL_DATA_STATS = 'SELECT
         (SELECT COUNT(*) FROM oc_currency) +
         (SELECT COUNT(*) FROM oc_customer_group) +
@@ -269,5 +278,24 @@ final class SQLs
     const STATUS_CHANGE_ADD = '
         INSERT INTO oc_order_history (order_id, order_status_id, notify, comment, date_added)
         VALUES (%d, %d, 0, "Payment: %s", NOW())';
+    // </editor-fold>
+    //// <editor-fold defaultstate="collapsed" desc="Status Change">
+    const SPECIFIC_PULL = '
+        SELECT *
+        FROM oc_filter_group fg
+        LEFT JOIN oc_filter_group_description fgd ON fgd.filter_group_id = fg.filter_group_id
+        LEFT JOIN jtl_connector_link l ON fg.filter_group_id = l.endpointId AND l.type = %d
+        WHERE l.hostId IS NULL
+        LIMIT %d';
+    const SPECIFIC_I18N_PULL = '
+        SELECT fgd.*, l.code
+        FROM oc_filter_group_description fgd
+        LEFT JOIN oc_language l ON fgd.language_id = l.language_id
+        WHERE fgd.filter_group_id = %d';
+    const SPECIFIC_STATS = '
+        SELECT COUNT(*)
+        FROM oc_filter_group fg
+        LEFT JOIN jtl_connector_link l ON fg.filter_group_id = l.endpointId AND l.type = %d
+        WHERE l.hostId IS NULL';
     // </editor-fold>
 }

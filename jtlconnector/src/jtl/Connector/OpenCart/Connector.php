@@ -54,6 +54,8 @@ class Connector extends BaseConnector
             $controller = 'Order' . DIRECTORY_SEPARATOR . $controller;
         } elseif (in_array($controller, array_merge(['GlobalData'], GlobalData::getModels()))) {
             $controller = 'GlobalData' . DIRECTORY_SEPARATOR . $controller;
+        } elseif (strpos($controller, 'Specific') !== false) {
+            $controller = 'Specific' . DIRECTORY_SEPARATOR . $controller;
         }
         $class = Constants::CONTROLLER_NAMESPACE . $controller;
         if (class_exists($class)) {

@@ -30,6 +30,7 @@
         </copy>
         <copy todir="./dist/jtlconnector/">
             <fileset dir="./jtlconnector">
+                <include name="index.php"/>
                 <include name="LICENSE"/>
                 <include name="CHANGELOG.md"/>
             </fileset>
@@ -60,26 +61,18 @@
         <!-- Deutsche Sprache hinzufügen -->
 
         <delete dir="./build"/>
-        <mkdir dir="./build"/>
-        <copy todir="./build/jtlconnector">
+        <copy todir="./build/">
             <fileset dir="./jtlconnector">
                 <include name="src/"/>
                 <include name="vendor/"/>
-                <include name="index.php"/>
                 <include name="version"/>
-            </fileset>
-        </copy>
-        <copy todir="./build/">
-            <fileset dir="./dist/">
-                <include name="admin/"/>
-                <include name="image/"/>
             </fileset>
         </copy>
     </target>
 
     <target name="package" depends="build">
         <loadfile property="version" file="version"/>
-        <!--
+        <delete file="./dist/jtlconnector/connector.phar"/>
         <pharpackage
                 destfile="./dist/jtlconnector/index.phar"
                 basedir="./build"
@@ -99,7 +92,6 @@
             </metadata>
         </pharpackage>
         <move file="./dist/jtlconnector/index.phar" tofile="./dist/jtlconnector/connector.phar"/>
-        -->
         <phingcall target="zip">
             <property name="version" value="${version}"/>
         </phingcall>

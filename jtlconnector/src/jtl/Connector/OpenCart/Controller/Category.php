@@ -50,7 +50,7 @@ class Category extends MainEntityController
 
     protected function deleteData($data)
     {
-        $this->ocCategory->deleteCategory(intval($data->getId()->getEndpoint()));
+        $this->ocCategory->deleteCategory($data->getId()->getEndpoint());
         return $data;
     }
 

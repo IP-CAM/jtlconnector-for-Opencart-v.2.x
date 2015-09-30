@@ -85,6 +85,33 @@ class ControllerModuleJtlconnector extends Controller
         $this->response->setOutput($this->load->view('module/jtlconnector.tpl', $data));
     }
 
+    private function phpVersion()
+    {
+        return array((version_compare(PHP_VERSION, '5.4') >= 0), array(PHP_VERSION));
+    }
+
+    private function gdlib()
+    {
+        return array((extension_loaded('gd') && function_exists('gd_info')));
+    }
+
+    private function configFile()
+    {
+        $path = CONNECTOR_DIR . '/config';
+        if (file_exists($path . '/config.json')) {
+            $path = $path . '/config.json';
+        }
+
+        return array(is_writable($path), array($path));
+    }
+
+    private function connectorLog()
+    {
+        $path = CONNECTOR_DIR . '/logs';
+
+        return array(is_writable($path), array($path));
+    }
+
     protected function validate()
     {
         if (!$this->user->hasPermission('modify', 'module/jtlconnector')) {
@@ -104,8 +131,16 @@ class ControllerModuleJtlconnector extends Controller
                 PRIMARY KEY (endpointId, hostId, type)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $this->db->query($linkQuery);
+        $checksumQuery = "
+            CREATE TABLE IF NOT EXISTS jtl_connector_checksum (
+                endpointId int(10) unsigned NOT NULL,
+                type tinyint unsigned NOT NULL,
+                checksum varchar(255) NOT NULL,
+                PRIMARY KEY (endpoint_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+        $this->db->query($checksumQuery);
 
-        // TODO: product checksum, unit, delivery note, payment
+        // TODO: unit, delivery note, payment
 
         $result = $this->db->query('SELECT * FROM oc_language');
         $groupDescriptions = [];

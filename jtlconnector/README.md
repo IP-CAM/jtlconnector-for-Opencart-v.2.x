@@ -6,3 +6,5 @@
 - Attribute groups are not supported by the Wawi yet
 - Configuration articles are not supported by the Wawi yet
 - File Downloads are not supported by the Wawi yet
+- File Uploads are not supported by the Wawi yet
+- Set articles are not supported

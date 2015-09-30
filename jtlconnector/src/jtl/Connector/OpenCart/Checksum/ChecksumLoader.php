@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @copyright 2010-2013 JTL-Software GmbH
+ * @package jtl\Connector\OpenCart\Checksum
+ */
 
 namespace jtl\Connector\OpenCart\Checksum;
 
@@ -28,13 +31,10 @@ class ChecksumLoader implements IChecksumLoader
 
         $result = $this->db->queryOne(sprintf('
             SELECT checksum
-            FROM jtl_connector_product_checksum
-            WHERE product_id = ?',
-            $endpointId
+            FROM jtl_connector_checksum
+            WHERE endpointId = %d AND type = %d',
+            $endpointId, $type
         ));
-
-        Logger::write(sprintf('Read with endpointId (%s), type (%s) - result (%s)', $endpointId, $type, $result),
-            Logger::DEBUG, 'checksum');
 
         return is_null($result) ? '' : $result;
     }
@@ -45,13 +45,10 @@ class ChecksumLoader implements IChecksumLoader
             return false;
         }
 
-        Logger::write(sprintf('Write with endpointId (%s), type (%s) - checksum (%s)', $endpointId, $type, $checksum),
-            Logger::DEBUG, 'checksum');
-
         $statement = $this->db->query(sprintf('
-            INSERT IGNORE INTO jtl_connector_product_checksum (product_id, checksum)
-            VALUES (%d, %d)',
-            $endpointId, $checksum
+            INSERT IGNORE INTO jtl_connector_checksum (endpointId, type, checksum)
+            VALUES (%d, %d, %d)',
+            $endpointId, $type, $checksum
         ));
 
         return $statement ? true : false;
@@ -64,12 +61,10 @@ class ChecksumLoader implements IChecksumLoader
         }
 
         $rows = $this->db->query(sprintf('
-            DELETE FROM jtl_connector_product_checksum
-            WHERE product_id = %d',
-            $endpointId
+            DELETE FROM jtl_connector_checksum
+            WHERE endpointId = %d AND type = %d',
+            $endpointId, $type
         ));
-
-        Logger::write(sprintf('Delete with endpointId (%s), type (%s)', $endpointId, $type), Logger::DEBUG, 'checksum');
 
         return $rows ? true : false;
     }

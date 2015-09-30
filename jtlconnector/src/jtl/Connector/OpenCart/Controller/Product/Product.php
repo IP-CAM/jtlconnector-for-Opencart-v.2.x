@@ -65,6 +65,8 @@ class Product extends MainEntityController
         } else {
             $this->updateTopProduct($id, $data, $moduleId);
         }
+
+        $this->handleTopProductsAppearInLayout();
     }
 
     private function addTopProduct($id, $data)
@@ -79,8 +81,52 @@ class Product extends MainEntityController
     {
         $ocModule = $this->oc->loadAdminModel('extension/module');
         $module = $ocModule->getModule($moduleId);
-        $data['product'] = array_merge((array)$module['product'], [$id]);
+        $data['product'] = array_unique(array_merge((array)$module['product'], [$id]), SORT_NUMERIC);
         $data['limit'] = count($data['product']);
         $ocModule->editModule($moduleId, $data);
+    }
+
+    private function handleTopProductsAppearInLayout()
+    {
+        $layoutModule = [
+            'code' => 'featured.wawi',
+            'position' => 'content_bottom',
+            'sort_order' => 1
+        ];
+        $ocModule = $this->oc->loadAdminModel('design/layout');
+        $layout = $ocModule->getLayout(1);
+        if (is_null($layout)) {
+            $this->addTopProductToLayout($ocModule, $layoutModule);
+        } else {
+            $this->editTopProductForLayout($layout, $layoutModule, $ocModule);
+        }
+    }
+
+    private function addTopProductToLayout($ocModule, $layoutModule)
+    {
+        $ocModule->addLayout([
+            'name' => 'Home',
+            'layout_route' => [
+                'store_id' => 0,
+                'route' => 'common/home'
+            ],
+            'layout_module' => $layoutModule
+        ]);
+    }
+
+    private function editTopProductForLayout($layout, $layoutModule, $ocModule)
+    {
+        $found = false;
+        if (isset($layout['layout_module'])) {
+            foreach ((array)$layout['layout_module'] as $module) {
+                if ($module['code'] === 'featured.wawi') {
+                    $found = true;
+                }
+            }
+        }
+        if (!$found) {
+            $layout['layout_module'][] = $layoutModule;
+            $ocModule->editLayout(1, $layout);
+        }
     }
 }

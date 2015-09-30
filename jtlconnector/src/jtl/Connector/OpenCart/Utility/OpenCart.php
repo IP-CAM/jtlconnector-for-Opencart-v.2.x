@@ -63,6 +63,15 @@ class OpenCart extends Singleton
         }
     }
 
+    /**
+     * @return OpenCart
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+
     public function loadAdminModel($model)
     {
         $file = DIR_APPLICATION . 'model/' . $model . '.php';

@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__ . "/../vendor/autoload.php");
-require_once(__DIR__ . "/../../admin/config.php");
+require_once(getcwd() . "/../admin/config.php");
 
 use jtl\Connector\Application\Application;
 use jtl\Connector\OpenCart\Connector;

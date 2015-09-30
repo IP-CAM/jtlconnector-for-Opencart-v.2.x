@@ -3,20 +3,12 @@
 namespace jtl\Connector\OpenCart\Utility;
 
 use jtl\Connector\Core\Utilities\Language;
+use jtl\Connector\Core\Utilities\Singleton;
 use jtl\Connector\Session\SessionHelper;
 
-class Utils
+class Utils extends Singleton
 {
-    private static $instance;
     private $session = null;
-
-    public static function getInstance()
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self;
-        }
-        return self::$instance;
-    }
 
     public function __construct()
     {

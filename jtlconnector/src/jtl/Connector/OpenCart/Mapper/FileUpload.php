@@ -9,7 +9,9 @@ namespace jtl\Connector\OpenCart\Mapper;
 class FileUpload extends BaseMapper
 {
     protected $pull = [
-        'id' => 'upload_id',
-        'productId' => 'product_id'
+        'id' => 'product_option_id',
+        'productId' => 'product_id',
+        'isRequired' => 'required',
+        'i18ns' => 'FileUploadI18n'
     ];
 }

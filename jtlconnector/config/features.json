@@ -5,6 +5,11 @@
       "push": true,
       "delete": true
     },
+    "CategoryI18n": {
+      "pull": true,
+      "push": true,
+      "delete": false
+    },
     "CategoryAttr": {
       "pull": false,
       "push": false,
@@ -18,11 +23,6 @@
     "CategoryCustomerGroup": {
       "pull": false,
       "push": false,
-      "delete": false
-    },
-    "CategoryI18n": {
-      "pull": true,
-      "push": true,
       "delete": false
     },
     "CategoryInvisibility": {
@@ -386,23 +386,23 @@
       "delete": false
     },
     "Specific": {
-      "pull": false,
-      "push": false,
-      "delete": false
+      "pull": true,
+      "push": true,
+      "delete": true
     },
     "SpecificI18n": {
-      "pull": false,
-      "push": false,
+      "pull": true,
+      "push": true,
       "delete": false
     },
     "SpecificValue": {
-      "pull": false,
-      "push": false,
-      "delete": false
+      "pull": true,
+      "push": true,
+      "delete": true
     },
     "SpecificValueI18n": {
-      "pull": false,
-      "push": false,
+      "pull": true,
+      "push": true,
       "delete": false
     },
     "StatusChange": {

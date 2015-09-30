@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
+use jtl\Connector\OpenCart\Controller\GlobalData\Currency as CurrencyController;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Utility\SQLs;
@@ -30,7 +31,11 @@ class GlobalData extends MainEntityController
 
     protected function pushData($data, $model)
     {
-        throw new MethodNotAllowedException();
+        $currencyController = new CurrencyController();
+        foreach ($data->getCurrencies() as $currency) {
+            $currencyController->push($currency);
+        }
+        return $data;
     }
 
     protected function deleteData($data)
