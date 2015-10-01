@@ -306,8 +306,8 @@
       "delete": false
     },
     "ProductSpecific": {
-      "pull": false,
-      "push": false,
+      "pull": true,
+      "push": true,
       "delete": false
     },
     "ProductStockLevel": {

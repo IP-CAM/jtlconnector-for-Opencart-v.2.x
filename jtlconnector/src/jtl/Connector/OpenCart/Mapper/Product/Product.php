@@ -48,6 +48,7 @@ class Product extends BaseMapper
         'specialPrices' => 'Product\ProductSpecialPrice',
         'variations' => 'Product\ProductVariation',
         'stockLevel' => 'Product\ProductStockLevel',
+        'specifics' => 'Product\ProductSpecific',
         // TODO: not supported yet
         // 'fileDownloads' => 'Product\ProductFileDownload',
         // 'configGroups' => '\jtl\Connector\Model\ProductConfigGroup',
@@ -90,6 +91,7 @@ class Product extends BaseMapper
         'Product\ProductStockLevel' => 'stockLevel',
         'Product\ProductSpecialPrice' => 'specialPrices',
         'Product\ProductVariation' => 'variations',
+        'Product\ProductSpecific' => 'specifics',
         'Product\ProductChecksum' => 'checksums'
     ];
 

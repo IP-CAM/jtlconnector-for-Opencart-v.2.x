@@ -8,6 +8,7 @@ namespace jtl\Connector\OpenCart\Controller\Specific;
 
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
+use jtl\Connector\OpenCart\Controller\Specific\SpecificValue as SpecificValueCtrl;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
 class Specific extends MainEntityController
@@ -32,12 +33,16 @@ class Specific extends MainEntityController
 
     public function pushData($data, $model)
     {
-        $filterGroup = $this->mapper->toEndpoint($data);
-        if (is_null($data->getId()->getEndpoint())) {
-            $id = $this->ocFilter->addFilter($filterGroup);
-            $data->getId()->setEndpoint($id);
-        } else {
-            $this->ocFilter->editFilter($data->getId()->getEndpoint(), $filterGroup);
+        if (!$data->getIsGlobal()) {
+            $filterGroup = $this->mapper->toEndpoint($data);
+            if (is_null($data->getId()->getEndpoint())) {
+                $id = $this->ocFilter->addFilter($filterGroup);
+                $data->getId()->setEndpoint($id);
+            } else {
+                $this->ocFilter->editFilter($data->getId()->getEndpoint(), $filterGroup);
+            }
+            $specificValueCtrl = new SpecificValueCtrl();
+            $specificValueCtrl->pushData($data, $model);
         }
         return $data;
     }

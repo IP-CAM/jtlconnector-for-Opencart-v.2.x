@@ -123,23 +123,9 @@ class ControllerModuleJtlconnector extends Controller
 
     public function install()
     {
-        $linkQuery = "
-            CREATE TABLE IF NOT EXISTS jtl_connector_link (
-                endpointId char(64) NOT NULL,
-                hostId int(10) NOT NULL,
-                type int(10),
-                PRIMARY KEY (endpointId, hostId, type)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $this->db->query($linkQuery);
-        $checksumQuery = "
-            CREATE TABLE IF NOT EXISTS jtl_connector_checksum (
-                endpointId int(10) unsigned NOT NULL,
-                type tinyint unsigned NOT NULL,
-                checksum varchar(255) NOT NULL,
-                PRIMARY KEY (endpoint_id)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $this->db->query($checksumQuery);
-
+        $this->activateLinking();
+        $this->activateChecksum();
+        $this->activateFilter();
         // TODO: unit, delivery note, payment
 
         $result = $this->db->query('SELECT * FROM oc_language');
@@ -168,6 +154,49 @@ class ControllerModuleJtlconnector extends Controller
         $configs = $this->model_setting_setting->getSetting(self::CONFIG_KEY);
         $this->model_catalog_attribute_group->deleteAttributeGroup($configs[self::CONFIG_ATTRIBUTE_GROUP]);
         $this->model_setting_setting->deleteSetting(self::CONFIG_KEY);
+    }
+
+    private function activateFilter()
+    {
+        $filterActivated = 'SELECT COUNT(*) FROM ' . DB_PREFIX . 'extension WHERE type="module" AND code="filter"';
+        if ($this->db->query($filterActivated) === 0) {
+            $this->db->query('INSERT INTO ' . DB_PREFIX . 'extension (type, code) VALUES ("module", "filter")');
+            $this->db->query('
+                INSERT INTO ' . DB_PREFIX . 'setting (code, key, value, serialized)
+                VALUES ("filter", "filter_status", 1, 0)'
+            );
+        }
+        $filterInLayout = 'SELECT COUNT(*) FROM ' . DB_PREFIX . 'layout_module WHERE layout_id = 3 code="filter"';
+        if ($this->db->query($filterInLayout) === 0) {
+            $this->db->query('
+                INSERT INTO ' . DB_PREFIX . 'layout_module (layout_id, code, position, sort_order)
+                VALUES (3, "filter", "column_left", 2)'
+            );
+        }
+    }
+
+    private function activateLinking()
+    {
+        $linkQuery = "
+            CREATE TABLE IF NOT EXISTS jtl_connector_link (
+                endpointId char(64) NOT NULL,
+                hostId int(10) NOT NULL,
+                type int(10),
+                PRIMARY KEY (endpointId, hostId, type)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+        $this->db->query($linkQuery);
+    }
+
+    private function activateChecksum()
+    {
+        $checksumQuery = "
+            CREATE TABLE IF NOT EXISTS jtl_connector_checksum (
+                endpointId int(10) unsigned NOT NULL,
+                type tinyint unsigned NOT NULL,
+                checksum varchar(255) NOT NULL,
+                PRIMARY KEY (endpoint_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+        $this->db->query($checksumQuery);
     }
 
 }

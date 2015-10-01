@@ -15,13 +15,13 @@ class SpecificValue extends BaseMapper
         'id' => 'filter_id',
         'specificId' => 'filter_group_id',
         'sort' => 'sort_order',
-        'i18ns' => 'Specific/SpecificValueI18n'
+        'i18ns' => 'Specific\SpecificValueI18n'
     ];
 
     protected $push = [
         'filter_id' => 'id',
         'filter_group_id' => 'specificId',
         'sort_order' => 'sort',
-        'i18ns' => 'Specific/SpecificValueI18n'
+        'Specific\SpecificValueI18n' => 'i18ns'
     ];
 }

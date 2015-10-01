@@ -18,7 +18,7 @@ class SpecificValueI18n extends I18nBaseMapper
     ];
 
     protected $push = [
-        'filter_id' => 'specificId',
+        'filter_id' => 'specificValueId',
         'name' => 'value'
     ];
 }
