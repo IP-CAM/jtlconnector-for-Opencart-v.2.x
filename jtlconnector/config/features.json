@@ -456,7 +456,7 @@
     "manufacturer_images_supported": true,
     "needs_finish_call": false,
     "product_images_supported": true,
-    "product_variation_value_images_supported": false,
+    "product_variation_value_images_supported": true,
     "set_articles_supported": false,
     "specific_images_supported": false,
     "specific_value_images_supported": false,

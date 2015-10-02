@@ -39,10 +39,10 @@ final class SQLs
         FROM ' . DB_PREFIX . 'option o
         LEFT JOIN ' . DB_PREFIX . 'option_description od ON o.option_id = od.option_id
         WHERE od.language_id = %d AND od.name = "%s" AND o.type = "%s"';
-    const OPTION_VALUE_ID_BY_DESCRIPTION = '
+    const OPTION_VALUE_ID_BY_OPTION = '
         SELECT ov.option_value_id
         FROM ' . DB_PREFIX . 'option_value ov LEFT JOIN ' . DB_PREFIX . 'option_value_description ovd ON ovd.option_value_id = ov.option_value_id
-        WHERE ovd.language_id = %d AND ovd.name = "%s"';
+        WHERE ovd.language_id = %d AND ovd.name = "%s" AND ov.option_id = %d';
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Module">
     const MODULE_FEATURED_WAWI = 'SELECT module_id FROM ' . DB_PREFIX . 'module WHERE code = "featured" AND name = "Featured - Wawi"';
@@ -246,8 +246,15 @@ final class SQLs
         LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("m_", m.manufacturer_id) AND l.type = %d
         WHERE l.hostId IS NULL AND m.image IS NOT NULL AND m.image != ""
         LIMIT %d';
+    const IMAGE_PVV_PULL = '
+        SELECT ov.image, ov.sort_order, CONCAT("pvv_", ov.option_value_id) as id, ov.option_value_id as foreign_key
+        FROM ' . DB_PREFIX . 'option_value ov
+        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("pvv_", ov.option_value_id) AND l.type = %d
+        WHERE l.hostId IS NULL AND ov.image IS NOT NULL AND ov.image != ""
+        LIMIT %d';
     const IMAGE_CATEGORY_PUSH = 'UPDATE ' . DB_PREFIX . 'category SET image = "%s" WHERE category_id = %d';
     const IMAGE_MANUFACTURER_PUSH = 'UPDATE ' . DB_PREFIX . 'manufacturer SET image = "%s" WHERE manufacturer_id = %d';
+    const IMAGE_PVV_PUSH = 'UPDATE ' . DB_PREFIX . 'option_value SET image = "%s" WHERE option_value_id = %d';
     const IMAGE_PRODUCT_DELETE = 'DELETE FROM ' . DB_PREFIX . 'product_image WHERE product_image_id = %d';
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Manufacturer">

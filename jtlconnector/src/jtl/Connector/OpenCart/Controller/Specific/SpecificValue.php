@@ -8,6 +8,7 @@ namespace jtl\Connector\OpenCart\Controller\Specific;
 
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\Model\Product;
+use jtl\Connector\Model\Specific as SpecificModel;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
 use jtl\Connector\OpenCart\Utility\SQLs;
@@ -36,7 +37,7 @@ class SpecificValue extends BaseController
         return sprintf(SQLs::SPECIFIC_VALUE_PULL, IdentityLinker::TYPE_SPECIFIC_VALUE, $data['filter_group_id']);
     }
 
-    public function pushData($data, &$model)
+    public function pushData(SpecificModel $data, &$model)
     {
         foreach ((array)$data->getValues() as $value) {
             if (is_null($value->getId()->getEndpoint())) {

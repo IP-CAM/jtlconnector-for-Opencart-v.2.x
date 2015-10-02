@@ -15,8 +15,4 @@ class ProductSpecific extends BaseMapper
         'productId' => 'product_id',
         'specificValueId' => 'filter_id'
     ];
-
-    protected $push = [
-
-    ];
 }

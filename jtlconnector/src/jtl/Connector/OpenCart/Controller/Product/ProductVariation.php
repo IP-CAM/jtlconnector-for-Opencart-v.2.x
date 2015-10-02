@@ -1,6 +1,7 @@
 <?php
 namespace jtl\Connector\OpenCart\Controller\Product;
 
+use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Linker\ChecksumLinker;
 use jtl\Connector\Model\Checksum;
 use jtl\Connector\Model\Product as ProductModel;
@@ -50,16 +51,12 @@ class ProductVariation extends BaseController
         if (count($data->getVariations()) > 0) {
             $checksum = ChecksumLinker::find($data, Checksum::TYPE_VARIATION);
             if ($checksum === null || $checksum->hasChanged() === true) {
-                foreach ((array)$data->getVariations() as $variation) {
+                foreach ($data->getVariations() as $variation) {
                     $option = $this->mapper->toEndpoint($variation);
-                    $optionId = $this->optionHelper->buildOptionDescriptions($variation, $option);
+                    $this->optionHelper->buildOptionDescriptions($variation, $option);
                     $this->buildOptionValues($variation, $option);
                     $ocOption = $this->oc->loadAdminModel('catalog/option');
-                    if (is_null($optionId)) {
-                        $optionId = $ocOption->addOption($option);
-                    } else {
-                        $ocOption->editOption($optionId, $option);
-                    }
+                    $optionId = $ocOption->addOption($option);
                     $productOption = $this->mapper->toEndpoint($variation);
                     $productOption['option_id'] = $optionId;
                     $productOption['product_option_id'] = "";
@@ -73,7 +70,6 @@ class ProductVariation extends BaseController
     private function buildOptionValues(ProductVariationModel $variation, &$option)
     {
         foreach ($variation->getValues() as $value) {
-            $optionValueId = null;
             $optionValue = [
                 'image' => '',
                 'sort_order' => $value->getSort(),
@@ -86,21 +82,9 @@ class ProductVariation extends BaseController
                         'name' => $i18n->getName()
                     ];
                 }
-                if (is_null($optionValueId)) {
-                    $optionValueId = $this->findExistingOptionValue($i18n);
-                }
             }
-            $optionValue['option_value_id'] = $optionValueId;
             $option['option_value'][] = $optionValue;
         }
-    }
-
-    private function findExistingOptionValue(ProductVariationValueI18n $i18n)
-    {
-        $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-        $query = sprintf(SQLs::OPTION_VALUE_ID_BY_DESCRIPTION, $languageId, $i18n->getName());
-        $optionValueId = $this->database->queryOne($query);
-        return $optionValueId;
     }
 
     private function buildProductOptionValues(ProductVariationModel $variation, &$productOption)
@@ -119,7 +103,7 @@ class ProductVariation extends BaseController
             $mapper = new ProductVariationValueMapper();
             $productOptionValue = $mapper->toEndpoint($value);
             foreach ($value->getI18ns() as $i18n) {
-                $optionValueId = $this->findExistingOptionValue($i18n);
+                $optionValueId = $this->findExistingOptionValue($i18n, $productOption['option_id']);
                 if (!is_null($optionValueId)) {
                     break;
                 }
@@ -127,5 +111,13 @@ class ProductVariation extends BaseController
             $productOptionValue['option_value_id'] = $optionValueId;
             $productOption['product_option_value'][] = $productOptionValue;
         }
+    }
+
+    private function findExistingOptionValue(ProductVariationValueI18n $i18n, $optionId)
+    {
+        $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
+        $query = sprintf(SQLs::OPTION_VALUE_ID_BY_OPTION, $languageId, $i18n->getName(), $optionId);
+        $optionValueId = $this->database->queryOne($query);
+        return $optionValueId;
     }
 }

@@ -23,7 +23,6 @@ class OptionHelper extends Singleton
 
     public function buildOptionDescriptions($variation, &$option)
     {
-        $optionId = null;
         foreach ($variation->getI18ns() as $i18n) {
             $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
             if ($languageId !== false) {
@@ -31,11 +30,7 @@ class OptionHelper extends Singleton
                     'name' => $i18n->getName()
                 ];
             }
-            if (is_null($optionId)) {
-                $optionId = $this->findExistingOption($i18n, $variation->getType());
-            }
         }
-        return $optionId;
     }
 
     public function findExistingOption($i18n, $type)

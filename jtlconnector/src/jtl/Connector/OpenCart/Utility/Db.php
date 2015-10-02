@@ -86,4 +86,12 @@ class Db extends Singleton
 
         return false;
     }
+
+    /**
+     * @return Db
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
 }

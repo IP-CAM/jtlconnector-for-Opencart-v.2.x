@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Drawing\ImageRelationType;
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\Model\Image as ImageModel;
@@ -17,7 +18,8 @@ class Image extends MainEntityController
     private $methods = [
         'productPullQueries' => ImageRelationType::TYPE_PRODUCT,
         'categoryPullQueries' => ImageRelationType::TYPE_CATEGORY,
-        'manufacturerPullQueries' => ImageRelationType::TYPE_MANUFACTURER
+        'manufacturerPullQueries' => ImageRelationType::TYPE_MANUFACTURER,
+        'productVariationValuePullQueries' => ImageRelationType::TYPE_PRODUCT_VARIATION_VALUE
     ];
 
     /**
@@ -86,6 +88,11 @@ class Image extends MainEntityController
         return [sprintf(SQLs::IMAGE_MANUFACTURER_PULL, IdentityLinker::TYPE_IMAGE, $limit)];
     }
 
+    private function productVariationValuePullQueries($limit)
+    {
+        return [sprintf(SQLs::IMAGE_PVV_PULL, IdentityLinker::TYPE_IMAGE, $limit)];
+    }
+
     protected function pullQuery($data, $limit = null)
     {
         throw new OperationNotPermitedException("Use the queries for the specific types.");
@@ -94,6 +101,7 @@ class Image extends MainEntityController
     protected function pushData($data, $model)
     {
         $foreignKey = $data->getForeignKey()->getEndpoint();
+        Logger::write("push" . ucfirst($data->getRelationType()) . "Image", Logger::DEBUG);
         if (!empty($foreignKey)) {
             $this->deleteData($data);
             $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($foreignKey, $data);
@@ -105,7 +113,6 @@ class Image extends MainEntityController
     {
         $isCover = $data->getSort() === 1 ? true : false;
         $path = $this->saveImage($data);
-        //var_dump($path);
         if ($path !== false) {
             if ($isCover) {
                 $this->database->query(sprintf(SQLs::PRODUCT_SET_COVER, $path, $foreignKey));
@@ -131,6 +138,14 @@ class Image extends MainEntityController
         $path = $this->saveImage($data);
         if ($path !== false) {
             $this->database->query(sprintf(SQLs::IMAGE_MANUFACTURER_PUSH, $path, $foreignKey));
+        }
+    }
+
+    private function pushProductVariationValueImage($foreignKey, ImageModel $data)
+    {
+        $path = $this->saveImage($data);
+        if ($path !== false) {
+            $this->database->query(sprintf(SQLs::IMAGE_PVV_PUSH, $path, $foreignKey));
         }
     }
 
@@ -170,10 +185,13 @@ class Image extends MainEntityController
                 }
                 break;
             case ImageRelationType::TYPE_CATEGORY:
-                $this->database->update($data, 'oc_category', 'image', null);
+                $this->database->update($data, DB_PREFIX . 'category', 'image', null);
                 break;
             case ImageRelationType::TYPE_MANUFACTURER:
-                $this->database->update($data, 'oc_manufacturer', 'image', null);
+                $this->database->update($data, DB_PREFIX . 'manufacturer', 'image', null);
+                break;
+            case ImageRelationType::TYPE_PRODUCT_VARIATION_VALUE:
+                $this->database->update($data, DB_PREFIX . 'option_value', 'image', null);
                 break;
         }
         $absoluteImagePath = DIR_IMAGE . $imagePath;

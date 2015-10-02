@@ -21,7 +21,6 @@ class SpecificValue extends BaseMapper
     protected $push = [
         'filter_id' => 'id',
         'filter_group_id' => 'specificId',
-        'sort_order' => 'sort',
-        'Specific\SpecificValueI18n' => 'i18ns'
+        'sort_order' => 'sort'
     ];
 }

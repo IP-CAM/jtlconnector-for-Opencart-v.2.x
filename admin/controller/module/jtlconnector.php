@@ -159,7 +159,7 @@ class ControllerModuleJtlconnector extends Controller
     private function activateFilter()
     {
         $filterActivated = 'SELECT COUNT(*) FROM ' . DB_PREFIX . 'extension WHERE type="module" AND code="filter"';
-        if ($this->db->query($filterActivated) === 0) {
+        if ($this->db->query($filterActivated)->row === 0) {
             $this->db->query('INSERT INTO ' . DB_PREFIX . 'extension (type, code) VALUES ("module", "filter")');
             $this->db->query('
                 INSERT INTO ' . DB_PREFIX . 'setting (code, key, value, serialized)
@@ -167,7 +167,7 @@ class ControllerModuleJtlconnector extends Controller
             );
         }
         $filterInLayout = 'SELECT COUNT(*) FROM ' . DB_PREFIX . 'layout_module WHERE layout_id = 3 code="filter"';
-        if ($this->db->query($filterInLayout) === 0) {
+        if ($this->db->query($filterInLayout)->row === 0) {
             $this->db->query('
                 INSERT INTO ' . DB_PREFIX . 'layout_module (layout_id, code, position, sort_order)
                 VALUES (3, "filter", "column_left", 2)'
@@ -194,7 +194,7 @@ class ControllerModuleJtlconnector extends Controller
                 endpointId int(10) unsigned NOT NULL,
                 type tinyint unsigned NOT NULL,
                 checksum varchar(255) NOT NULL,
-                PRIMARY KEY (endpoint_id)
+                PRIMARY KEY (endpointId)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $this->db->query($checksumQuery);
     }

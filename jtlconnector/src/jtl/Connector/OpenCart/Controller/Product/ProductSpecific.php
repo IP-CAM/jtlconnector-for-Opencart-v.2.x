@@ -31,7 +31,7 @@ class ProductSpecific extends BaseController
                 foreach ($data->getCategories() as $category) {
                     $categoryId = $category->getCategoryId()->getEndpoint();
                     $query = sprintf(SQLs::PRODUCT_SPECIFIC_CATEGORY_FIND, $categoryId, $filterId);
-                    if ($this->database->queryOne($query) === 0) {
+                    if ($this->database->queryOne($query) == 0) {
                         $this->database->query(sprintf(SQLs::PRODUCT_SPECIFIC_CATEGORY_ADD, $categoryId, $filterId));
                     }
                 }

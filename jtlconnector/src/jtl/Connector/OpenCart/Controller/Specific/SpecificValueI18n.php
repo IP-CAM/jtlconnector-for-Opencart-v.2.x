@@ -8,6 +8,7 @@ namespace jtl\Connector\OpenCart\Controller\Specific;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Exceptions\DataAlreadyFetchedException;
+use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
 class SpecificValueI18n extends BaseController
@@ -24,6 +25,6 @@ class SpecificValueI18n extends BaseController
 
     public function pushData($data, &$model)
     {
-        parent::pushDataI18n($data, $model, 'filter_description');
+        throw new DataAlreadyFetchedException();
     }
 }
