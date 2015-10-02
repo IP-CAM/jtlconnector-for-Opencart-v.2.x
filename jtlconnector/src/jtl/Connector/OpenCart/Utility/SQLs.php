@@ -283,6 +283,12 @@ final class SQLs
             FROM ' . DB_PREFIX . 'order_total ot
             LEFT JOIN ' . DB_PREFIX . 'tax_rate tr ON tr.name = ot.title
             WHERE ot.code = "tax" AND ot.order_id = %d';
+    const TAX_ZONE_PULL = 'SELECT * FROM ' . DB_PREFIX . 'geo_zone';
+    const TAX_ZONE_COUNTRY_PULL = '
+        SELECT c.iso_code_2, ztgz.geo_zone_id
+        FROM ' . DB_PREFIX . 'zone_to_geo_zone ztgz
+        LEFT JOIN ' . DB_PREFIX . 'country c ON c.country_id = ztgz.country_id
+        WHERE ztgz.geo_zone_id = %d';
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Status Change">
     const STATUS_CHANGE_BY_ORDER = 'SELECT count(*) FROM ' . DB_PREFIX . 'order WHERE order_id = %d';

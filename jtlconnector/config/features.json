@@ -421,12 +421,12 @@
       "delete": false
     },
     "TaxZone": {
-      "pull": false,
+      "pull": true,
       "push": false,
       "delete": false
     },
     "TaxZoneCountry": {
-      "pull": false,
+      "pull": true,
       "push": false,
       "delete": false
     },

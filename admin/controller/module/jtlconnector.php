@@ -7,6 +7,7 @@ class ControllerModuleJtlconnector extends Controller
     const CONFIG_KEY = 'connector';
     const CONFIG_PASSWORD_KEY = self::CONFIG_KEY . self::SEPARATOR . 'password';
     const CONFIG_ATTRIBUTE_GROUP = self::CONFIG_KEY . self::SEPARATOR . 'attribute_group';
+
     private $error = [];
 
     public function __construct($registry)
@@ -158,19 +159,19 @@ class ControllerModuleJtlconnector extends Controller
 
     private function activateFilter()
     {
-        $filterActivated = 'SELECT COUNT(*) FROM ' . DB_PREFIX . 'extension WHERE type="module" AND code="filter"';
-        if ($this->db->query($filterActivated)->row === 0) {
+        $filterActivated = 'SELECT * FROM ' . DB_PREFIX . 'extension WHERE type="module" AND code="filter"';
+        if (empty($this->db->query($filterActivated)->rows)) {
             $this->db->query('INSERT INTO ' . DB_PREFIX . 'extension (type, code) VALUES ("module", "filter")');
             $this->db->query('
-                INSERT INTO ' . DB_PREFIX . 'setting (code, key, value, serialized)
-                VALUES ("filter", "filter_status", 1, 0)'
+                INSERT INTO ' . DB_PREFIX . 'setting (code, key, value, serialized, store_id)
+                VALUES ("filter", "filter_status", "1", 0, 0)'
             );
         }
-        $filterInLayout = 'SELECT COUNT(*) FROM ' . DB_PREFIX . 'layout_module WHERE layout_id = 3 code="filter"';
-        if ($this->db->query($filterInLayout)->row === 0) {
+        $filterInLayout = 'SELECT * FROM ' . DB_PREFIX . 'layout_module WHERE layout_id = 3 AND code="filter"';
+        if (empty($this->db->query($filterInLayout)->rows)) {
             $this->db->query('
                 INSERT INTO ' . DB_PREFIX . 'layout_module (layout_id, code, position, sort_order)
-                VALUES (3, "filter", "column_left", 2)'
+                VALUES (3, "filter", "column_left", 1)'
             );
         }
     }
