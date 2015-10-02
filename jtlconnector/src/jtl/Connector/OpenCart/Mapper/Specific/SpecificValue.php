@@ -6,7 +6,6 @@
 
 namespace jtl\Connector\OpenCart\Mapper\Specific;
 
-use jtl\Connector\Model\Specific as SpecificModel;
 use jtl\Connector\OpenCart\Mapper\BaseMapper;
 
 class SpecificValue extends BaseMapper

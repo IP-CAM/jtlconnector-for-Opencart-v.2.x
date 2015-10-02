@@ -32,12 +32,4 @@ class OptionHelper extends Singleton
             }
         }
     }
-
-    public function findExistingOption($i18n, $type)
-    {
-        $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-        $query = sprintf(SQLs::OPTION_ID_BY_DESCRIPTION, $languageId, $i18n->getName(), $type);
-        $optionId = $this->database->queryOne($query);
-        return $optionId;
-    }
 }

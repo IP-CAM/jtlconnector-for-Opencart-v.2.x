@@ -7,7 +7,6 @@
 namespace jtl\Connector\OpenCart\Controller\Specific;
 
 use jtl\Connector\OpenCart\Controller\BaseController;
-use jtl\Connector\OpenCart\Exceptions\DataAlreadyFetchedException;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
 class SpecificI18n extends BaseController

@@ -10,8 +10,8 @@ use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Drawing\ImageRelationType;
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\Model\Image as ImageModel;
+use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Utility\SQLs;
-use Symfony\Component\Finder\Exception\OperationNotPermitedException;
 
 class Image extends MainEntityController
 {
@@ -95,7 +95,7 @@ class Image extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        throw new OperationNotPermitedException("Use the queries for the specific types.");
+        throw new MethodNotAllowedException("Use the queries for the specific types.");
     }
 
     protected function pushData($data, $model)

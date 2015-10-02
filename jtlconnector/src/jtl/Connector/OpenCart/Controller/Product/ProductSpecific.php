@@ -2,12 +2,9 @@
 
 namespace jtl\Connector\OpenCart\Controller\Product;
 
-use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Model\Product as ProductModel;
-use jtl\Connector\Model\ProductAttr as ProductAttribute;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Utility\SQLs;
-use jtl\Connector\OpenCart\Utility\Utils;
 
 class ProductSpecific extends BaseController
 {

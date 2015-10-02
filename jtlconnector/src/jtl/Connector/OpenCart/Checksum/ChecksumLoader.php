@@ -7,7 +7,6 @@
 namespace jtl\Connector\OpenCart\Checksum;
 
 use jtl\Connector\Checksum\IChecksumLoader;
-use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\OpenCart\Utility\Db;
 

@@ -6,7 +6,6 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\OpenCart\Utility\OpenCart;
 use jtl\Connector\OpenCart\Utility\OptionHelper;
 use jtl\Connector\OpenCart\Utility\SQLs;
@@ -39,12 +38,8 @@ class FileUpload extends BaseController
     public function pushData($data, $model)
     {
         $option = ['type' => 'file', 'sort_order' => null];
-        $optionId = $this->optionHelper->buildOptionDescriptions($data, $option);
-        if (is_null($optionId)) {
-            $optionId = $this->ocOption->addOption($option);
-        } else {
-            $this->ocOption->editOption($optionId, $option);
-        }
+        $this->optionHelper->buildOptionDescriptions($data, $option);
+        $optionId = $this->ocOption->addOption($option);
         $query = sprintf(SQLs::FILE_UPLOAD_PUSH, $data->getProductId()->getHost(), $optionId, $data->getIsRequired());
         $this->database->query($query);
         return $data;
