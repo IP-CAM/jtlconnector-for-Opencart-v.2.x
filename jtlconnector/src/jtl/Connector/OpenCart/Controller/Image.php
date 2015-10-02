@@ -16,10 +16,11 @@ use jtl\Connector\OpenCart\Utility\SQLs;
 class Image extends MainEntityController
 {
     private $methods = [
-        'productPullQueries' => ImageRelationType::TYPE_PRODUCT,
-        'categoryPullQueries' => ImageRelationType::TYPE_CATEGORY,
-        'manufacturerPullQueries' => ImageRelationType::TYPE_MANUFACTURER,
-        'productVariationValuePullQueries' => ImageRelationType::TYPE_PRODUCT_VARIATION_VALUE
+        'productCoverPullQuery' => ImageRelationType::TYPE_PRODUCT,
+        'productImagesPullQuery' => ImageRelationType::TYPE_PRODUCT,
+        'categoryPullQuery' => ImageRelationType::TYPE_CATEGORY,
+        'manufacturerPullQuery' => ImageRelationType::TYPE_MANUFACTURER,
+        'productVariationValuePullQuery' => ImageRelationType::TYPE_PRODUCT_VARIATION_VALUE
     ];
 
     /**
@@ -45,13 +46,11 @@ class Image extends MainEntityController
     {
         list($method, $type) = each($methods);
         if (!is_null($method)) {
-            $queries = $this->{$method}($limit);
-            foreach ($queries as $query) {
-                $result = $this->database->query($query);
-                foreach ($result as $picture) {
-                    $model = $this->mapImageToHost($picture, $type);
-                    $return[] = $model;
-                }
+            $query = $this->{$method}($limit);
+            $result = $this->database->query($query);
+            foreach ($result as $picture) {
+                $model = $this->mapImageToHost($picture, $type);
+                $return[] = $model;
             }
             return true;
         } else {
@@ -70,27 +69,29 @@ class Image extends MainEntityController
         return $model;
     }
 
-    private function productPullQueries($limit)
+    private function productCoverPullQuery($limit)
     {
-        return [
-            sprintf(SQLs::IMAGE_PRODUCT_PULL_COVER, IdentityLinker::TYPE_IMAGE),
-            sprintf(SQLs::IMAGE_PRODUCT_PULL_EXTRA, IdentityLinker::TYPE_IMAGE, $limit),
-        ];
+        return sprintf(SQLs::IMAGE_PRODUCT_PULL_COVER, IdentityLinker::TYPE_IMAGE, $limit);
     }
 
-    private function categoryPullQueries($limit)
+    private function productImagesPullQuery($limit)
     {
-        return [sprintf(SQLs::IMAGE_CATEGORY_PULL, IdentityLinker::TYPE_IMAGE, $limit)];
+        return sprintf(SQLs::IMAGE_PRODUCT_PULL_EXTRA, IdentityLinker::TYPE_IMAGE, $limit);
     }
 
-    private function manufacturerPullQueries($limit)
+    private function categoryPullQuery($limit)
     {
-        return [sprintf(SQLs::IMAGE_MANUFACTURER_PULL, IdentityLinker::TYPE_IMAGE, $limit)];
+        return sprintf(SQLs::IMAGE_CATEGORY_PULL, IdentityLinker::TYPE_IMAGE, $limit);
     }
 
-    private function productVariationValuePullQueries($limit)
+    private function manufacturerPullQuery($limit)
     {
-        return [sprintf(SQLs::IMAGE_PVV_PULL, IdentityLinker::TYPE_IMAGE, $limit)];
+        return sprintf(SQLs::IMAGE_MANUFACTURER_PULL, IdentityLinker::TYPE_IMAGE, $limit);
+    }
+
+    private function productVariationValuePullQuery($limit)
+    {
+        return sprintf(SQLs::IMAGE_PVV_PULL, IdentityLinker::TYPE_IMAGE, $limit);
     }
 
     protected function pullQuery($data, $limit = null)

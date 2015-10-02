@@ -233,7 +233,8 @@ final class SQLs
         SELECT p.image, 0 as sort_order, CONCAT("p_", p.product_id) as id, p.product_id as foreign_key
         FROM ' . DB_PREFIX . 'product p
         LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("p_", p.product_id) AND l.type = %d
-        WHERE l.hostId IS NULL AND p.image IS NOT NULL AND p.image !=""';
+        WHERE l.hostId IS NULL AND p.image IS NOT NULL AND p.image != ""
+        LIMIT %d';
     const IMAGE_CATEGORY_PULL = '
         SELECT c.image, c.sort_order, CONCAT("c_", c.category_id) as id, c.category_id as foreign_key
         FROM ' . DB_PREFIX . 'category c

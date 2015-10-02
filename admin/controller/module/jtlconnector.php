@@ -36,12 +36,19 @@ class ControllerModuleJtlconnector extends Controller
         $data['heading_title'] = $this->language->get('heading_title');
 
         $data['text_info'] = $this->language->get('text_info');
+        $data['text_requirements'] = $this->language->get('text_requirements');
         $data['text_url'] = $this->language->get('text_url');
         $data['text_password'] = $this->language->get('text_password');
         $data['text_version'] = $this->language->get('text_version');
+        $data['text_php_version'] = $this->language->get('text_php_version');
+        $data['text_config_file'] = $this->language->get('text_config_file');
+        $data['text_connector_log'] = $this->language->get('text_connector_log');
 
         $data['url'] = HTTP_CATALOG . 'jtlconnector/';
         $data['version'] = self::CONNECTOR_VERSION;
+        $data['php_version'] = $this->phpVersion();
+        $data['config_file'] = $this->configFile();
+        $data['connector_log'] = $this->connectorLog();
 
         $data['button_save'] = $this->language->get('button_save');
         $data['button_cancel'] = $this->language->get('button_cancel');
@@ -88,29 +95,19 @@ class ControllerModuleJtlconnector extends Controller
 
     private function phpVersion()
     {
-        return array((version_compare(PHP_VERSION, '5.4') >= 0), array(PHP_VERSION));
-    }
-
-    private function gdlib()
-    {
-        return array((extension_loaded('gd') && function_exists('gd_info')));
+        return version_compare(PHP_VERSION, '5.4') >= 0;
     }
 
     private function configFile()
     {
-        $path = CONNECTOR_DIR . '/config';
-        if (file_exists($path . '/config.json')) {
-            $path = $path . '/config.json';
-        }
-
-        return array(is_writable($path), array($path));
+        $path = DIR_CATALOG . '../jtlconnector/config/config.json';
+        return file_exists($path) && is_writable($path);
     }
 
     private function connectorLog()
     {
-        $path = CONNECTOR_DIR . '/logs';
-
-        return array(is_writable($path), array($path));
+        $path = DIR_CATALOG . '../jtlconnector/logs';
+        return is_dir($path) && is_writable($path);
     }
 
     protected function validate()
@@ -164,7 +161,7 @@ class ControllerModuleJtlconnector extends Controller
             $this->db->query('INSERT INTO ' . DB_PREFIX . 'extension (type, code) VALUES ("module", "filter")');
             $this->db->query('
                 INSERT INTO ' . DB_PREFIX . 'setting (code, key, value, serialized, store_id)
-                VALUES ("filter", "filter_status", "1", 0, 0)'
+                VALUES ("filter", "filter_status", 1, 0, 0)'
             );
         }
         $filterInLayout = 'SELECT * FROM ' . DB_PREFIX . 'layout_module WHERE layout_id = 3 AND code="filter"';
