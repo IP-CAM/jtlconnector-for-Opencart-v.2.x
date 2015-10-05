@@ -333,8 +333,26 @@ final class SQLs
         INSERT INTO ' . DB_PREFIX . 'category_filter (category_id, filter_id)
         VALUES (%d, %d)';
     const PRODUCT_SPECIFIC_CATEGORY_FIND = '
-            SELECT COUNT(*)
-            FROM ' . DB_PREFIX . 'category_filter
-            WHERE category_id = %d AND filter_id =%d';
+        SELECT COUNT(*)
+        FROM ' . DB_PREFIX . 'category_filter
+        WHERE category_id = %d AND filter_id =%d';
+    // </editor-fold>
+    //// <editor-fold defaultstate="collapsed" desc="Measurement Unit">
+    const MEASUREMENT_UNIT_PULL_LENGTHS = '
+        SELECT lc.length_class_id as id, lc.value
+        FROM ' . DB_PREFIX . 'length_class lc
+        LEFT JOIN ' . DB_PREFIX . 'length_class_description lcd ON lcd.length_class = lc.length_class_id';
+    const MEASUREMENT_UNIT_PULL_WEIGHTS = '
+        SELECT wc.weight_class_id as id, wc.value
+        FROM ' . DB_PREFIX . 'weight_class wc
+        LEFT JOIN ' . DB_PREFIX . 'weight_class_description wcd ON wcd.weight_class = wc.weight_class_id';
+    const MEASUREMENT_UNIT_FIND_LENGTH = '
+        SELECT length_class_id
+        FROM ' . DB_PREFIX . 'length_class_description
+        WHERE unit = "%s"';
+    const MEASUREMENT_UNIT_FIND_WEIGHT = '
+        SELECT weight_class_id
+        FROM ' . DB_PREFIX . 'weight_class_description
+        WHERE unit = "%s"';
     // </editor-fold>
 }

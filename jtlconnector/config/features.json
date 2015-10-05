@@ -196,12 +196,12 @@
       "delete": false
     },
     "MeasurementUnit": {
-      "pull": false,
+      "pull": true,
       "push": false,
-      "delete": false
+      "delete": true
     },
     "MeasurementUnitI18n": {
-      "pull": false,
+      "pull": true,
       "push": false,
       "delete": false
     },
