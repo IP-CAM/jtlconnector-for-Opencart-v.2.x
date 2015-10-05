@@ -38,7 +38,7 @@ class Product extends MainEntityController
     protected function pushData($data, $model)
     {
         if (empty($data->getId()->getEndpoint())) {
-            $id = $this->database->query('INSERT INTO oc_product () VALUES ()');
+            $id = $this->database->query('INSERT INTO ' . DB_PREFIX . 'product () VALUES ()');
             $data->getId()->setEndpoint($id);
         }
         $endpoint = $this->mapper->toEndpoint($data);

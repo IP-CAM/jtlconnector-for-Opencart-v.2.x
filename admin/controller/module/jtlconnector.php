@@ -37,18 +37,16 @@ class ControllerModuleJtlconnector extends Controller
 
         $data['text_info'] = $this->language->get('text_info');
         $data['text_requirements'] = $this->language->get('text_requirements');
+        $data['text_write_access'] = $this->language->get('text_write_access');
         $data['text_url'] = $this->language->get('text_url');
         $data['text_password'] = $this->language->get('text_password');
         $data['text_version'] = $this->language->get('text_version');
         $data['text_php_version'] = $this->language->get('text_php_version');
-        $data['text_config_file'] = $this->language->get('text_config_file');
-        $data['text_connector_log'] = $this->language->get('text_connector_log');
 
         $data['url'] = HTTP_CATALOG . 'jtlconnector/';
         $data['version'] = self::CONNECTOR_VERSION;
         $data['php_version'] = $this->phpVersion();
-        $data['config_file'] = $this->configFile();
-        $data['connector_log'] = $this->connectorLog();
+        $data['write_access'] = $this->writeAccess();
 
         $data['button_save'] = $this->language->get('button_save');
         $data['button_cancel'] = $this->language->get('button_cancel');
@@ -98,16 +96,20 @@ class ControllerModuleJtlconnector extends Controller
         return version_compare(PHP_VERSION, '5.4') >= 0;
     }
 
-    private function configFile()
+    private function writeAccess()
     {
-        $path = DIR_CATALOG . '../jtlconnector/config/config.json';
-        return file_exists($path) && is_writable($path);
-    }
-
-    private function connectorLog()
-    {
-        $path = DIR_CATALOG . '../jtlconnector/logs';
-        return is_dir($path) && is_writable($path);
+        $configPath = DIR_CATALOG . '../jtlconnector/config/config.json';
+        $logsPath = DIR_CATALOG . '../jtlconnector/logs';
+        $imagePath = DIR_IMAGE . 'catalog/wawi/';
+        return [
+            'jtlconnector/config/config.json' => is_file($configPath) && is_writable($configPath),
+            'jtlconnector/logs/' => is_dir($logsPath) && is_writable($logsPath),
+            'image/catalog/category/' => is_dir($imagePath . 'category') && is_writable($imagePath . 'category'),
+            'image/catalog/manufacturer/' => is_dir($imagePath . 'manufacturer') && is_writable($imagePath . 'manufacturer'),
+            'image/catalog/product/' => is_dir($imagePath . 'product') && is_writable($imagePath . 'product'),
+            'image/catalog/product_variation_value/' => is_dir($imagePath . 'product_variation_value') && is_writable
+                ($imagePath . 'product_variation_value')
+        ];
     }
 
     protected function validate()

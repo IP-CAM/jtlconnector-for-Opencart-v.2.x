@@ -70,7 +70,6 @@ class Product extends BaseMapper
         'height' => 'height',
         'length' => 'length',
         'width' => 'width',
-        'model' => 'sku',
         'sort_order' => 'sort',
         'upc' => 'upc',
         'subtract' => 'considerStock',
@@ -84,6 +83,7 @@ class Product extends BaseMapper
         'weight_class_id' => null,
         'length_class_id' => null,
         'keyword' => null,
+        'model' => null,
         'Product\Product2Category' => 'categories',
         'Product\ProductI18n' => 'i18ns',
         'Product\ProductAttr' => 'attributes',
@@ -139,6 +139,11 @@ class Product extends BaseMapper
     }
 
     protected function keyword()
+    {
+        return null;
+    }
+
+    protected function model()
     {
         return null;
     }

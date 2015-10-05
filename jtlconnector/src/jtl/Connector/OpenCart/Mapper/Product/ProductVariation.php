@@ -22,7 +22,8 @@ class ProductVariation extends BaseMapper
     protected $push = [
         'sort_order' => 'sort',
         'type' => null,
-        'required' => null
+        'required' => null,
+        'product_option_id' => null
     ];
 
     protected function type(ProductVariationModel $data)
@@ -43,5 +44,10 @@ class ProductVariation extends BaseMapper
     protected function required(ProductVariationModel $data)
     {
         return $data->getType() !== ProductVariationModel::TYPE_FREE_TEXT;
+    }
+
+    protected function product_option_id()
+    {
+        return "";
     }
 }
