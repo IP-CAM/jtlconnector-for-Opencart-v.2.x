@@ -24,8 +24,7 @@ class ControllerModuleJtlconnector extends Controller
         $this->document->setTitle($this->language->get('heading_title'));
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-            $this->model_setting_setting->editSettingValue(self::CONFIG_KEY, self::CONFIG_PASSWORD_KEY,
-                $this->request->post[self::CONFIG_PASSWORD_KEY]);
+            // If an input field is required the actions are done here
 
             $this->session->data['success'] = $this->language->get('text_success');
 
@@ -141,9 +140,10 @@ class ControllerModuleJtlconnector extends Controller
             'sort_order' => 0,
             'attribute_group_description' => $groupDescriptions
         ]);
+        $password = $this->createPassword();
 
         $this->model_setting_setting->editSetting(self::CONFIG_KEY, [
-            self::CONFIG_PASSWORD_KEY => '',
+            self::CONFIG_PASSWORD_KEY => $password,
             self::CONFIG_ATTRIBUTE_GROUP => $groupId
         ]);
     }
@@ -197,6 +197,15 @@ class ControllerModuleJtlconnector extends Controller
                 PRIMARY KEY (endpointId)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $this->db->query($checksumQuery);
+    }
+
+    private function createPassword()
+    {
+        if (function_exists('com_create_guid') === true) {
+            return trim(com_create_guid(), '{}');
+        }
+        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535),
+            mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
 
 }
