@@ -222,7 +222,7 @@ class Image extends MainEntityController
      */
     private function buildImagePath($filename, $type)
     {
-        return "catalog/wawi/{$type}/{$filename}";
+        return "catalog/{$filename}";
     }
 
     protected function getStats()

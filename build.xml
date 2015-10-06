@@ -3,10 +3,6 @@
     <target name="build">
         <phingcall target="clean"/>
         <mkdir dir="./dist/admin/"/>
-        <mkdir dir="./dist/image/catalog/wawi/product"/>
-        <mkdir dir="./dist/image/catalog/wawi/category"/>
-        <mkdir dir="./dist/image/catalog/wawi/manufacturer"/>
-        <mkdir dir="./dist/image/catalog/wawi/product_variation_value"/>
         <mkdir dir="./dist/jtlconnector/config"/>
         <mkdir dir="./dist/jtlconnector/db"/>
         <mkdir dir="./dist/jtlconnector/logs"/>

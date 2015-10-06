@@ -27,7 +27,7 @@ class ProductVariation extends BaseMapper
         'product_option_id' => null
     ];
 
-    protected function type(ProductVariationModel $data)
+    protected function type($data)
     {
         if ($data instanceof ProductVariationModel) {
             switch ($data->getType()) {

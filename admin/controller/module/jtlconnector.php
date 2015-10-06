@@ -3,7 +3,7 @@
 class ControllerModuleJtlconnector extends Controller
 {
     const SEPARATOR = '_';
-    const CONNECTOR_VERSION = '0.3.0';
+    const CONNECTOR_VERSION = '0.3.1';
     const CONFIG_KEY = 'connector';
     const CONFIG_PASSWORD_KEY = 'connector_password';
     const CONFIG_ATTRIBUTE_GROUP = 'connector_attribute_group';
@@ -44,7 +44,8 @@ class ControllerModuleJtlconnector extends Controller
 
         $data['url'] = HTTP_CATALOG . 'jtlconnector/';
         $data['version'] = self::CONNECTOR_VERSION;
-        $data['php_version'] = $this->phpVersion();
+        $data['php_version'] = version_compare(PHP_VERSION, '5.4', '>=');
+        $data['zipping'] = class_exists('ZipArchive');
         $data['write_access'] = $this->writeAccess();
 
         $data['button_save'] = $this->language->get('button_save');
@@ -90,24 +91,15 @@ class ControllerModuleJtlconnector extends Controller
         $this->response->setOutput($this->load->view('module/jtlconnector.tpl', $data));
     }
 
-    private function phpVersion()
-    {
-        return version_compare(PHP_VERSION, '5.4') >= 0;
-    }
-
     private function writeAccess()
     {
         $configPath = DIR_CATALOG . '../jtlconnector/config/config.json';
         $logsPath = DIR_CATALOG . '../jtlconnector/logs';
-        $imagePath = DIR_IMAGE . 'catalog/wawi/';
+        $imagePath = DIR_IMAGE . 'catalog/';
         return [
             'jtlconnector/config/config.json' => is_file($configPath) && is_writable($configPath),
             'jtlconnector/logs/' => is_dir($logsPath) && is_writable($logsPath),
-            'image/catalog/category/' => is_dir($imagePath . 'category') && is_writable($imagePath . 'category'),
-            'image/catalog/manufacturer/' => is_dir($imagePath . 'manufacturer') && is_writable($imagePath . 'manufacturer'),
-            'image/catalog/product/' => is_dir($imagePath . 'product') && is_writable($imagePath . 'product'),
-            'image/catalog/product_variation_value/' => is_dir($imagePath . 'product_variation_value') && is_writable
-                ($imagePath . 'product_variation_value')
+            'image/catalog/' => is_dir($imagePath) && is_writable($imagePath)
         ];
     }
 
@@ -151,6 +143,7 @@ class ControllerModuleJtlconnector extends Controller
     public function uninstall()
     {
         $this->db->query('DROP TABLE jtl_connector_link');
+        $this->db->query('DROP TABLE jtl_connector_checksum');
         $configs = $this->model_setting_setting->getSetting(self::CONFIG_KEY);
         $this->model_catalog_attribute_group->deleteAttributeGroup($configs[self::CONFIG_ATTRIBUTE_GROUP]);
         $this->model_setting_setting->deleteSetting(self::CONFIG_KEY);
