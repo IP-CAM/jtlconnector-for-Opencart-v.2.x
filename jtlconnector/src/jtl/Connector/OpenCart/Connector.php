@@ -50,13 +50,13 @@ class Connector extends BaseConnector
     {
         $controller = RpcMethod::buildController($this->getMethod()->getController());
         if ($this->startsWith($controller, 'Product')) {
-            $controller = 'Product' . DIRECTORY_SEPARATOR . $controller;
+            $controller = 'Product\\'. $controller;
         } elseif (strpos($controller, 'Order') !== false) {
-            $controller = 'Order' . DIRECTORY_SEPARATOR . $controller;
+            $controller = 'Order\\'  . $controller;
         } elseif (in_array($controller, array_merge(['GlobalData'], GlobalData::getModels()))) {
-            $controller = 'GlobalData' . DIRECTORY_SEPARATOR . $controller;
+            $controller = 'GlobalData\\'  . $controller;
         } elseif (strpos($controller, 'Specific') !== false) {
-            $controller = 'Specific' . DIRECTORY_SEPARATOR . $controller;
+            $controller = 'Specific\\'  . $controller;
         }
         $class = Constants::CONTROLLER_NAMESPACE . $controller;
         if (class_exists($class)) {

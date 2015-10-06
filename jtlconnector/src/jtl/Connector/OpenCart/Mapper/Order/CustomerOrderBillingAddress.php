@@ -25,11 +25,15 @@ class CustomerOrderBillingAddress extends BaseMapper
         'zipCode' => 'payment_postcode',
         'city' => 'payment_city',
         'state' => 'payment_zone',
-        'countryIso' => 'iso_code_3'
+        'countryIso' => 'iso_code_3',
+        'mobile',
+        'salutation',
+        'title',
+        'vatNumber'
     ];
 
     protected function id($data)
     {
-        return new Identity($data['order_id'] . CustomerOrder::BILLING_ID_SUFFIX);
+        return new Identity(CustomerOrder::BILLING_ID_PREFIX . $data['order_id']);
     }
 }

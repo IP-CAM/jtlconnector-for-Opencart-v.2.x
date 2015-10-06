@@ -30,6 +30,6 @@ class CustomerOrderShippingAddress extends BaseMapper
 
     protected function id($data)
     {
-        return new Identity($data['order_id'] . CustomerOrder::SHIPPING_ID_SUFFIX);
+        return new Identity(CustomerOrder::SHIPPING_ID_PREFIX . $data['order_id']);
     }
 }

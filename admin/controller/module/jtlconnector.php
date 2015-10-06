@@ -5,8 +5,8 @@ class ControllerModuleJtlconnector extends Controller
     const SEPARATOR = '_';
     const CONNECTOR_VERSION = '0.3.0';
     const CONFIG_KEY = 'connector';
-    const CONFIG_PASSWORD_KEY = self::CONFIG_KEY . self::SEPARATOR . 'password';
-    const CONFIG_ATTRIBUTE_GROUP = self::CONFIG_KEY . self::SEPARATOR . 'attribute_group';
+    const CONFIG_PASSWORD_KEY = 'connector_password';
+    const CONFIG_ATTRIBUTE_GROUP = 'connector_attribute_group';
 
     private $error = [];
 

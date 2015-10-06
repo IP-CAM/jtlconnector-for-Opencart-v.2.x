@@ -12,12 +12,12 @@ class ProductI18n extends I18nBaseMapper
 {
     protected $pull = [
         'productId' => 'product_id',
-        'name' => 'name',
+        'name' => null,
         'description' => 'description',
         'languageISO' => null,
-        'metaDescription' => 'meta_description',
+        'titleTag' => 'tag',
         'metaKeywords' => 'meta_keyword',
-        'titleTag' => 'tag'
+        'metaDescription' => 'meta_description',
         // deliveryStatus, measurementUnitName, unitName, urlPath
     ];
 
@@ -29,6 +29,11 @@ class ProductI18n extends I18nBaseMapper
         'meta_description' => 'metaDescription',
         'meta_keyword' => 'metaKeywords'
     ];
+
+    protected function name($data)
+    {
+        return html_entity_decode(isset($data['name']) ? $data['name'] : '');
+    }
 
     protected function meta_title()
     {
