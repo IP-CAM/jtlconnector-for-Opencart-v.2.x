@@ -4,8 +4,9 @@
  * @package jtl\Connector\OpenCart\Controller
  */
 
-namespace jtl\Connector\OpenCart\Controller;
+namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
+use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Exceptions\DataAlreadyFetchedException;
 
 class MeasurementUnitI18n extends BaseController

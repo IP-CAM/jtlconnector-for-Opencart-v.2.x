@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Sven
- * Date: 25.08.2015
- * Time: 14:10
- */
 
 namespace jtl\Connector\OpenCart\Tests\Mapper;
 

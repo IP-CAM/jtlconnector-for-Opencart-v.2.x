@@ -12,13 +12,8 @@ class Language extends BaseMapper
 {
     protected $pull = [
         'id' => 'language_id',
-        'isDefault' => null,
+        'nameGerman' => 'name',
         'languageISO' => 'code',
-        'nameGerman' => 'name'
+        'isDefault' => 'is_default'
     ];
-
-    protected function isDefault($data)
-    {
-        return $data['sort_order'] === 1 ? true : false;
-    }
 }

@@ -3,6 +3,7 @@
 namespace jtl\Connector\OpenCart;
 
 use jtl\Connector\Base\Connector as BaseConnector;
+use jtl\Connector\Core\Config\Config;
 use jtl\Connector\Core\Controller\Controller as CoreController;
 use jtl\Connector\Core\Rpc\Method;
 use jtl\Connector\Core\Rpc\RequestPacket;
@@ -79,11 +80,6 @@ class Connector extends BaseConnector
      */
     public function handle(RequestPacket $requestpacket)
     {
-        $config = $this->getConfig();
-
-        // Set the config to our controller
-        $this->controller->setConfig($config);
-
         // Set the method to our controller
         $this->controller->setMethod($this->getMethod());
 

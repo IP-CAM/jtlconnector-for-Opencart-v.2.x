@@ -13,17 +13,19 @@ class Currency extends BaseMapper
 {
     protected $pull = [
         'id' => 'currency_id',
-        'factor' => 'value',
         'name' => 'title',
+        'factor' => 'value',
         'iso' => 'code',
-        'hasCurrencySignBeforeValue' => null,
-        'nameHTML' => null
+        'isDefault' => 'is_default',
+        'nameHTML' => null,
+        'hasCurrencySignBeforeValue' => null
     ];
 
     protected $push = [
+        'currency_id' => 'id',
         'title' => 'name',
-        'code' => 'iso',
         'value' => 'factor',
+        'code' => 'iso',
         'symbol_left' => null,
         'symbol_right' => null,
         'decimal_place' => null,

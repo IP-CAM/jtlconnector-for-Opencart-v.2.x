@@ -12,12 +12,7 @@ class CustomerGroup extends BaseMapper
 {
     protected $pull = [
         'id' => 'customer_group_id',
-        'i18ns' => 'GlobalData\CustomerGroupI18n',
-        'isDefault' => null
+        'isDefault' => 'is_default',
+        'i18ns' => 'GlobalData\CustomerGroupI18n'
     ];
-
-    protected function isDefault($data)
-    {
-        return ($data['sort_order'] === 1) ? true : false;
-    }
 }

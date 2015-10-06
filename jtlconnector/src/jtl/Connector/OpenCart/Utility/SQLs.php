@@ -48,20 +48,30 @@ final class SQLs
     const MODULE_FEATURED_WAWI = 'SELECT module_id FROM ' . DB_PREFIX . 'module WHERE code = "featured" AND name = "Featured - Wawi"';
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Global">
-    const CUSTOMER_GROUP_PULL = 'SELECT * FROM ' . DB_PREFIX . 'customer_group';
+    const CUSTOMER_GROUP_PULL = '
+        SELECT cg.*, s.key IS NOT NULL as is_default
+        FROM ' . DB_PREFIX . 'customer_group
+        LEFT JOIN ' . DB_PREFIX . 'setting s ON cg.customer_group_id = s.value';
     const CUSTOMER_GROUP_I18N_PULL = '
         SELECT c.*, l.code
         FROM ' . DB_PREFIX . 'customer_group_description c
         LEFT JOIN ' . DB_PREFIX . 'language l ON c.language_id = l.language_id
         WHERE c.customer_group_id = %d';
-    const CURRENCY_PULL = 'SELECT * FROM ' . DB_PREFIX . 'currency WHERE status = 1';
-    const CURRENCY_UPDATE = 'UPDATE ' . DB_PREFIX . 'currency SET value = %d WHERE currency_id = %d';
+    const CURRENCY_PULL = '
+        SELECT c.*, s.key IS NOT NULL as is_default
+        FROM ' . DB_PREFIX . 'currency c
+        LEFT JOIN ' . DB_PREFIX . 'setting s ON c.code = s.value
+        WHERE c.status = 1';
+    const LANGUAGE_PULL = '
+        SELECT l.*, s.key IS NOT NULL as is_default
+        FROM ' . DB_PREFIX . 'language l
+        LEFT JOIN ' . DB_PREFIX . 'setting s ON l.code = s.value
+        WHERE l.status = 1';
     const GLOBAL_DATA_STATS = 'SELECT
         (SELECT COUNT(*) FROM ' . DB_PREFIX . 'currency) +
         (SELECT COUNT(*) FROM ' . DB_PREFIX . 'customer_group) +
         (SELECT COUNT(*) FROM ' . DB_PREFIX . 'language) +
         (SELECT COUNT(*) FROM ' . DB_PREFIX . 'tax_rate)';
-    const LANGUAGE_PULL = 'SELECT * FROM ' . DB_PREFIX . 'language WHERE status = 1';
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Customer Order">
     const CUSTOMER_ORDER_PULL = '

@@ -38,9 +38,14 @@ class FileUpload extends BaseController
     public function pushData($data, $model)
     {
         $option = ['type' => 'file', 'sort_order' => null];
-        $this->optionHelper->buildOptionDescriptions($data, $option);
-        $optionId = $this->ocOption->addOption($option);
-        $query = sprintf(SQLs::FILE_UPLOAD_PUSH, $data->getProductId()->getHost(), $optionId, $data->getIsRequired());
+        list($id, $descriptions) = $this->optionHelper->buildOptionDescriptions($data);
+        $option['option_description'] = $descriptions;
+        if (is_null($id)) {
+            $id = $this->ocOption->addOption($option);
+        } else {
+            $this->ocOption->editOption($id, $option);
+        }
+        $query = sprintf(SQLs::FILE_UPLOAD_PUSH, $data->getProductId()->getHost(), $id, $data->getIsRequired());
         $this->database->query($query);
         return $data;
     }

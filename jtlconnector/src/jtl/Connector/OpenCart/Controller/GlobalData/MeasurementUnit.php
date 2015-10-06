@@ -4,8 +4,9 @@
  * @package jtl\Connector\OpenCart\Controller
  */
 
-namespace jtl\Connector\OpenCart\Controller;
+namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
+use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Utility\SQLs;
 

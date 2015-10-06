@@ -351,8 +351,8 @@
       "delete": false
     },
     "ProductVariationValueExtraCharge": {
-      "pull": false,
-      "push": false,
+      "pull": true,
+      "push": true,
       "delete": false
     },
     "ProductVariationValueI18n": {
