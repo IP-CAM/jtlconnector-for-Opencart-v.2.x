@@ -32,7 +32,7 @@ class FileUpload extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::FILE_UPLOAD_PULL, $limit);
+        return SQLs::fileUploadPull($limit);
     }
 
     public function pushData($data, $model)
@@ -45,14 +45,14 @@ class FileUpload extends BaseController
         } else {
             $this->ocOption->editOption($id, $option);
         }
-        $query = sprintf(SQLs::FILE_UPLOAD_PUSH, $data->getProductId()->getHost(), $id, $data->getIsRequired());
+        $query = SQLs::fileUploadPush($data->getProductId()->getHost(), $id, $data->getIsRequired());
         $this->database->query($query);
         return $data;
     }
 
     protected function deleteData($data)
     {
-        $this->database->query(sprintf(SQLs::FILE_UPLOAD_DELETE, $data->getId()->getEndpoint()));
+        $this->database->query(SQLs::fileUploadDelete($data->getId()->getEndpoint()));
         return $data;
     }
 }

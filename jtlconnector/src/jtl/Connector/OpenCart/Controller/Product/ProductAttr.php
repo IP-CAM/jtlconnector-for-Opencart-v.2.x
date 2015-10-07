@@ -17,7 +17,7 @@ class ProductAttr extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::PRODUCT_ATTRIBUTE_PULL, $data['product_id']);
+        return SQLs::productAttributePull($data['product_id']);
     }
 
     public function pushData(ProductModel $data, &$model)

@@ -18,6 +18,6 @@ class CustomerGroup extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return SQLs::CUSTOMER_GROUP_PULL;
+        return SQLs::customerGroupPull();
     }
 }

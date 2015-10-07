@@ -18,6 +18,6 @@ class Language extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return SQLs::LANGUAGE_PULL;
+        return SQLs::languagePull();
     }
 }

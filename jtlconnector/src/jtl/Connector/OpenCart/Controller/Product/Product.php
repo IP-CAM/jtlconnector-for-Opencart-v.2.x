@@ -34,7 +34,7 @@ class Product extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::PRODUCT_PULL, IdentityLinker::TYPE_PRODUCT, $limit);
+        return SQLs::productPull($limit);
     }
 
     protected function pushData($data, $model)
@@ -70,6 +70,6 @@ class Product extends MainEntityController
 
     protected function getStats()
     {
-        return $this->database->queryOne(sprintf(SQLs::PRODUCT_STATS, IdentityLinker::TYPE_PRODUCT));
+        return $this->database->queryOne(SQLs::productStats());
     }
 }

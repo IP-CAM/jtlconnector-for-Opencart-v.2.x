@@ -14,7 +14,7 @@ class ProductI18n extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::PRODUCT_I18N_PULL, $data['product_id']);
+        return SQLs::productI18nPull($data['product_id']);
     }
 
     public function pushData($data, &$model)

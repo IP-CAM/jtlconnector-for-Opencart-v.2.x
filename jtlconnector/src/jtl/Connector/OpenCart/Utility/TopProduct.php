@@ -28,10 +28,10 @@ class TopProduct extends Singleton
             'height' => '200',
             'status' => 1
         ];
-        $moduleId = $this->database->queryOne(SQLs::MODULE_FEATURED_WAWI);
+        $moduleId = $this->database->queryOne(SQLs::moduleIdTopProducts());
         if (is_null($moduleId)) {
             $this->addTopProduct($id, $data);
-            $moduleId = $this->database->queryOne(SQLs::MODULE_FEATURED_WAWI);
+            $moduleId = $this->database->queryOne(SQLs::moduleIdTopProducts());
         } else {
             $this->updateTopProduct($id, $data, $moduleId);
         }

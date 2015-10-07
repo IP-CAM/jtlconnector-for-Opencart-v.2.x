@@ -14,6 +14,6 @@ class ProductVariationValue extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::PRODUCT_VARIATION_VALUE_PULL, $data['product_option_id']);
+        return SQLs::productVariationValuePull($data['product_option_id']);
     }
 }

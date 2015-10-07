@@ -15,7 +15,7 @@ class ProductSpecific extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::PRODUCT_SPECIFIC_PULL, $data['product_id']);
+        return SQLs::productSpecificPull($data['product_id']);
     }
 
     public function pushData(ProductModel $data, &$model)

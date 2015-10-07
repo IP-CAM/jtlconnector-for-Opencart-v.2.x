@@ -13,7 +13,7 @@ class Product2Category extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::PRODUCT_CATEGORY_PULL, $data['product_id']);
+        return SQLs::productCategoryPull($data['product_id']);
     }
 
     public function pushData($data, &$model)

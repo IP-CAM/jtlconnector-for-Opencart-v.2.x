@@ -25,11 +25,6 @@ class GlobalData extends MainEntityController
         throw new MethodNotAllowedException("Just pull the different global data children.");
     }
 
-    protected function getStats()
-    {
-        return $this->database->queryOne(SQLs::GLOBAL_DATA_STATS);
-    }
-
     protected function pushData($data, $model)
     {
         $currencyController = new CurrencyController();
@@ -46,5 +41,10 @@ class GlobalData extends MainEntityController
             $measurementUnitController->delete($unit);
         }
         return $data;
+    }
+
+    protected function getStats()
+    {
+        return $this->database->queryOne(SQLs::globalDataStats());
     }
 }

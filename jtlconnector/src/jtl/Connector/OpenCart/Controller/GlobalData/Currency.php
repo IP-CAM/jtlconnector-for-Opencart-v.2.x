@@ -18,7 +18,7 @@ class Currency extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return SQLs::CURRENCY_PULL;
+        return SQLs::currencyPull();
     }
 
     protected function pushData($data, $model)

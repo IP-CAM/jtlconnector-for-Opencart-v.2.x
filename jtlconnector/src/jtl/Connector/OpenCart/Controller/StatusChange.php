@@ -28,12 +28,12 @@ class StatusChange extends BaseController
     {
         $customerOrderId = $data->getCustomerOrderId()->getEndpoint();
         if (!empty($customerOrderId)) {
-            $customerOrder = $this->database->queryOne(sprintf(SQLs::STATUS_CHANGE_BY_ORDER, $customerOrderId));
+            $customerOrder = $this->database->queryOne(SQLs::statusChangeByOrder($customerOrderId));
             if ($customerOrder !== null) {
                 $statusId = $this->mapShippingStatus($data);
-                $addHistory = sprintf(SQLs::STATUS_CHANGE_ADD, $customerOrderId, $statusId, $data->getPaymentStatus());
+                $addHistory = SQLs::statusChangeAdd($customerOrderId, $statusId, $data->getPaymentStatus());
                 $this->database->query($addHistory);
-                $this->database->query(sprintf(SQLs::CUSTOMER_ORDER_STATUS, $statusId, $customerOrderId));
+                $this->database->query(SQLs::customerOrderStatusUpdate($statusId, $customerOrderId));
                 return $data;
             }
             throw new DatabaseException(sprintf('Customer Order with Endpoint Id (%s) cannot be found',
@@ -60,7 +60,7 @@ class StatusChange extends BaseController
                 break;
         }
         if (is_null($status)) {
-            $query = sprintf(SQLs::CUSTOMER_ORDER_SHIPPING_STATUS_ID, $data->getCustomerOrderId()->getEndpoint());
+            $query = SQLs::customerOrderShippingStatusId($data->getCustomerOrderId()->getEndpoint());
             return $this->database->queryOne($query);
         }
         return $status;

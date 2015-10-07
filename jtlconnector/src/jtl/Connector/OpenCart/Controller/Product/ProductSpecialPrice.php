@@ -16,7 +16,7 @@ class ProductSpecialPrice extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::PRODUCT_SPECIAL_PULL, $data['product_id']);
+        return SQLs::productSpecialPull($data['product_id']);
     }
 
     public function pushData(ProductModel $data, &$model)

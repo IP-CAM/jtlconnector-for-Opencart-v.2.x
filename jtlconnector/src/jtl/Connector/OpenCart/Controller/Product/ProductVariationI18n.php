@@ -13,7 +13,6 @@ class ProductVariationI18n extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::PRODUCT_VARIATION_I18N_PULL, $data['product_option_id']
-        );
+        return SQLs::productVariationI18nPull($data['product_option_id']);
     }
 }

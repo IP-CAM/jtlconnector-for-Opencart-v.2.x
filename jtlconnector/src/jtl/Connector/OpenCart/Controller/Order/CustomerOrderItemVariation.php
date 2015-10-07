@@ -22,6 +22,6 @@ class CustomerOrderItemVariation extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::CUSTOMER_ORDER_ITEM_VARIATION, $data['order_item_id']);
+        return SQLs::customerOrderItemVariation($data['order_item_id']);
     }
 }

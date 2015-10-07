@@ -39,7 +39,7 @@ class ProductVariation extends BaseController
     {
         // Do not pull checkbox as configuration items are not supported yet.
         // Do not pull file as uploads are handled extra.
-        return sprintf(SQLs::PRODUCT_VARIATION_PULL, $data['product_id']);
+        return SQLs::productVariationPull($data['product_id']);
     }
 
     public function pushData(ProductModel $data, &$model)

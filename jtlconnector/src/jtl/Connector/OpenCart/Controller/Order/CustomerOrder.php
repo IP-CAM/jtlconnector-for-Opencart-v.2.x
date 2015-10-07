@@ -45,17 +45,12 @@ class CustomerOrder extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::CUSTOMER_ORDER_PULL, IdentityLinker::TYPE_CUSTOMER_ORDER, $limit);
-    }
-
-    protected function getStats()
-    {
-        return $this->database->queryOne(sprintf(SQLs::CUSTOMER_ORDER_STATS, IdentityLinker::TYPE_CUSTOMER_ORDER));
+        return SQLs::customerOrderPull($limit);
     }
 
     private function setShippingStatus($id, CustomerOrderModel &$order)
     {
-        $result = $this->database->query(sprintf(SQLs::CUSTOMER_ORDER_SHIPPING_STATUS, $id));
+        $result = $this->database->query(SQLs::customerOrderShippingStatus($id));
         if (!empty($result)) {
             if (in_array($result[0]['name'], self::SHIPPING_STATUS)) {
                 $order->setStatus($this->shippingStatusMapping[$result[0]['name']]);
@@ -70,7 +65,7 @@ class CustomerOrder extends MainEntityController
         foreach (self::PAYMENT_STATUS as $status) {
             $paymentStatus[] = "'{$status}'";
         }
-        $query = sprintf(SQLs::CUSTOMER_ORDER_PAYMENT_STATUS, $id, implode($paymentStatus, ','));
+        $query = SQLs::customerOrderPaymentStatus($id, implode($paymentStatus, ','));
         $result = $this->database->query($query);
         if (!empty($result)) {
             $order->setPaymentStatus(trim(str_replace('Payment:', '', $result[0]['comment'])));
@@ -86,5 +81,10 @@ class CustomerOrder extends MainEntityController
     protected function deleteData($data)
     {
         throw new MethodNotAllowedException();
+    }
+
+    protected function getStats()
+    {
+        return $this->database->queryOne(SQLs::customerOrderStats());
     }
 }

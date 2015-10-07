@@ -2,179 +2,387 @@
 
 namespace jtl\Connector\OpenCart\Utility;
 
+use jtl\Connector\Linker\IdentityLinker;
+
 final class SQLs
 {
     // <editor-fold defaultstate="collapsed" desc="Product Variation">
-    const PRODUCT_VARIATION_PULL = '
-        SELECT *
-        FROM ' . DB_PREFIX . 'product_option po
-        LEFT JOIN ' . DB_PREFIX . 'option o ON po.option_id = o.option_id
-        WHERE po.product_id = %d AND o.type NOT IN ("checkbox", "file")';
-    const PRODUCT_VARIATION_I18N_PULL = '
-        SELECT po.product_option_id, od.name, l.code
-        FROM ' . DB_PREFIX . 'option_description od
-        LEFT JOIN ' . DB_PREFIX . 'product_option po ON po.option_id = od.option_id
-        LEFT JOIN ' . DB_PREFIX . 'language l ON l.language_id = od.language_id
-        WHERE po.product_option_id = %d';
-    const PRODUCT_VARIATION_VALUE_PULL = 'SELECT * FROM ' . DB_PREFIX . 'product_option_value WHERE product_option_id = %d';
-    const PRODUCT_VARIATION_VALUE_I18N_PULL = '
-        SELECT pov.product_option_value_id, ovd.name, l.code
-        FROM ' . DB_PREFIX . 'product_option_value pov
-        LEFT JOIN ' . DB_PREFIX . 'option_value_description ovd ON pov.option_value_id = ovd.option_value_id
-        LEFT JOIN ' . DB_PREFIX . 'language l ON ovd.language_id = l.language_id
-        WHERE pov.product_option_value_id = %d';
-    const FILE_UPLOAD_PULL = '
-        SELECT *
-        FROM ' . DB_PREFIX . 'product_option po
-        LEFT JOIN ' . DB_PREFIX . 'option o ON po.option_id = o.option_id
-        LEFT JOIN ' . DB_PREFIX . 'option_description od ON od.option_id = o.option_id
-        WHERE o.type = "file"
-        LIMIT %d';
-    const FILE_UPLOAD_PUSH = 'INSERT INTO ' . DB_PREFIX . 'product_option (product_id, option_id, required) VALUES (%d, %d, %d)';
-    const FILE_UPLOAD_DELETE = 'DELETE FROM ' . DB_PREFIX . 'product_option WHERE product_option_id = %d';
+    public static function productVariationPull($productId)
+    {
+        return sprintf('
+            SELECT *
+            FROM ' . DB_PREFIX . 'product_option po
+            LEFT JOIN ' . DB_PREFIX . 'option o ON po.option_id = o.option_id
+            WHERE po.product_id = %d AND o.type NOT IN ("checkbox", "file")',
+            $productId
+        );
+    }
+
+    public static function productVariationI18nPull($productOptionId)
+    {
+        return sprintf('
+            SELECT po.product_option_id, od.name, l.code
+            FROM ' . DB_PREFIX . 'option_description od
+            LEFT JOIN ' . DB_PREFIX . 'product_option po ON po.option_id = od.option_id
+            LEFT JOIN ' . DB_PREFIX . 'language l ON l.language_id = od.language_id
+            WHERE po.product_option_id = %d',
+            $productOptionId
+        );
+    }
+
+    public static function productVariationValuePull($productOptionId)
+    {
+        return sprintf('
+            SELECT *
+            FROM ' . DB_PREFIX . 'product_option_value
+            WHERE product_option_id = %d',
+            $productOptionId
+        );
+    }
+
+    public static function productVariationValueI18nPull($productOptionValueId)
+    {
+        return sprintf('
+            SELECT pov.product_option_value_id, ovd.name, l.code
+            FROM ' . DB_PREFIX . 'product_option_value pov
+            LEFT JOIN ' . DB_PREFIX . 'option_value_description ovd ON pov.option_value_id = ovd.option_value_id
+            LEFT JOIN ' . DB_PREFIX . 'language l ON ovd.language_id = l.language_id
+            WHERE pov.product_option_value_id = %d',
+            $productOptionValueId
+        );
+    }
+
+    public static function fileUploadPull($limit)
+    {
+        return sprintf('
+            SELECT *
+            FROM ' . DB_PREFIX . 'product_option po
+            LEFT JOIN ' . DB_PREFIX . 'option o ON po.option_id = o.option_id
+            LEFT JOIN ' . DB_PREFIX . 'option_description od ON od.option_id = o.option_id
+            WHERE o.type = "file"
+            LIMIT %d',
+            $limit
+        );
+    }
+
+    public static function fileUploadPush($productId, $optionId, $required)
+    {
+        return sprintf('
+            INSERT INTO ' . DB_PREFIX . 'product_option (product_id, option_id, required)
+            VALUES (%d, %d, %d)',
+            $productId, $optionId, $required
+        );
+    }
+
+    public static function fileUploadDelete($productOptionId)
+    {
+        return sprintf(
+            'DELETE FROM ' . DB_PREFIX . 'product_option WHERE product_option_id = %d',
+            $productOptionId
+        );
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Option">
-    const OPTION_ID_BY_DESCRIPTION_AND_TYPE = '
-        SELECT o.option_id
-        FROM ' . DB_PREFIX . 'option o
-        LEFT JOIN ' . DB_PREFIX . 'option_description od ON o.option_id = od.option_id
-        WHERE od.language_id = %d AND od.name = "%s" AND o.type = "%s"';
-    const OPTION_VALUE_ID_BY_OPTION = '
-        SELECT ov.option_value_id
-        FROM ' . DB_PREFIX . 'option_value ov LEFT JOIN ' . DB_PREFIX . 'option_value_description ovd ON ovd.option_value_id = ov.option_value_id
-        WHERE ovd.language_id = %d AND ovd.name = "%s" AND ov.option_id = %d';
-    const OPTION_DELETE_OBSOLETE = '
-        SELECT o.option_id
-        FROM ' . DB_PREFIX . 'option o
-        LEFT JOIN ' . DB_PREFIX . 'product_option po ON po.option_id = o.option_id
-        WHERE po.option_id IS NULL';
+    public static function optionId($languageId, $name, $type)
+    {
+        return sprintf('
+            SELECT o.option_id
+            FROM ' . DB_PREFIX . 'option o
+            LEFT JOIN ' . DB_PREFIX . 'option_description od ON o.option_id = od.option_id
+            WHERE od.language_id = %d AND od.name = "%s" AND o.type = "%s"',
+            $languageId, $name, $type
+        );
+    }
+
+    public static function optionValueId($languageId, $name, $optionId)
+    {
+        return sprintf('
+            SELECT ov.option_value_id
+            FROM ' . DB_PREFIX . 'option_value ov LEFT JOIN ' . DB_PREFIX . 'option_value_description ovd ON ovd.option_value_id = ov.option_value_id
+            WHERE ovd.language_id = %d AND ovd.name = "%s" AND ov.option_id = %d',
+            $languageId, $name, $optionId
+        );
+    }
+
+    public static function obsoleteOptions()
+    {
+        return '
+            SELECT o.option_id
+            FROM ' . DB_PREFIX . 'option o
+            LEFT JOIN ' . DB_PREFIX . 'product_option po ON po.option_id = o.option_id
+            WHERE po.option_id IS NULL';
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Module">
-    const MODULE_FEATURED_WAWI = 'SELECT module_id FROM ' . DB_PREFIX . 'module WHERE code = "featured" AND name = "Featured - Wawi"';
+    public static function moduleIdTopProducts()
+    {
+        return 'SELECT module_id FROM ' . DB_PREFIX . 'module WHERE code = "featured" AND name = "Featured - Wawi"';
+    }
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Global">
-    const CUSTOMER_GROUP_PULL = '
-        SELECT cg.*, s.key IS NOT NULL as is_default
-        FROM ' . DB_PREFIX . 'customer_group cg
-        LEFT JOIN ' . DB_PREFIX . 'setting s ON cg.customer_group_id = s.value
-        WHERE s.key = "config_customer_group_id"';
-    const CUSTOMER_GROUP_I18N_PULL = '
-        SELECT c.*, l.code
-        FROM ' . DB_PREFIX . 'customer_group_description c
-        LEFT JOIN ' . DB_PREFIX . 'language l ON c.language_id = l.language_id
-        WHERE c.customer_group_id = %d';
-    const CURRENCY_PULL = '
-        SELECT c.*, s.key IS NOT NULL as is_default
-        FROM ' . DB_PREFIX . 'currency c
-        LEFT JOIN ' . DB_PREFIX . 'setting s ON c.code = s.value
-        WHERE c.status = 1';
-    const CURRENCY_UPDATE = 'UPDATE ' . DB_PREFIX . 'currency SET value = %d WHERE currency_id = %d';
-    const LANGUAGE_PULL = '
-        SELECT l.*, s.key IS NOT NULL as is_default
-        FROM ' . DB_PREFIX . 'language l
-        LEFT JOIN ' . DB_PREFIX . 'setting s ON l.code = s.value
-        WHERE l.status = 1';
-    const GLOBAL_DATA_STATS = 'SELECT
-        (SELECT COUNT(*) FROM ' . DB_PREFIX . 'currency) +
-        (SELECT COUNT(*) FROM ' . DB_PREFIX . 'customer_group) +
-        (SELECT COUNT(*) FROM ' . DB_PREFIX . 'language) +
-        (SELECT COUNT(*) FROM ' . DB_PREFIX . 'tax_rate)';
+    // <editor-fold defaultstate="collapsed" desc="Global Data">
+    public static function customerGroupPull()
+    {
+        return '
+            SELECT cg.*, s.key IS NOT NULL as is_default
+            FROM ' . DB_PREFIX . 'customer_group cg
+            LEFT JOIN ' . DB_PREFIX . 'setting s ON cg.customer_group_id = s.value
+            WHERE s.key = "config_customer_group_id"';
+    }
+
+    public static function customerGroupI18nPull($customerGroupId)
+    {
+        return sprintf('
+            SELECT c.*, l.code
+            FROM ' . DB_PREFIX . 'customer_group_description c
+            LEFT JOIN ' . DB_PREFIX . 'language l ON c.language_id = l.language_id
+            WHERE c.customer_group_id = %d',
+            $customerGroupId
+        );
+    }
+
+    public static function currencyPull()
+    {
+        return '
+            SELECT c.*, s.key IS NOT NULL as is_default
+            FROM ' . DB_PREFIX . 'currency c
+            LEFT JOIN ' . DB_PREFIX . 'setting s ON c.code = s.value
+            WHERE c.status = 1';
+    }
+
+    public static function updateCurrency($currencyId, $value)
+    {
+        return sprintf(
+            'UPDATE ' . DB_PREFIX . 'currency SET value = %d WHERE currency_id = %d',
+            $currencyId, $value
+        );
+    }
+
+    public static function languagePull()
+    {
+        return '
+            SELECT l.*, s.key IS NOT NULL as is_default
+            FROM ' . DB_PREFIX . 'language l
+            LEFT JOIN ' . DB_PREFIX . 'setting s ON l.code = s.value
+            WHERE l.status = 1';
+    }
+
+    public static function globalDataStats()
+    {
+        return '
+            (SELECT COUNT(*) FROM ' . DB_PREFIX . 'currency) +
+            (SELECT COUNT(*) FROM ' . DB_PREFIX . 'customer_group) +
+            (SELECT COUNT(*) FROM ' . DB_PREFIX . 'language) +
+            (SELECT COUNT(*) FROM ' . DB_PREFIX . 'tax_rate)';
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Customer Order">
-    const CUSTOMER_ORDER_PULL = '
-        SELECT o.*, l.code, c.iso_code_3
-        FROM ' . DB_PREFIX . 'order o
-        LEFT JOIN ' . DB_PREFIX . 'language l ON o.language_id = l.language_id
-        LEFT JOIN ' . DB_PREFIX . 'country c ON o.payment_country_id = c.country_id
-        LEFT JOIN jtl_connector_link cl ON o.order_id = cl.endpointId AND cl.type = %d
-        WHERE cl.hostId IS NULL
-        LIMIT %d';
-    const CUSTOMER_ORDER_STATS = '
-        SELECT COUNT(*)
-		FROM ' . DB_PREFIX . 'order o
-		LEFT JOIN jtl_connector_link l ON o.order_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL';
-    const CUSTOMER_ORDER_SHIPPING_STATUS = '
-        SELECT os.name, oh.date_added
-        FROM ' . DB_PREFIX . 'order o
-        LEFT JOIN ' . DB_PREFIX . 'language l ON o.language_id = l.language_id
-        LEFT JOIN ' . DB_PREFIX . 'order_status os ON os.order_status_id = o.order_status_id AND os.language_id = l.language_id
-        LEFT JOIN ' . DB_PREFIX . 'order_history oh ON oh.order_status_id = o.order_status_id
-        WHERE oh.order_id = %d
-        ORDER BY oh.date_added
-        LIMIT 1';
-    const CUSTOMER_ORDER_SHIPPING_STATUS_ID = '
-        SELECT oh.order_status_id
-        FROM ' . DB_PREFIX . 'order_status os
-        LEFT JOIN ' . DB_PREFIX . 'order_history oh ON oh.order_status_id = os.order_status_id
-        WHERE oh.order_id = %d
-        ORDER BY oh.date_added
-        LIMIT 1';
-    const CUSTOMER_ORDER_PAYMENT_STATUS = '
-        SELECT oh.comment, oh.date_added
-        FROM ' . DB_PREFIX . 'order o
-        LEFT JOIN ' . DB_PREFIX . 'language l ON o.language_id = l.language_id
-        LEFT JOIN ' . DB_PREFIX . 'order_history oh ON oh.order_status_id = o.order_status_id
-        WHERE oh.order_id = %d AND oh.comment != "" AND oh.comment IN (%s)
-        ORDER BY oh.date_added
-        LIMIT 1';
-    const CUSTOMER_ORDER_PRODUCTS = '
-        SELECT op.*, p.sku
-        FROM ' . DB_PREFIX . 'order_product op
-        LEFT JOIN ' . DB_PREFIX . 'product p ON p.product_id = op.product_id
-        WHERE op.order_id = %d';
-    const CUSTOMER_ORDER_SHIPPINGS = '
-        SELECT *
-        FROM ' . DB_PREFIX . 'order_total
-        WHERE code = "shipping" AND order_id = %d';
-    const CUSTOMER_ORDER_DISCOUNTS = '
-        SELECT *
-        FROM ' . DB_PREFIX . 'order_total
-        WHERE code IN ("coupon", "voucher") AND order_id = %d';
-    const CUSTOMER_ORDER_ITEM_VARIATION = '
-        SELECT oo.*, u.name AS filename, pov.price_prefix, pov.price
-        FROM ' . DB_PREFIX . 'order_option oo
-        LEFT JOIN ' . DB_PREFIX . 'product_option po ON oo.product_option_id = po.product_option_id
-        LEFT JOIN ' . DB_PREFIX . 'option o ON o.option_id = po.option_id
-        LEFT JOIN ' . DB_PREFIX . 'upload u ON u.code = oo.value
-        LEFT JOIN ' . DB_PREFIX . 'product_option_value pov ON pov.product_option_value_id = oo.product_option_value_id
-        WHERE oo.order_id = %d
-        ORDER BY o.sort_order';
-    const CUSTOMER_ORDER_STATUS = '
-        UPDATE ' . DB_PREFIX . 'order
-        SET order_status_id = %d, date_modified = NOW()
-        WHERE order_id = %d';
+    public static function customerOrderPull($limit)
+    {
+        return sprintf('
+            SELECT o.*, l.code, c.iso_code_3
+            FROM ' . DB_PREFIX . 'order o
+            LEFT JOIN ' . DB_PREFIX . 'language l ON o.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'country c ON o.payment_country_id = c.country_id
+            LEFT JOIN jtl_connector_link cl ON o.order_id = cl.endpointId AND cl.type = %d
+            WHERE cl.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_CUSTOMER_ORDER, $limit
+        );
+    }
+
+    public static function customerOrderStats()
+    {
+        return sprintf('
+            SELECT COUNT(*)
+            FROM ' . DB_PREFIX . 'order o
+            LEFT JOIN jtl_connector_link l ON o.order_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_CUSTOMER_ORDER
+        );
+    }
+
+    public static function customerOrderShippingStatus($orderId)
+    {
+        return sprintf('
+            SELECT os.name, oh.date_added
+            FROM ' . DB_PREFIX . 'order o
+            LEFT JOIN ' . DB_PREFIX . 'language l ON o.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'order_status os ON os.order_status_id = o.order_status_id AND os.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'order_history oh ON oh.order_status_id = o.order_status_id
+            WHERE oh.order_id = %d
+            ORDER BY oh.date_added
+            LIMIT 1',
+            $orderId
+        );
+    }
+
+    public static function customerOrderPaymentStatus($orderId, $comments)
+    {
+        return sprintf('
+            SELECT oh.comment, oh.date_added
+            FROM ' . DB_PREFIX . 'order o
+            LEFT JOIN ' . DB_PREFIX . 'language l ON o.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'order_history oh ON oh.order_status_id = o.order_status_id
+            WHERE oh.order_id = %d AND oh.comment != "" AND oh.comment IN (%s)
+            ORDER BY oh.date_added
+            LIMIT 1',
+            $orderId, $comments
+        );
+    }
+
+    public static function customerOrderShippingStatusId($orderId)
+    {
+        return sprintf('
+            SELECT oh.order_status_id
+            FROM ' . DB_PREFIX . 'order_status os
+            LEFT JOIN ' . DB_PREFIX . 'order_history oh ON oh.order_status_id = os.order_status_id
+            WHERE oh.order_id = %d
+            ORDER BY oh.date_added
+            LIMIT 1',
+            $orderId
+        );
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Customer Order Item">
+    public static function customerOrderProducts($orderId)
+    {
+        return sprintf('
+            SELECT op.*, p.sku
+            FROM ' . DB_PREFIX . 'order_product op
+            LEFT JOIN ' . DB_PREFIX . 'product p ON p.product_id = op.product_id
+            WHERE op.order_id = %d',
+            $orderId
+        );
+    }
+
+    public static function customerOrderShippings($orderId)
+    {
+        return sprintf('
+            SELECT *
+            FROM ' . DB_PREFIX . 'order_total
+            WHERE code = "shipping" AND order_id = %d',
+            $orderId
+        );
+    }
+
+    public static function customerOrderDiscounts($orderId)
+    {
+        return sprintf('
+            SELECT *
+            FROM ' . DB_PREFIX . 'order_total
+            WHERE code IN ("coupon", "voucher") AND order_id = %d',
+            $orderId
+        );
+    }
+
+    public static function customerOrderItemVariation($orderId)
+    {
+        return sprintf('
+            SELECT oo.*, u.name AS filename, pov.price_prefix, pov.price
+            FROM ' . DB_PREFIX . 'order_option oo
+            LEFT JOIN ' . DB_PREFIX . 'product_option po ON oo.product_option_id = po.product_option_id
+            LEFT JOIN ' . DB_PREFIX . 'option o ON o.option_id = po.option_id
+            LEFT JOIN ' . DB_PREFIX . 'upload u ON u.code = oo.value
+            LEFT JOIN ' . DB_PREFIX . 'product_option_value pov ON pov.product_option_value_id = oo.product_option_value_id
+            WHERE oo.order_id = %d
+            ORDER BY o.sort_order',
+            $orderId
+        );
+    }
+    // </editor-fold>
+    //// <editor-fold defaultstate="collapsed" desc="Status Change">
+    public static function statusChangeByOrder($orderId)
+    {
+        return sprintf('SELECT count(*) FROM ' . DB_PREFIX . 'order WHERE order_id = %d', $orderId);
+    }
+
+    public static function statusChangeAdd($orderId, $statusId, $payment)
+    {
+        return sprintf('
+            INSERT INTO ' . DB_PREFIX . 'order_history (order_id, order_status_id, notify, comment, date_added)
+            VALUES (%d, %d, 0, "Payment: %s", NOW())',
+            $orderId, $statusId, $payment
+        );
+    }
+
+    public static function customerOrderStatusUpdate($orderStatusId, $orderId)
+    {
+        return sprintf('
+            UPDATE ' . DB_PREFIX . 'order
+            SET order_status_id = %d, date_modified = NOW()
+            WHERE order_id = %d',
+            $orderStatusId, $orderId
+        );
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Product">
-    const PRODUCT_PULL = '
-        SELECT p.*, tr.rate
-        FROM ' . DB_PREFIX . 'product p
-        LEFT JOIN ' . DB_PREFIX . 'tax_class tc ON p.tax_class_id = tc.tax_class_id
-        LEFT JOIN ' . DB_PREFIX . 'tax_rule r ON r.tax_class_id = tc.tax_class_id
-        LEFT JOIN ' . DB_PREFIX . 'tax_rate tr ON tr.tax_rate_id = r.tax_rate_id
-        LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL
-        LIMIT %d';
-    const PRODUCT_I18N_PULL = '
-        SELECT p.*, l.code
-        FROM ' . DB_PREFIX . 'product_description p
-        LEFT JOIN ' . DB_PREFIX . 'language l ON p.language_id = l.language_id
-        WHERE p.product_id = %d';
-    const PRODUCT_STATS = '
-        SELECT COUNT(*)
-        FROM ' . DB_PREFIX . 'product p
-        LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL';
-    const PRODUCT_CATEGORY_PULL = '
-        SELECT *, CONCAT(product_id, "_", category_id) as id
-        FROM ' . DB_PREFIX . 'product_to_category
-        WHERE product_id = %d';
-    const PRODUCT_SPECIAL_PULL = 'SELECT * FROM ' . DB_PREFIX . 'product_special WHERE product_id = %d';
-    const PRODUCT_ATTRIBUTE_PULL = 'SELECT * FROM ' . DB_PREFIX . 'product_attribute WHERE product_id = %d';
-    const PRODUCT_SPECIFIC_PULL = '
-        SELECT *, CONCAT(product_id, "_", filter_id) as id
-        FROM ' . DB_PREFIX . 'product_filter
-        WHERE product_id = %d';
+    public static function productPull($limit)
+    {
+        return sprintf('
+            SELECT p.*, tr.rate
+            FROM ' . DB_PREFIX . 'product p
+            LEFT JOIN ' . DB_PREFIX . 'tax_class tc ON p.tax_class_id = tc.tax_class_id
+            LEFT JOIN ' . DB_PREFIX . 'tax_rule r ON r.tax_class_id = tc.tax_class_id
+            LEFT JOIN ' . DB_PREFIX . 'tax_rate tr ON tr.tax_rate_id = r.tax_rate_id
+            LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_PRODUCT, $limit
+        );
+    }
+
+    public static function productI18nPull($productId)
+    {
+        return sprintf('
+            SELECT p.*, l.code
+            FROM ' . DB_PREFIX . 'product_description p
+            LEFT JOIN ' . DB_PREFIX . 'language l ON p.language_id = l.language_id
+            WHERE p.product_id = %d',
+            $productId
+        );
+    }
+
+    public static function productStats()
+    {
+        return sprintf('
+            SELECT COUNT(*)
+            FROM ' . DB_PREFIX . 'product p
+            LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_PRODUCT
+        );
+    }
+
+    public static function productCategoryPull($productId)
+    {
+        return sprintf('
+            SELECT *, CONCAT(product_id, "_", category_id) as id
+            FROM ' . DB_PREFIX . 'product_to_category
+            WHERE product_id = %d',
+            $productId
+        );
+    }
+
+    public static function productSpecialPull($productId)
+    {
+        return sprintf('SELECT * FROM ' . DB_PREFIX . 'product_special WHERE product_id = %d', $productId);
+    }
+
+    public static function productAttributePull($productId)
+    {
+        return sprintf('SELECT * FROM ' . DB_PREFIX . 'product_attribute WHERE product_id = %d', $productId);
+    }
+
+    public static function productSpecificPull($productId)
+    {
+        return sprintf('
+            SELECT *, CONCAT(product_id, "_", filter_id) as id
+            FROM ' . DB_PREFIX . 'product_filter
+            WHERE product_id = %d',
+            $productId
+        );
+    }
+
     const PRODUCT_SET_COVER = 'UPDATE ' . DB_PREFIX . 'product SET image = "%s" WHERE product_id = %d';
     const PRODUCT_RESET_COVER = 'UPDATE ' . DB_PREFIX . 'product SET image = NULL WHERE product_id = %d';
     const PRODUCT_ADD_IMAGE = '
@@ -307,12 +515,6 @@ final class SQLs
         FROM ' . DB_PREFIX . 'zone_to_geo_zone ztgz
         LEFT JOIN ' . DB_PREFIX . 'country c ON c.country_id = ztgz.country_id
         WHERE ztgz.geo_zone_id = %d';
-    // </editor-fold>
-    //// <editor-fold defaultstate="collapsed" desc="Status Change">
-    const STATUS_CHANGE_BY_ORDER = 'SELECT count(*) FROM ' . DB_PREFIX . 'order WHERE order_id = %d';
-    const STATUS_CHANGE_ADD = '
-        INSERT INTO ' . DB_PREFIX . 'order_history (order_id, order_status_id, notify, comment, date_added)
-        VALUES (%d, %d, 0, "Payment: %s", NOW())';
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Specific">
     const SPECIFIC_PULL = '

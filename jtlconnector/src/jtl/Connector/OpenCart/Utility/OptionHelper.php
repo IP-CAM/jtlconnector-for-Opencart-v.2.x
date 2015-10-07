@@ -42,7 +42,7 @@ class OptionHelper extends Singleton
     public function findExistingOption($i18n, $type)
     {
         $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-        $query = sprintf(SQLs::OPTION_ID_BY_DESCRIPTION_AND_TYPE, $languageId, $i18n->getName(), $type);
+        $query = SQLs::optionId($languageId, $i18n->getName(), $type);
         $optionId = $this->database->queryOne($query);
         return $optionId;
     }
@@ -68,7 +68,7 @@ class OptionHelper extends Singleton
     public function findExistingOptionValue($i18n, $optionId)
     {
         $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-        $query = sprintf(SQLs::OPTION_VALUE_ID_BY_OPTION, $languageId, $i18n->getName(), $optionId);
+        $query = SQLs::optionValueId($languageId, $i18n->getName(), $optionId);
         $optionValueId = $this->database->queryOne($query);
         return $optionValueId;
     }
@@ -76,7 +76,7 @@ class OptionHelper extends Singleton
     public function deleteObsoleteOptions($productId)
     {
         $ocOption = OpenCart::getInstance()->loadAdminModel('catalog/option');
-        $result = $this->database->query(sprintf(SQLs::OPTION_DELETE_OBSOLETE, $productId));
+        $result = $this->database->query(SQLs::obsoleteOptions());
         foreach ($result as $optionId) {
             $ocOption->deleteOption($optionId['option_id']);
         }

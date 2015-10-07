@@ -66,17 +66,17 @@ class CustomerOrderItem extends BaseController
 
     private function pullProducts($orderId)
     {
-        return $this->database->query(sprintf(SQLs::CUSTOMER_ORDER_PRODUCTS, $orderId));
+        return $this->database->query(SQLs::customerOrderProducts($orderId));
     }
 
     private function pullShippings($orderId)
     {
-        return $this->database->query(sprintf(SQLs::CUSTOMER_ORDER_SHIPPINGS, $orderId));
+        return $this->database->query(SQLs::customerOrderShippings($orderId));
     }
 
     private function pullDiscounts($orderId)
     {
-        return $this->database->query(sprintf(SQLs::CUSTOMER_ORDER_DISCOUNTS, $orderId));
+        return $this->database->query(SQLs::customerOrderDiscounts($orderId));
     }
 
     private function getTax($orderId)
