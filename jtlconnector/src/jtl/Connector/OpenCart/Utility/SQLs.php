@@ -34,7 +34,7 @@ final class SQLs
     const FILE_UPLOAD_DELETE = 'DELETE FROM ' . DB_PREFIX . 'product_option WHERE product_option_id = %d';
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Option">
-    const OPTION_ID_BY_DESCRIPTION = '
+    const OPTION_ID_BY_DESCRIPTION_AND_TYPE = '
         SELECT o.option_id
         FROM ' . DB_PREFIX . 'option o
         LEFT JOIN ' . DB_PREFIX . 'option_description od ON o.option_id = od.option_id
@@ -43,6 +43,11 @@ final class SQLs
         SELECT ov.option_value_id
         FROM ' . DB_PREFIX . 'option_value ov LEFT JOIN ' . DB_PREFIX . 'option_value_description ovd ON ovd.option_value_id = ov.option_value_id
         WHERE ovd.language_id = %d AND ovd.name = "%s" AND ov.option_id = %d';
+    const OPTION_DELETE_OBSOLETE = '
+        SELECT o.option_id
+        FROM ' . DB_PREFIX . 'option o
+        LEFT JOIN ' . DB_PREFIX . 'product_option po ON po.option_id = o.option_id
+        WHERE po.option_id IS NULL';
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Module">
     const MODULE_FEATURED_WAWI = 'SELECT module_id FROM ' . DB_PREFIX . 'module WHERE code = "featured" AND name = "Featured - Wawi"';

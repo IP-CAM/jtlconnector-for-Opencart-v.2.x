@@ -8,8 +8,10 @@ namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
+use jtl\Connector\OpenCart\Utility\OptionHelper;
 use jtl\Connector\OpenCart\Utility\SQLs;
 use jtl\Connector\OpenCart\Utility\TopProduct;
+use PhpOption\Option;
 
 class Product extends MainEntityController
 {
@@ -42,14 +44,21 @@ class Product extends MainEntityController
             $data->getId()->setEndpoint($id);
         }
         $endpoint = $this->mapper->toEndpoint($data);
-        $taxClassId = $this->database->queryOne(sprintf(SQLs::TAX_CLASS_BY_RATE, $data->getVat()));
-        $endpoint['tax_class_id'] = $taxClassId;
+        $this->setTaxClass($data, $endpoint);
         $product = $this->oc->loadAdminModel('catalog/product');
         $product->editProduct($data->getId()->getEndpoint(), $endpoint);
+        $optionHelper = OptionHelper::getInstance();
+        $optionHelper->deleteObsoleteOptions($data->getId()->getEndpoint());
         if ($data->getIsTopProduct()) {
             $this->topProductUtil->handleTopProduct($data->getId()->getEndpoint());
         }
         return $data;
+    }
+
+    private function setTaxClass($data, &$endpoint)
+    {
+        $taxClassId = $this->database->queryOne(sprintf(SQLs::TAX_CLASS_BY_RATE, $data->getVat()));
+        $endpoint['tax_class_id'] = $taxClassId;
     }
 
     protected function deleteData($data)

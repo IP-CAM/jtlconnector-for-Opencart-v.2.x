@@ -42,7 +42,7 @@ class OptionHelper extends Singleton
     public function findExistingOption($i18n, $type)
     {
         $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-        $query = sprintf(SQLs::OPTION_ID_BY_DESCRIPTION, $languageId, $i18n->getName(), $type);
+        $query = sprintf(SQLs::OPTION_ID_BY_DESCRIPTION_AND_TYPE, $languageId, $i18n->getName(), $type);
         $optionId = $this->database->queryOne($query);
         return $optionId;
     }
@@ -57,23 +57,13 @@ class OptionHelper extends Singleton
                 'sort_order' => $value->getSort(),
                 'option_value_description' => []
             ];
-            foreach ($value->getI18ns() as $i18n) {
-                $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-                if (!is_null($languageId)) {
-                    $optionValue['option_value_description'][intval($languageId)] = [
-                        'name' => $i18n->getName()
-                    ];
-                    if (is_null($optionValueId)) {
-                        $optionValueId = $this->findExistingOptionValue($i18n, $optionId);
-                    }
-                }
-            }
+            $descriptions = $this->buildOptionValueDescription($value, $optionId, $optionValueId);
+            $optionValue['option_value_description'] = $descriptions;
             $optionValue['option_value_id'] = $optionValueId;
             $optionValues[] = $optionValue;
         }
         return $optionValues;
     }
-
 
     public function findExistingOptionValue($i18n, $optionId)
     {
@@ -81,5 +71,31 @@ class OptionHelper extends Singleton
         $query = sprintf(SQLs::OPTION_VALUE_ID_BY_OPTION, $languageId, $i18n->getName(), $optionId);
         $optionValueId = $this->database->queryOne($query);
         return $optionValueId;
+    }
+
+    public function deleteObsoleteOptions($productId)
+    {
+        $ocOption = OpenCart::getInstance()->loadAdminModel('catalog/option');
+        $result = $this->database->query(sprintf(SQLs::OPTION_DELETE_OBSOLETE, $productId));
+        foreach ($result as $optionId) {
+            $ocOption->deleteOption($optionId['option_id']);
+        }
+    }
+
+    private function buildOptionValueDescription($value, $optionId, &$optionValueId)
+    {
+        $descriptions = [];
+        foreach ($value->getI18ns() as $i18n) {
+            $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
+            if (!is_null($languageId)) {
+                $descriptions[intval($languageId)] = [
+                    'name' => $i18n->getName()
+                ];
+                if (is_null($optionValueId)) {
+                    $optionValueId = $this->findExistingOptionValue($i18n, $optionId);
+                }
+            }
+        }
+        return $descriptions;
     }
 }

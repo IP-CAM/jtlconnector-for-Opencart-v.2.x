@@ -46,7 +46,7 @@ abstract class BaseMapper extends Singleton
         foreach ($this->pull as $host => $endpoint) {
             $setter = 'set' . ucfirst($host);
             $fnName = strtolower($host);
-            if (method_exists($this, $fnName)) {
+            if (method_exists($this, $fnName) && is_null($endpoint)) {
                 $value = $this->$fnName($data);
             } else {
                 $value = (isset($data[$endpoint])) ? $data[$endpoint] : null;
@@ -82,7 +82,7 @@ abstract class BaseMapper extends Singleton
         foreach ($this->push as $endpoint => $host) {
             $fnName = strtolower($endpoint);
             // Extra defined methods
-            if (method_exists($this, $fnName)) {
+            if (method_exists($this, $fnName) && is_null($host)) {
                 $model[$endpoint] = $this->$fnName($data, $customData);
             } else {
                 $getter = 'get' . ucfirst($host);
