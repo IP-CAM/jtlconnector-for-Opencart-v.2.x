@@ -32,7 +32,7 @@ class ProductI18n extends I18nBaseMapper
 
     protected function name($data)
     {
-        return html_entity_decode(isset($data['name']) ? $data['name'] : '');
+        return html_entity_decode($data->getName());
     }
 
     protected function meta_title()

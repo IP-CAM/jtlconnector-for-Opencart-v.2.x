@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
 use jtl\Connector\OpenCart\Controller\GlobalData\Currency as CurrencyController;
+use jtl\Connector\OpenCart\Controller\GlobalData\MeasurementUnit as MeasurementUnitController;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Utility\SQLs;
@@ -40,6 +41,10 @@ class GlobalData extends MainEntityController
 
     protected function deleteData($data)
     {
-        throw new MethodNotAllowedException();
+        $measurementUnitController = new MeasurementUnitController();
+        foreach ($data->getMeasurementUnits() as $unit) {
+            $measurementUnitController->delete($unit);
+        }
+        return $data;
     }
 }

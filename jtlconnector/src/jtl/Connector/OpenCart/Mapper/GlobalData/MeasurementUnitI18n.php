@@ -11,7 +11,7 @@ use jtl\Connector\OpenCart\Mapper\I18nBaseMapper;
 class MeasurementUnitI18n extends I18nBaseMapper
 {
     protected $pull = [
-        'measurement_unit_id' => 'id',
+        'measurementUnitId' => 'id',
         'name' => 'title',
         'languageISO' => null
     ];

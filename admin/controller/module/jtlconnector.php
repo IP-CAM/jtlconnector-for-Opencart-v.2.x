@@ -151,18 +151,20 @@ class ControllerModuleJtlconnector extends Controller
 
     private function activateFilter()
     {
-        $filterActivated = 'SELECT * FROM ' . DB_PREFIX . 'extension WHERE type="module" AND code="filter"';
-        if (empty($this->db->query($filterActivated)->rows)) {
-            $this->db->query('INSERT INTO ' . DB_PREFIX . 'extension (type, code) VALUES ("module", "filter")');
-            $this->db->query('
-                INSERT INTO ' . DB_PREFIX . 'setting (code, key, value, serialized, store_id)
-                VALUES ("filter", "filter_status", 1, 0, 0)'
-            );
+        $filterInstalled = 'SELECT * FROM ' . DB_PREFIX . 'extension WHERE type="module" AND CODE="filter"';
+        if (empty($this->db->query($filterInstalled)->rows)) {
+            $this->db->query('INSERT INTO ' . DB_PREFIX . 'extension (type, CODE) VALUES ("module", "filter")');
         }
-        $filterInLayout = 'SELECT * FROM ' . DB_PREFIX . 'layout_module WHERE layout_id = 3 AND code="filter"';
+        $filterActivated = 'SELECT * FROM ' . DB_PREFIX . 'setting WHERE `key`="filter_stats"';
+        if (empty($this->db->query($filterInstalled)->rows)) {
+            $this->db->query('INSERT INTO ' . DB_PREFIX . 'setting SET store_id = 0, `code` = "filter", `key` = "filter_status", `value` = "1"');
+        } else {
+            $this->db->query('UPDATE ' . DB_PREFIX . 'setting SET `value` = "1" WHERE `key` = "filter_status"');
+        }
+        $filterInLayout = 'SELECT * FROM ' . DB_PREFIX . 'layout_module WHERE layout_id = 3 AND CODE="filter"';
         if (empty($this->db->query($filterInLayout)->rows)) {
             $this->db->query('
-                INSERT INTO ' . DB_PREFIX . 'layout_module (layout_id, code, position, sort_order)
+                INSERT INTO ' . DB_PREFIX . 'layout_module (layout_id, CODE, position, sort_order)
                 VALUES (3, "filter", "column_left", 1)'
             );
         }
@@ -172,9 +174,9 @@ class ControllerModuleJtlconnector extends Controller
     {
         $linkQuery = "
             CREATE TABLE IF NOT EXISTS jtl_connector_link (
-                endpointId char(64) NOT NULL,
-                hostId int(10) NOT NULL,
-                type int(10),
+                endpointId CHAR(64) NOT NULL,
+                hostId INT(10) NOT NULL,
+                type INT(10),
                 PRIMARY KEY (endpointId, hostId, type)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $this->db->query($linkQuery);
@@ -184,9 +186,9 @@ class ControllerModuleJtlconnector extends Controller
     {
         $checksumQuery = "
             CREATE TABLE IF NOT EXISTS jtl_connector_checksum (
-                endpointId int(10) unsigned NOT NULL,
-                type tinyint unsigned NOT NULL,
-                checksum varchar(255) NOT NULL,
+                endpointId INT(10) UNSIGNED NOT NULL,
+                type TINYINT UNSIGNED NOT NULL,
+                checksum VARCHAR(255) NOT NULL,
                 PRIMARY KEY (endpointId)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $this->db->query($checksumQuery);

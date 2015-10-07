@@ -50,8 +50,9 @@ final class SQLs
     // <editor-fold defaultstate="collapsed" desc="Global">
     const CUSTOMER_GROUP_PULL = '
         SELECT cg.*, s.key IS NOT NULL as is_default
-        FROM ' . DB_PREFIX . 'customer_group
-        LEFT JOIN ' . DB_PREFIX . 'setting s ON cg.customer_group_id = s.value';
+        FROM ' . DB_PREFIX . 'customer_group cg
+        LEFT JOIN ' . DB_PREFIX . 'setting s ON cg.customer_group_id = s.value
+        WHERE s.key = "config_customer_group_id"';
     const CUSTOMER_GROUP_I18N_PULL = '
         SELECT c.*, l.code
         FROM ' . DB_PREFIX . 'customer_group_description c
@@ -62,6 +63,7 @@ final class SQLs
         FROM ' . DB_PREFIX . 'currency c
         LEFT JOIN ' . DB_PREFIX . 'setting s ON c.code = s.value
         WHERE c.status = 1';
+    const CURRENCY_UPDATE = 'UPDATE ' . DB_PREFIX . 'currency SET value = %d WHERE currency_id = %d';
     const LANGUAGE_PULL = '
         SELECT l.*, s.key IS NOT NULL as is_default
         FROM ' . DB_PREFIX . 'language l
@@ -349,13 +351,21 @@ final class SQLs
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Measurement Unit">
     const MEASUREMENT_UNIT_PULL_LENGTHS = '
-        SELECT lc.length_class_id as id, lc.value
-        FROM ' . DB_PREFIX . 'length_class lc
-        LEFT JOIN ' . DB_PREFIX . 'length_class_description lcd ON lcd.length_class = lc.length_class_id';
+        SELECT CONCAT("l_", length_class_id) as id, value
+        FROM ' . DB_PREFIX . 'length_class';
+    const MEASUREMENT_UNIT_I18N_PULL_LENGTHS = '
+        SELECT CONCAT("l_", lcd.length_class_id) as length_class_id, lcd.title, l.code
+        FROM ' . DB_PREFIX . 'length_class_description lcd
+        LEFT JOIN ' . DB_PREFIX . 'language l ON lcd.language_id = l.language_id
+        WHERE lcd.length_class_id = %d';
     const MEASUREMENT_UNIT_PULL_WEIGHTS = '
-        SELECT wc.weight_class_id as id, wc.value
-        FROM ' . DB_PREFIX . 'weight_class wc
-        LEFT JOIN ' . DB_PREFIX . 'weight_class_description wcd ON wcd.weight_class = wc.weight_class_id';
+        SELECT CONCAT("w_", weight_class_id) as id, value
+        FROM ' . DB_PREFIX . 'weight_class';
+    const MEASUREMENT_UNIT_I18N_PULL_WEIGHTS = '
+        SELECT CONCAT("w_", wcd.weight_class_id) as weight_class_id, wcd.title, l.code
+        FROM ' . DB_PREFIX . 'weight_class_description wcd
+        LEFT JOIN ' . DB_PREFIX . 'language l ON wcd.language_id = l.language_id
+        WHERE wcd.weight_class_id = %d';
     const MEASUREMENT_UNIT_FIND_LENGTH = '
         SELECT length_class_id
         FROM ' . DB_PREFIX . 'length_class_description

@@ -24,16 +24,16 @@ class Currency extends BaseController
     protected function pushData($data, $model)
     {
         $endpointId = $data->getId()->getEndpoint();
-        $ocSetting = $this->oc->loadAdminModel('setting/setting');
+        $ocCurrency = $this->oc->loadAdminModel('localisation/currency');
         if (is_null($endpointId)) {
             $currency = $this->mapper->toEndpoint($data);
-            $ocCurrency = $this->oc->loadAdminModel('localisation/currency');
             $ocCurrency->addCurrency($currency);
         } else {
-            $ocSetting->refresh();
+            $ocCurrency->refresh();
         }
         if ($data->getIsDefault()) {
-            $ocSetting->editSettingValue('config', 'config_currency', utf8_strtoupper($data->getIso()));
+            $ocSetting = $this->oc->loadAdminModel('setting/setting');
+            $ocSetting->editSettingValue('config', 'config_currency', strtoupper($data->getIso()));
         }
     }
 }

@@ -15,8 +15,9 @@ class MeasurementUnit extends BaseController
     public function pullData($data, $model, $limit = null)
     {
         $return = [];
-        $result = $this->database->query(SQLs::MEASUREMENT_UNIT_PULL_LENGTHS);
-        $result = array_merge($result, $this->database->query(SQLs::MEASUREMENT_UNIT_PULL_WEIGHTS));
+        $lengths = $this->database->query(SQLs::MEASUREMENT_UNIT_PULL_LENGTHS);
+        $weights = $this->database->query(SQLs::MEASUREMENT_UNIT_PULL_WEIGHTS);
+        $result = array_merge($lengths, $weights);
         foreach ($result as $row) {
             $host = $this->mapper->toHost($row);
             $return[] = $host;

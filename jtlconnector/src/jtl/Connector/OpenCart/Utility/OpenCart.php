@@ -34,6 +34,7 @@ require_once(modification(DIR_SYSTEM . 'engine/controller.php'));
 require_once(modification(DIR_SYSTEM . 'engine/model.php'));
 require_once(modification(DIR_SYSTEM . 'engine/loader.php'));
 require_once(modification(DIR_SYSTEM . 'engine/registry.php'));
+require_once(modification(DIR_SYSTEM . 'helper/utf8.php'));
 require_once(Path::combine(DIR_APPLICATION, 'controller', 'module', 'jtlconnector.php'));
 
 class OpenCart extends Singleton
