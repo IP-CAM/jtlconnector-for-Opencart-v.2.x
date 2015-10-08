@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Model\FileUpload as FileUploadModel;
 use jtl\Connector\OpenCart\Utility\OpenCart;
 use jtl\Connector\OpenCart\Utility\OptionHelper;
 use jtl\Connector\OpenCart\Utility\SQLs;
@@ -35,7 +36,7 @@ class FileUpload extends BaseController
         return SQLs::fileUploadPull($limit);
     }
 
-    public function pushData($data, $model)
+    public function pushData(FileUploadModel $data, $model)
     {
         $option = ['type' => 'file', 'sort_order' => null];
         list($id, $descriptions) = $this->optionHelper->buildOptionDescriptions($data);
@@ -50,7 +51,7 @@ class FileUpload extends BaseController
         return $data;
     }
 
-    protected function deleteData($data)
+    protected function deleteData(FileUploadModel $data)
     {
         $this->database->query(SQLs::fileUploadDelete($data->getId()->getEndpoint()));
         return $data;

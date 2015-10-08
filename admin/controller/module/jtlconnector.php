@@ -7,6 +7,7 @@ class ControllerModuleJtlconnector extends Controller
     const CONFIG_KEY = 'connector';
     const CONFIG_PASSWORD_KEY = 'connector_password';
     const CONFIG_ATTRIBUTE_GROUP = 'connector_attribute_group';
+    const CONFIG_OPENCART_VERSION = 'connector_opencart_version';
 
     private $error = [];
 
@@ -136,7 +137,8 @@ class ControllerModuleJtlconnector extends Controller
 
         $this->model_setting_setting->editSetting(self::CONFIG_KEY, [
             self::CONFIG_PASSWORD_KEY => $password,
-            self::CONFIG_ATTRIBUTE_GROUP => $groupId
+            self::CONFIG_ATTRIBUTE_GROUP => $groupId,
+            self::CONFIG_OPENCART_VERSION => VERSION
         ]);
     }
 

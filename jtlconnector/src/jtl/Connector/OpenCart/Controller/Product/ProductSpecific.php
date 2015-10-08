@@ -23,13 +23,13 @@ class ProductSpecific extends BaseController
         $model['product_filter'] = [];
         foreach ((array)$data->getSpecifics() as $specific) {
             if (!is_null($specific->getSpecificValueId()->getEndpoint())) {
-                $filterId = $specific->getSpecificValueId()->getEndpoint();
-                $model['product_filter'][] = $filterId;
+                $specificValueId = $specific->getSpecificValueId()->getEndpoint();
+                $model['product_filter'][] = $specificValueId;
                 foreach ($data->getCategories() as $category) {
                     $categoryId = $category->getCategoryId()->getEndpoint();
-                    $query = sprintf(SQLs::PRODUCT_SPECIFIC_CATEGORY_FIND, $categoryId, $filterId);
+                    $query = SQLs::productSpecificPush($categoryId, $specificValueId);
                     if ($this->database->queryOne($query) == 0) {
-                        $this->database->query(sprintf(SQLs::PRODUCT_SPECIFIC_CATEGORY_ADD, $categoryId, $filterId));
+                        $this->database->query(SQLs::productSpecificFind($categoryId, $specificValueId));
                     }
                 }
             }

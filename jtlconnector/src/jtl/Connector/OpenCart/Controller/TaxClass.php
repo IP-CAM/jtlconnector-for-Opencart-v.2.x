@@ -13,6 +13,6 @@ class TaxClass extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return SQLs::TAX_CLASS_PULL;
+        return SQLs::taxClassPull();
     }
 }

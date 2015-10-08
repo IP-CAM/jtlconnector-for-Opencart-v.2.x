@@ -15,11 +15,11 @@ class ChecksumLoader implements IChecksumLoader
     /**
      * @var Db
      */
-    protected $db;
+    protected $database;
 
     public function __construct()
     {
-        $this->db = Db::getInstance();
+        $this->database = Db::getInstance();
     }
 
     public function read($endpointId, $type)
@@ -27,14 +27,12 @@ class ChecksumLoader implements IChecksumLoader
         if ($endpointId === null || $type !== IdentityLinker::TYPE_PRODUCT) {
             return '';
         }
-
-        $result = $this->db->queryOne(sprintf('
+        $result = $this->database->queryOne(sprintf('
             SELECT checksum
             FROM jtl_connector_checksum
             WHERE endpointId = %d AND type = %d',
             $endpointId, $type
         ));
-
         return is_null($result) ? '' : $result;
     }
 
@@ -44,7 +42,7 @@ class ChecksumLoader implements IChecksumLoader
             return false;
         }
 
-        $statement = $this->db->query(sprintf('
+        $statement = $this->database->query(sprintf('
             INSERT IGNORE INTO jtl_connector_checksum (endpointId, type, checksum)
             VALUES (%d, %d, %d)',
             $endpointId, $type, $checksum
@@ -59,7 +57,7 @@ class ChecksumLoader implements IChecksumLoader
             return false;
         }
 
-        $rows = $this->db->query(sprintf('
+        $rows = $this->database->query(sprintf('
             DELETE FROM jtl_connector_checksum
             WHERE endpointId = %d AND type = %d',
             $endpointId, $type

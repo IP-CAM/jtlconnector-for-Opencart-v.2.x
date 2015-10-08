@@ -17,7 +17,7 @@ class CategoryI18n extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::CATEGORY_I18N_PULL, $data['category_id']);
+        return SQLs::categoryI18n($data['category_id']);
     }
 
     public function pushData($data, &$model)

@@ -6,7 +6,6 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
@@ -19,12 +18,12 @@ class Customer extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::CUSTOMER_PULL, IdentityLinker::TYPE_CUSTOMER, $limit);
+        return SQLs::customerPull($limit);
     }
 
     protected function getStats()
     {
-        return $this->database->queryOne(sprintf(SQLs::CUSTOMER_DELETE, IdentityLinker::TYPE_CUSTOMER));
+        return $this->database->queryOne(SQLs::customerStats());
     }
 
     protected function pushData($data, $model)

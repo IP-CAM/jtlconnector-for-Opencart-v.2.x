@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\Model\Category as CategoryModel;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
 class Category extends MainEntityController
@@ -28,12 +28,11 @@ class Category extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::CATEGORY_PULL, IdentityLinker::TYPE_CATEGORY, $limit);
+        return SQLs::categoryPull($limit);
     }
 
-    public function pushData($data, $model)
+    public function pushData(CategoryModel $data, $model)
     {
-
         if (isset(self::$idCache[$data->getParentCategoryId()->getHost()])) {
             $data->getParentCategoryId()->setEndpoint(self::$idCache[$data->getParentCategoryId()->getHost()]);
         }
@@ -48,7 +47,7 @@ class Category extends MainEntityController
         return $data;
     }
 
-    protected function deleteData($data)
+    protected function deleteData(CategoryModel $data)
     {
         $this->ocCategory->deleteCategory($data->getId()->getEndpoint());
         return $data;
@@ -56,6 +55,6 @@ class Category extends MainEntityController
 
     protected function getStats()
     {
-        return $this->database->queryOne(sprintf(SQLs::CATEGORY_STATS, IdentityLinker::TYPE_CATEGORY));
+        return $this->database->queryOne(SQLs::categoryStats());
     }
 }

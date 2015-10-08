@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\Model\Manufacturer as ManufacturerModel;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
 class Manufacturer extends MainEntityController
@@ -18,10 +18,10 @@ class Manufacturer extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::MANUFACTURER_PULL, IdentityLinker::TYPE_MANUFACTURER, $limit);
+        return SQLs::manufacturerPull($limit);
     }
 
-    public function pushData($data, $model)
+    public function pushData(ManufacturerModel $data, $model)
     {
         $manufacturer = $this->oc->loadAdminModel('catalog/manufacturer');
         $endpoint = $this->mapper->toEndpoint($data);
@@ -34,7 +34,7 @@ class Manufacturer extends MainEntityController
         return $data;
     }
 
-    protected function deleteData($data)
+    protected function deleteData(ManufacturerModel $data)
     {
         $manufacturer = $this->oc->loadAdminModel('catalog/manufacturer');
         $manufacturer->deleteManufacturer(intval($data->getId()->getEndpoint()));
@@ -43,6 +43,6 @@ class Manufacturer extends MainEntityController
 
     protected function getStats()
     {
-        return $this->database->queryOne(sprintf(SQLs::MANUFACTURER_STATS, IdentityLinker::TYPE_MANUFACTURER));
+        return $this->database->queryOne(SQLs::manufacturerStats());
     }
 }

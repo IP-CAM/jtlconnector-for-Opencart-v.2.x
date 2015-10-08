@@ -19,7 +19,7 @@ class SpecificValueI18n extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::SPECIFIC_VALUE_I18N_PULL, $data['filter_id']);
+        return SQLs::specificValueI18nPull($data['filter_id']);
     }
 
     public function pushData($data, &$model)

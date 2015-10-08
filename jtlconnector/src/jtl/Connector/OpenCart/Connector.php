@@ -3,7 +3,6 @@
 namespace jtl\Connector\OpenCart;
 
 use jtl\Connector\Base\Connector as BaseConnector;
-use jtl\Connector\Core\Config\Config;
 use jtl\Connector\Core\Controller\Controller as CoreController;
 use jtl\Connector\Core\Rpc\Method;
 use jtl\Connector\Core\Rpc\RequestPacket;
@@ -50,13 +49,13 @@ class Connector extends BaseConnector
     {
         $controller = RpcMethod::buildController($this->getMethod()->getController());
         if ($this->startsWith($controller, 'Product')) {
-            $controller = 'Product\\'. $controller;
+            $controller = 'Product\\' . $controller;
         } elseif (strpos($controller, 'Order') !== false) {
-            $controller = 'Order\\'  . $controller;
+            $controller = 'Order\\' . $controller;
         } elseif (in_array($controller, array_merge(['GlobalData'], GlobalData::getModels()))) {
-            $controller = 'GlobalData\\'  . $controller;
+            $controller = 'GlobalData\\' . $controller;
         } elseif (strpos($controller, 'Specific') !== false) {
-            $controller = 'Specific\\'  . $controller;
+            $controller = 'Specific\\' . $controller;
         }
         $class = Constants::CONTROLLER_NAMESPACE . $controller;
         if (class_exists($class)) {

@@ -16,9 +16,9 @@ class MeasurementUnitI18n extends BaseController
     {
         $return = [];
         if (strrpos($data['id'], 'l_') !== false) {
-            $query = sprintf(SQLs::MEASUREMENT_UNIT_I18N_PULL_LENGTHS, str_replace('l_', '', $data['id']));
+            $query = SQLs::measurementUnitLengthsI18nPull(str_replace('l_', '', $data['id']));
         } else {
-            $query = sprintf(SQLs::MEASUREMENT_UNIT_I18N_PULL_WEIGHTS, str_replace('w_', '', $data['id']));
+            $query = SQLs::measurementUnitWeightsI18nPull(str_replace('w_', '', $data['id']));
         }
         $result = $this->database->query($query);
         foreach ($result as $row) {

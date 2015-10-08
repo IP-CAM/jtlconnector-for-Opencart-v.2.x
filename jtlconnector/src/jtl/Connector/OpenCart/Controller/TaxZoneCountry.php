@@ -13,6 +13,6 @@ class TaxZoneCountry extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::TAX_ZONE_COUNTRY_PULL, $data['geo_zone_id']);
+        return SQLs::taxZoneCountryPull($data['geo_zone_id']);
     }
 }

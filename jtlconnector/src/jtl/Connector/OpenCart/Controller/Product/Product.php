@@ -6,26 +6,23 @@
 
 namespace jtl\Connector\OpenCart\Controller\Product;
 
-use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\Model\Product as ProductModel;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
 use jtl\Connector\OpenCart\Utility\OptionHelper;
 use jtl\Connector\OpenCart\Utility\SQLs;
 use jtl\Connector\OpenCart\Utility\TopProduct;
-use PhpOption\Option;
 
 class Product extends MainEntityController
 {
-    /**
-     * @var TopProduct
-     */
+    private $optionHelper;
     private $topProductUtil;
 
     public function __construct()
     {
         parent::__construct();
+        $this->optionHelper = OptionHelper::getInstance();
         $this->topProductUtil = TopProduct::getInstance();
     }
-
 
     public function pullData($data, $model, $limit = null)
     {
@@ -37,31 +34,31 @@ class Product extends MainEntityController
         return SQLs::productPull($limit);
     }
 
-    protected function pushData($data, $model)
+    protected function pushData(ProductModel $data, $model)
     {
-        if (empty($data->getId()->getEndpoint())) {
-            $id = $this->database->query('INSERT INTO ' . DB_PREFIX . 'product () VALUES ()');
+        $id = $data->getId()->getEndpoint();
+        if (empty($id)) {
+            $id = $this->database->query(SQLs::productInsert());
             $data->getId()->setEndpoint($id);
         }
         $endpoint = $this->mapper->toEndpoint($data);
         $this->setTaxClass($data, $endpoint);
         $product = $this->oc->loadAdminModel('catalog/product');
-        $product->editProduct($data->getId()->getEndpoint(), $endpoint);
-        $optionHelper = OptionHelper::getInstance();
-        $optionHelper->deleteObsoleteOptions($data->getId()->getEndpoint());
+        $product->editProduct($id, $endpoint);
+        $this->optionHelper->deleteObsoleteOptions($id);
         if ($data->getIsTopProduct()) {
-            $this->topProductUtil->handleTopProduct($data->getId()->getEndpoint());
+            $this->topProductUtil->handleTopProduct($id);
         }
         return $data;
     }
 
-    private function setTaxClass($data, &$endpoint)
+    private function setTaxClass(ProductModel $data, &$endpoint)
     {
-        $taxClassId = $this->database->queryOne(sprintf(SQLs::TAX_CLASS_BY_RATE, $data->getVat()));
+        $taxClassId = $this->database->queryOne(SQLs::taxClassId($data->getVat()));
         $endpoint['tax_class_id'] = $taxClassId;
     }
 
-    protected function deleteData($data)
+    protected function deleteData(ProductModel $data)
     {
         $product = $this->oc->loadAdminModel('catalog/product');
         $product->deleteProduct($data->getId()->getEndpoint());

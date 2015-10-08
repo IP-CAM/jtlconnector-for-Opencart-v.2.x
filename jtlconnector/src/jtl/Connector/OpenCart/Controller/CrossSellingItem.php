@@ -28,6 +28,6 @@ class CrossSellingItem extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::CROSS_SELLING_ITEM_PULL, $data['product_id']);
+        return SQLs::crossSellingItemPull($data['product_id']);
     }
 }

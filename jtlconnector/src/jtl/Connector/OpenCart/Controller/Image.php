@@ -6,9 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
-use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Drawing\ImageRelationType;
-use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\Model\Image as ImageModel;
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Utility\SQLs;
@@ -64,34 +62,36 @@ class Image extends MainEntityController
     private function mapImageToHost($picture, $type)
     {
         $model = $this->mapper->toHost($picture);
-        $model->setRelationType($type);
-        $model->setRemoteURL(HTTP_CATALOG . 'image/' . $model->getFilename());
+        if ($model instanceof ImageModel) {
+            $model->setRelationType($type);
+            $model->setRemoteURL(HTTP_CATALOG . 'image/' . $model->getFilename());
+        }
         return $model;
     }
 
     private function productCoverPullQuery($limit)
     {
-        return sprintf(SQLs::IMAGE_PRODUCT_PULL_COVER, IdentityLinker::TYPE_IMAGE, $limit);
+        return SQLs::imageProductCoverPull($limit);
     }
 
     private function productImagesPullQuery($limit)
     {
-        return sprintf(SQLs::IMAGE_PRODUCT_PULL_EXTRA, IdentityLinker::TYPE_IMAGE, $limit);
+        return SQLs::imageProductsPull($limit);
     }
 
     private function categoryPullQuery($limit)
     {
-        return sprintf(SQLs::IMAGE_CATEGORY_PULL, IdentityLinker::TYPE_IMAGE, $limit);
+        return SQLs::imageCategoryPull($limit);
     }
 
     private function manufacturerPullQuery($limit)
     {
-        return sprintf(SQLs::IMAGE_MANUFACTURER_PULL, IdentityLinker::TYPE_IMAGE, $limit);
+        return SQLs::imageManufacturerPull($limit);
     }
 
     private function productVariationValuePullQuery($limit)
     {
-        return sprintf(SQLs::IMAGE_PVV_PULL, IdentityLinker::TYPE_IMAGE, $limit);
+        return SQLs::imageProductVariationValuePull($limit);
     }
 
     protected function pullQuery($data, $limit = null)
@@ -99,7 +99,7 @@ class Image extends MainEntityController
         throw new MethodNotAllowedException("Use the queries for the specific types.");
     }
 
-    protected function pushData($data, $model)
+    protected function pushData(ImageModel $data, $model)
     {
         $foreignKey = $data->getForeignKey()->getEndpoint();
         if (!empty($foreignKey)) {
@@ -115,10 +115,10 @@ class Image extends MainEntityController
         $path = $this->saveImage($data);
         if ($path !== false) {
             if ($isCover) {
-                $this->database->query(sprintf(SQLs::PRODUCT_SET_COVER, $path, $foreignKey));
+                $this->database->query(SQLs::productSetCover($path, $foreignKey));
                 $data->getId()->setEndpoint("p_" . $foreignKey);
             } else {
-                $query = sprintf(SQLs::PRODUCT_ADD_IMAGE, $foreignKey, $path, $data->getSort());
+                $query = SQLs::productAddImage($foreignKey, $path, $data->getSort());
                 $result = $this->database->query($query);
                 $data->getId()->setEndpoint("p_{$foreignKey}_{$result['id']}}");
             }
@@ -129,7 +129,7 @@ class Image extends MainEntityController
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
-            $this->database->query(sprintf(SQLs::IMAGE_CATEGORY_PUSH, $path, $foreignKey));
+            $this->database->query(SQLs::imageCategoryPush($path, $foreignKey));
         }
     }
 
@@ -137,7 +137,7 @@ class Image extends MainEntityController
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
-            $this->database->query(sprintf(SQLs::IMAGE_MANUFACTURER_PUSH, $path, $foreignKey));
+            $this->database->query(SQLs::imageManufacturerPush($path, $foreignKey));
         }
     }
 
@@ -145,7 +145,7 @@ class Image extends MainEntityController
     {
         $path = $this->saveImage($data);
         if ($path !== false) {
-            $this->database->query(sprintf(SQLs::IMAGE_PVV_PUSH, $path, $foreignKey));
+            $this->database->query(SQLs::imageProductVariationValuePush($path, $foreignKey));
         }
     }
 
@@ -153,7 +153,7 @@ class Image extends MainEntityController
     {
         $path = $data->getFilename();
         $filename = $this->buildImageFilename($path);
-        $imagePath = $this->buildImagePath($filename, $data->getRelationType());
+        $imagePath = $this->buildImagePath($filename);
         $destination = DIR_IMAGE . $imagePath;
 
         $allowed = ['jpg', 'jpeg', 'gif', 'png'];
@@ -170,28 +170,29 @@ class Image extends MainEntityController
         return false;
     }
 
-    protected function deleteData($data)
+    protected function deleteData(ImageModel $data)
     {
         $path = $data->getFilename();
         $filename = $this->buildImageFilename($path);
-        $imagePath = $this->buildImagePath($filename, $data->getRelationType());
+        $imagePath = $this->buildImagePath($filename);
+        $id = $data->getForeignKey()->getEndpoint();
         switch ($data->getRelationType()) {
             case ImageRelationType::TYPE_PRODUCT:
                 $isCover = $data->getSort() == 1 ? true : false;
                 if ($isCover) {
-                    $this->database->query(sprintf(SQLs::PRODUCT_RESET_COVER, $data->getForeignKey()->getEndpoint()));
+                    $this->database->query(SQLs::productSetCover('', $id));
                 } else {
-                    $this->database->query(sprintf(SQLs::IMAGE_PRODUCT_DELETE, $data->getId()->getEndpoint()));
+                    $this->database->query(SQLs::imageProductDelete($data->getId()->getEndpoint()));
                 }
                 break;
             case ImageRelationType::TYPE_CATEGORY:
-                $this->database->update($data, DB_PREFIX . 'category', 'image', null);
+                $this->database->query(SQLs::imageCategoryPush('', $id));
                 break;
             case ImageRelationType::TYPE_MANUFACTURER:
-                $this->database->update($data, DB_PREFIX . 'manufacturer', 'image', null);
+                $this->database->query(SQLs::imageManufacturerPush('', $id));
                 break;
             case ImageRelationType::TYPE_PRODUCT_VARIATION_VALUE:
-                $this->database->update($data, DB_PREFIX . 'option_value', 'image', null);
+                $this->database->query(SQLs::imageProductVariationValuePush('', $id));
                 break;
         }
         $absoluteImagePath = DIR_IMAGE . $imagePath;
@@ -201,25 +202,12 @@ class Image extends MainEntityController
         return $data;
     }
 
-    /**
-     * Build the image filename that can be used in the database.
-     *
-     * @param $path string The image path.
-     * @return string The filename ready for the database.
-     */
     private function buildImageFilename($path)
     {
         return basename(html_entity_decode($path, ENT_QUOTES, 'UTF-8'));
     }
 
-    /**
-     * Build the path of the image that is stored in the database.
-     *
-     * @param $filename string  The name of the file including its extension.
-     * @param $type     string  The type of the file which is mirrored as folder.
-     * @return string The path that is stored in the database.
-     */
-    private function buildImagePath($filename, $type)
+    private function buildImagePath($filename)
     {
         return "catalog/{$filename}";
     }

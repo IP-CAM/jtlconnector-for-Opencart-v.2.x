@@ -13,13 +13,7 @@ use jtl\Connector\OpenCart\Utility\Utils;
 
 class ProductVariation extends BaseController
 {
-    /**
-     * @var Utils
-     */
     private $utils;
-    /**
-     * @var OptionHelper
-     */
     private $optionHelper;
 
     public function __construct()
@@ -70,8 +64,8 @@ class ProductVariation extends BaseController
 
     private function buildProductOptionValues(ProductVariationModel $variation, &$productOption)
     {
-        $multiTypes = [ProductVariationModel::TYPE_FREE_TEXT, ProductVariationModel::TYPE_FREE_TEXT_OBLIGATORY];
-        if (!in_array($variation->getType(), $multiTypes)) {
+        $singleTypes = [ProductVariationModel::TYPE_FREE_TEXT, ProductVariationModel::TYPE_FREE_TEXT_OBLIGATORY];
+        if (!in_array($variation->getType(), $singleTypes)) {
             $this->buildMultipleProductOptionValue($variation, $productOption);
         }
     }

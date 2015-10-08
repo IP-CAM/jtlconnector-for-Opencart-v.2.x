@@ -13,6 +13,6 @@ class TaxZone extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return SQLs::TAX_ZONE_PULL;
+        return SQLs::taxZonePull();
     }
 }

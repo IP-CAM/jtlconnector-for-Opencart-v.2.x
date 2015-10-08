@@ -18,6 +18,6 @@ class CustomerGroupI18n extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::CUSTOMER_GROUP_I18N_PULL, $data['customer_group_id']);
+        return SQLs::customerGroupI18nPull($data['customer_group_id']);
     }
 }

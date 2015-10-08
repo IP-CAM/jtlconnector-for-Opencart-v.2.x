@@ -99,4 +99,12 @@ class TopProduct extends Singleton
             $ocModule->editLayout(self::LAYOUT_KEY, $layout);
         }
     }
+
+    /**
+     * @return TopProduct
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
 }

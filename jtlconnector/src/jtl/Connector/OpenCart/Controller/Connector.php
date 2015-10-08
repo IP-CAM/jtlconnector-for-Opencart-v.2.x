@@ -14,23 +14,16 @@ use jtl\Connector\Formatter\ExceptionFormatter;
 use jtl\Connector\Model\ConnectorIdentification;
 use jtl\Connector\Model\ConnectorServerInfo;
 use jtl\Connector\OpenCart\Utility\Constants;
+use jtl\Connector\OpenCart\Utility\OpenCart;
 use jtl\Connector\Result\Action;
 
 class Connector extends Controller
 {
-    /**
-     * Statistic
-     *
-     * @param \jtl\Connector\Core\Model\QueryFilter $queryFilter
-     * @return \jtl\Connector\Result\Action
-     */
     public function statistic(QueryFilter $queryFilter)
     {
         $action = new Action();
         $action->setHandled(true);
-
         $results = [];
-
         $mainControllers = [
             'Category',
             'Customer',
@@ -38,9 +31,9 @@ class Connector extends Controller
             'CrossSelling',
             'Image',
             'Product',
-            'Manufacturer'
+            'Manufacturer',
+            'Specific'
         ];
-
         foreach ($mainControllers as $mainController) {
             $class = Constants::CONTROLLER_NAMESPACE . $mainController;
             if (class_exists($class)) {
@@ -63,17 +56,10 @@ class Connector extends Controller
         return $action;
     }
 
-    /**
-     * Identify
-     *
-     * @return \jtl\Connector\Result\Action
-     */
-    public
-    function identify()
+    public function identify()
     {
         $action = new Action();
         $action->setHandled(true);
-
         $returnMegaBytes = function ($value) {
             $value = trim($value);
             $unit = strtolower($value[strlen($value) - 1]);
@@ -83,38 +69,27 @@ class Connector extends Controller
             }
             return (int)$value;
         };
-
         $serverInfo = new ConnectorServerInfo();
         $serverInfo->setMemoryLimit($returnMegaBytes(ini_get('memory_limit')))
             ->setExecutionTime((int)ini_get('max_execution_time'))
             ->setPostMaxSize($returnMegaBytes(ini_get('post_max_size')))
             ->setUploadMaxFilesize($returnMegaBytes(ini_get('upload_max_filesize')));
-
+        $version = file_get_contents(CONNECTOR_DIR . '/version');
         $identification = new ConnectorIdentification();
-        $identification->setEndpointVersion('1.0.0')
+        $identification->setEndpointVersion($version)
             ->setPlatformName('OpenCart')
-            ->setPlatformVersion('2.0.3.1')
+            ->setPlatformVersion(OpenCart::getInstance()->getVersion())
             ->setProtocolVersion(Application()->getProtocolVersion())
             ->setServerInfo($serverInfo);
-
         $action->setResult($identification);
-
         return $action;
     }
 
-    /**
-     * Finish
-     *
-     * @return \jtl\Connector\Result\Action
-     */
-    public
-    function finish()
+    public function finish()
     {
         $action = new Action();
-
         $action->setHandled(true);
         $action->setResult(true);
-
         return $action;
     }
 }

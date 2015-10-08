@@ -21,34 +21,27 @@ use jtl\Connector\Result\Action;
 abstract class BaseController extends Controller
 {
     /**
-     * @var $database Db
-     */
-    protected $database = null;
-    /**
-     * @var $mapper BaseMapper
+     * @var BaseMapper
      */
     protected $mapper = null;
-    /**
-     * @var $controllerName string
-     */
-    protected $controllerName = null;
-    /**
-     * @var $oc OpenCart
-     */
     protected $oc = null;
+    protected $utils = null;
+    protected $database = null;
+    protected $controllerName = null;
 
     public function __construct()
     {
         $this->database = Db::getInstance();
+        $this->oc = OpenCart::getInstance();
+        $this->utils = Utils::getInstance();
+
         $reflect = new \ReflectionClass($this);
         $shortName = $reflect->getShortName();
         $this->controllerName = $shortName;
-        $mapperClass = str_replace('Controller', 'Mapper',
-                $reflect->getNamespaceName()) . DIRECTORY_SEPARATOR . $shortName;
+        $mapperClass = str_replace('Controller', 'Mapper', $reflect->getNamespaceName()) . '\\' . $shortName;
         if (class_exists($mapperClass)) {
             $this->mapper = new $mapperClass();
         }
-        $this->oc = OpenCart::getInstance();
     }
 
     public function pull(QueryFilter $query)

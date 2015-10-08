@@ -13,10 +13,6 @@ use jtl\Connector\Result\Action;
 
 abstract class MainEntityController extends BaseController
 {
-    protected abstract function pushData($data, $model);
-
-    protected abstract function deleteData($data);
-
     public function statistic(QueryFilter $query)
     {
         $action = new Action();

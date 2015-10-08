@@ -68,7 +68,7 @@
     </target>
 
     <target name="package" depends="build">
-        <loadfile property="version" file="version"/>
+        <loadfile property="version" file="jtlconnector/version"/>
         <delete file="./dist/jtlconnector/connector.phar"/>
         <pharpackage
                 destfile="./dist/jtlconnector/index.phar"

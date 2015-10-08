@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
+use jtl\Connector\Model\Currency as CurrencyModel;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
@@ -21,11 +22,11 @@ class Currency extends BaseController
         return SQLs::currencyPull();
     }
 
-    protected function pushData($data, $model)
+    protected function pushData(CurrencyModel $data, $model)
     {
-        $endpointId = $data->getId()->getEndpoint();
+        $currencyId = $data->getId()->getEndpoint();
         $ocCurrency = $this->oc->loadAdminModel('localisation/currency');
-        if (is_null($endpointId)) {
+        if (is_null($currencyId)) {
             $currency = $this->mapper->toEndpoint($data);
             $ocCurrency->addCurrency($currency);
         } else {

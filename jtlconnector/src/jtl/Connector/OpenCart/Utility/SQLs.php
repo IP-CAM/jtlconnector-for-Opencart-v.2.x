@@ -316,6 +316,11 @@ final class SQLs
     }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Product">
+    public static function productInsert()
+    {
+        return 'INSERT INTO ' . DB_PREFIX . 'product () VALUES ()';
+    }
+
     public static function productPull($limit)
     {
         return sprintf('
@@ -383,203 +388,458 @@ final class SQLs
         );
     }
 
-    const PRODUCT_SET_COVER = 'UPDATE ' . DB_PREFIX . 'product SET image = "%s" WHERE product_id = %d';
-    const PRODUCT_RESET_COVER = 'UPDATE ' . DB_PREFIX . 'product SET image = NULL WHERE product_id = %d';
-    const PRODUCT_ADD_IMAGE = '
-        INSERT INTO ' . DB_PREFIX . 'product_image (product_id, image, sort_order)
-        values (%d, "%s", %d)';
+    public static function productSetCover($image, $productId)
+    {
+        return sprintf('
+            UPDATE ' . DB_PREFIX . 'product
+            SET image = "%s"
+            WHERE product_id = %d',
+            $image, $productId
+        );
+    }
+
+    public static function productAddImage($productId, $image, $sortOrder)
+    {
+        return sprintf('
+            INSERT INTO ' . DB_PREFIX . 'product_image (product_id, image, sort_order)
+            values (%d, "%s", %d)',
+            $productId, $image, $sortOrder
+        );
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Attribute">
-    const ATTRIBUTE_ID_BY_DESCRIPTION = '
-        SELECT a.attribute_id
-        FROM ' . DB_PREFIX . 'attribute a
-        LEFT JOIN ' . DB_PREFIX . 'attribute_description ad ON a.attribute_id = ad.attribute_id
-        WHERE ad.language_id = %d AND ad.name = "%s"';
+    public static function attributeId($languageId, $name)
+    {
+        return sprintf('
+            SELECT a.attribute_id
+            FROM ' . DB_PREFIX . 'attribute a
+            LEFT JOIN ' . DB_PREFIX . 'attribute_description ad ON a.attribute_id = ad.attribute_id
+            WHERE ad.language_id = %d AND ad.name = "%s"',
+            $languageId, $name
+        );
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Category">
-    const CATEGORY_PULL = '
-        SELECT c.*
-        FROM ' . DB_PREFIX . 'category c
-        LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL
-        LIMIT %d';
-    const CATEGORY_STATS = '
-        SELECT COUNT(*)
-        FROM ' . DB_PREFIX . 'category c
-        LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL';
-    const CATEGORY_I18N_PULL = '
-        SELECT c.*, l.code
-        FROM ' . DB_PREFIX . 'category_description c
-        LEFT JOIN ' . DB_PREFIX . 'language l ON c.language_id = l.language_id
-        WHERE c.category_id = %d';
+    public static function categoryPull($limit)
+    {
+        return sprintf('
+            SELECT c.*
+            FROM ' . DB_PREFIX . 'category c
+            LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_CATEGORY, $limit
+        );
+    }
+
+    public static function categoryStats()
+    {
+        return sprintf('
+            SELECT COUNT(*)
+            FROM ' . DB_PREFIX . 'category c
+            LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_CATEGORY
+        );
+    }
+
+    public static function categoryI18n($categoryId)
+    {
+        return sprintf('
+            SELECT c.*, l.code
+            FROM ' . DB_PREFIX . 'category_description c
+            LEFT JOIN ' . DB_PREFIX . 'language l ON c.language_id = l.language_id
+            WHERE c.category_id = %d',
+            $categoryId
+        );
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Cross Selling">
-    const CROSS_SELLING_PULL = '
-        SELECT DISTINCT pr.product_id
-        FROM ' . DB_PREFIX . 'product_related pr
-        LEFT JOIN jtl_connector_link l ON %s = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL
-        LIMIT %d';
-    const CROSS_SELLING_DELETE = 'DELETE FROM ' . DB_PREFIX . 'product_related WHERE product_id = %d';
-    const CROSS_SELLING_STATS = '
-        SELECT COUNT(DISTINCT(pr.product_id))
-        FROM ' . DB_PREFIX . 'product_related pr
-        LEFT JOIN jtl_connector_link l ON %s = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL';
-    const CROSSELLING_ADD = 'INSERT INTO ' . DB_PREFIX . 'product_related (product_id, related_id) VALUES (%d, %d)';
-    const CROSS_SELLING_ITEM_PULL = 'SELECT related_id FROM ' . DB_PREFIX . 'product_related  WHERE product_id = %d';
+    public static function crossSellingPull( $limit)
+    {
+        return sprintf('
+            SELECT DISTINCT pr.product_id
+            FROM ' . DB_PREFIX . 'product_related pr
+            LEFT JOIN jtl_connector_link l ON CONCAT_WS("_", pr.product_id, pr.related_id) = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+             IdentityLinker::TYPE_CROSSSELLING, $limit
+        );
+    }
+
+    public static function crossSellingDelete($productId)
+    {
+        return sprintf('DELETE FROM ' . DB_PREFIX . 'product_related WHERE product_id = %d', $productId);
+    }
+
+    public static function crossSellingStats()
+    {
+        return sprintf('
+            SELECT COUNT(DISTINCT(pr.product_id))
+            FROM ' . DB_PREFIX . 'product_related pr
+            LEFT JOIN jtl_connector_link l ON CONCAT_WS("_", pr.product_id, pr.related_id) = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            $id, IdentityLinker::TYPE_CROSSSELLING
+        );
+    }
+
+    public static function crossSellingPush($productId, $relatedId)
+    {
+        return sprintf('
+            INSERT INTO ' . DB_PREFIX . 'product_related (product_id, related_id)
+            VALUES (%d, %d)',
+            $productId, $relatedId
+        );
+    }
+
+    public static function crossSellingItemPull($productId)
+    {
+        return sprintf('SELECT related_id FROM ' . DB_PREFIX . 'product_related  WHERE product_id = %d', $productId);
+    }
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Customer">
-    const CUSTOMER_PULL = '
-        SELECT c.*, a.company, a.address_1, a.city, a.postcode, a.country_id, co.iso_code_2, co.name
-        FROM ' . DB_PREFIX . 'customer c
-        LEFT JOIN ' . DB_PREFIX . 'address a ON c.address_id = a.address_id
-        LEFT JOIN ' . DB_PREFIX . 'country co ON a.country_id = co.country_id
-        LEFT JOIN jtl_connector_link l ON c.customer_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL
-        LIMIT %d';
-    const CUSTOMER_DELETE = '
-        SELECT COUNT(*)
-        FROM ' . DB_PREFIX . 'customer c
-        LEFT JOIN jtl_connector_link l ON c.customer_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL';
+    public static function customerPull($limit)
+    {
+        return sprintf('
+            SELECT c.*, a.company, a.address_1, a.city, a.postcode, a.country_id, co.iso_code_2, co.name
+            FROM ' . DB_PREFIX . 'customer c
+            LEFT JOIN ' . DB_PREFIX . 'address a ON c.address_id = a.address_id
+            LEFT JOIN ' . DB_PREFIX . 'country co ON a.country_id = co.country_id
+            LEFT JOIN jtl_connector_link l ON c.customer_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_CUSTOMER, $limit
+        );
+    }
+
+    public static function customerStats()
+    {
+        return sprintf('
+            SELECT COUNT(*)
+            FROM ' . DB_PREFIX . 'customer c
+            LEFT JOIN jtl_connector_link l ON c.customer_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_CUSTOMER
+        );
+    }
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Image">
-    const IMAGE_PRODUCT_PULL_EXTRA = '
-        SELECT pi.image, pi.sort_order, CONCAT("p_", pi.product_id, "_", pi.product_image_id) as id, pi.product_id as
-        foreign_key
-        FROM ' . DB_PREFIX . 'product_image pi
-        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("p_", pi.product_id, "_", pi.product_image_id)
-        AND l.type = %d
-        WHERE l.hostId IS NULL
-        LIMIT %d';
-    const IMAGE_PRODUCT_PULL_COVER = '
-        SELECT p.image, 0 as sort_order, CONCAT("p_", p.product_id) as id, p.product_id as foreign_key
-        FROM ' . DB_PREFIX . 'product p
-        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("p_", p.product_id) AND l.type = %d
-        WHERE l.hostId IS NULL AND p.image IS NOT NULL AND p.image != ""
-        LIMIT %d';
-    const IMAGE_CATEGORY_PULL = '
-        SELECT c.image, c.sort_order, CONCAT("c_", c.category_id) as id, c.category_id as foreign_key
-        FROM ' . DB_PREFIX . 'category c
-        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("c_", c.category_id) AND l.type = %d
-        WHERE l.hostId IS NULL AND c.image IS NOT NULL AND c.image != ""
-        LIMIT %d';
-    const IMAGE_MANUFACTURER_PULL = '
-        SELECT m.image, m.sort_order, CONCAT("m_", m.manufacturer_id) as id, m.manufacturer_id as foreign_key
-        FROM ' . DB_PREFIX . 'manufacturer m
-        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("m_", m.manufacturer_id) AND l.type = %d
-        WHERE l.hostId IS NULL AND m.image IS NOT NULL AND m.image != ""
-        LIMIT %d';
-    const IMAGE_PVV_PULL = '
-        SELECT ov.image, ov.sort_order, CONCAT("pvv_", ov.option_value_id) as id, ov.option_value_id as foreign_key
-        FROM ' . DB_PREFIX . 'option_value ov
-        LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("pvv_", ov.option_value_id) AND l.type = %d
-        WHERE l.hostId IS NULL AND ov.image IS NOT NULL AND ov.image != ""
-        LIMIT %d';
-    const IMAGE_CATEGORY_PUSH = 'UPDATE ' . DB_PREFIX . 'category SET image = "%s" WHERE category_id = %d';
-    const IMAGE_MANUFACTURER_PUSH = 'UPDATE ' . DB_PREFIX . 'manufacturer SET image = "%s" WHERE manufacturer_id = %d';
-    const IMAGE_PVV_PUSH = 'UPDATE ' . DB_PREFIX . 'option_value SET image = "%s" WHERE option_value_id = %d';
-    const IMAGE_PRODUCT_DELETE = 'DELETE FROM ' . DB_PREFIX . 'product_image WHERE product_image_id = %d';
+    public static function imageProductsPull($limit)
+    {
+        return sprintf('
+            SELECT pi.image, pi.sort_order, CONCAT("p_", pi.product_id, "_", pi.product_image_id) as id, pi.product_id as
+            foreign_key
+            FROM ' . DB_PREFIX . 'product_image pi
+            LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("p_", pi.product_id, "_", pi.product_image_id)
+            AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_IMAGE, $limit
+        );
+    }
+
+    public static function imageProductCoverPull($limit)
+    {
+        return sprintf('
+            SELECT p.image, 0 as sort_order, CONCAT("p_", p.product_id) as id, p.product_id as foreign_key
+            FROM ' . DB_PREFIX . 'product p
+            LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("p_", p.product_id) AND l.type = %d
+            WHERE l.hostId IS NULL AND p.image IS NOT NULL AND p.image != ""
+            LIMIT %d',
+            IdentityLinker::TYPE_IMAGE, $limit
+        );
+    }
+
+    public static function imageCategoryPull($limit)
+    {
+        return sprintf('
+            SELECT c.image, c.sort_order, CONCAT("c_", c.category_id) as id, c.category_id as foreign_key
+            FROM ' . DB_PREFIX . 'category c
+            LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("c_", c.category_id) AND l.type = %d
+            WHERE l.hostId IS NULL AND c.image IS NOT NULL AND c.image != ""
+            LIMIT %d',
+            IdentityLinker::TYPE_IMAGE, $limit
+        );
+    }
+
+    public static function imageManufacturerPull($limit)
+    {
+        return sprintf('
+            SELECT m.image, m.sort_order, CONCAT("m_", m.manufacturer_id) as id, m.manufacturer_id as foreign_key
+            FROM ' . DB_PREFIX . 'manufacturer m
+            LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("m_", m.manufacturer_id) AND l.type = %d
+            WHERE l.hostId IS NULL AND m.image IS NOT NULL AND m.image != ""
+            LIMIT %d',
+            IdentityLinker::TYPE_IMAGE, $limit
+        );
+    }
+
+    public static function imageProductVariationValuePull($limit)
+    {
+        return sprintf('
+            SELECT ov.image, ov.sort_order, CONCAT("pvv_", ov.option_value_id) as id, ov.option_value_id as foreign_key
+            FROM ' . DB_PREFIX . 'option_value ov
+            LEFT JOIN jtl_connector_link l ON l.endpointId = CONCAT("pvv_", ov.option_value_id) AND l.type = %d
+            WHERE l.hostId IS NULL AND ov.image IS NOT NULL AND ov.image != ""
+            LIMIT %d',
+            IdentityLinker::TYPE_IMAGE, $limit
+        );
+    }
+
+    public static function imageCategoryPush($image, $categoryId)
+    {
+        return sprintf('
+            UPDATE ' . DB_PREFIX . 'category SET image = "%s" WHERE category_id = %d',
+            $image, $categoryId
+        );
+    }
+
+    public static function imageManufacturerPush($image, $manufacturerId)
+    {
+        return sprintf('
+            UPDATE ' . DB_PREFIX . 'manufacturer SET image = "%s" WHERE manufacturer_id = %d',
+            $image, $manufacturerId
+        );
+    }
+
+    public static function imageProductVariationValuePush($image, $productVariationValueId)
+    {
+        return sprintf('
+            UPDATE ' . DB_PREFIX . 'option_value SET image = "%s" WHERE option_value_id = %d',
+            $image, $productVariationValueId
+        );
+    }
+
+    public static function imageProductDelete($imageId)
+    {
+        return sprintf('DELETE FROM ' . DB_PREFIX . 'product_image WHERE product_image_id = %d', $imageId);
+    }
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Manufacturer">
-    const MANUFACTURER_PULL = '
-        SELECT m.*
-        FROM ' . DB_PREFIX . 'manufacturer m
-        LEFT JOIN jtl_connector_link l ON m.manufacturer_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL
-        LIMIT %d';
-    const MANUFACTURER_STATS = '
-        SELECT COUNT(*)
-        FROM ' . DB_PREFIX . 'manufacturer m
-        LEFT JOIN jtl_connector_link l ON m.manufacturer_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL';
+    public static function manufacturerPull($limit)
+    {
+        return sprintf('
+            SELECT m.*
+            FROM ' . DB_PREFIX . 'manufacturer m
+            LEFT JOIN jtl_connector_link l ON m.manufacturer_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_MANUFACTURER, $limit
+        );
+    }
+
+    public static function manufacturerStats()
+    {
+        return sprintf('
+            SELECT COUNT(*)
+            FROM ' . DB_PREFIX . 'manufacturer m
+            LEFT JOIN jtl_connector_link l ON m.manufacturer_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_MANUFACTURER
+        );
+    }
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Tax">
-    const TAX_RATE_PULL = 'SELECT * FROM ' . DB_PREFIX . 'tax_rate';
-    const TAX_CLASS_BY_RATE = '
-        SELECT r.tax_class_id
-        FROM ' . DB_PREFIX . 'tax_rule r
-        LEFT JOIN ' . DB_PREFIX . 'tax_rate tr ON tr.tax_rate_id = r.tax_rate_id
-        WHERE tr.rate = %d';
-    const TAX_CLASS_PULL = 'SELECT * FROM ' . DB_PREFIX . 'tax_class';
-    const TAX_RATE_BY_ORDER = '
+    public static function taxRatePull()
+    {
+        return 'SELECT * FROM ' . DB_PREFIX . 'tax_rate';
+    }
+
+    public static function taxClassId($rate)
+    {
+        return sprintf('
+            SELECT r.tax_class_id
+            FROM ' . DB_PREFIX . 'tax_rule r
+            LEFT JOIN ' . DB_PREFIX . 'tax_rate tr ON tr.tax_rate_id = r.tax_rate_id
+            WHERE tr.rate = %d',
+            $rate
+        );
+    }
+
+    public static function taxClassPull()
+    {
+        return 'SELECT * FROM ' . DB_PREFIX . 'tax_class';
+    }
+
+    public static function taxRate($orderId)
+    {
+        return sprintf('
             SELECT tr.rate
             FROM ' . DB_PREFIX . 'order_total ot
             LEFT JOIN ' . DB_PREFIX . 'tax_rate tr ON tr.name = ot.title
-            WHERE ot.code = "tax" AND ot.order_id = %d';
-    const TAX_ZONE_PULL = 'SELECT * FROM ' . DB_PREFIX . 'geo_zone';
-    const TAX_ZONE_COUNTRY_PULL = '
-        SELECT c.iso_code_2, ztgz.geo_zone_id
-        FROM ' . DB_PREFIX . 'zone_to_geo_zone ztgz
-        LEFT JOIN ' . DB_PREFIX . 'country c ON c.country_id = ztgz.country_id
-        WHERE ztgz.geo_zone_id = %d';
+            WHERE ot.code = "tax" AND ot.order_id = %d',
+            $orderId
+        );
+    }
+
+    public static function taxZonePull()
+    {
+        return 'SELECT * FROM ' . DB_PREFIX . 'geo_zone';
+    }
+
+    public static function taxZoneCountryPull($geoZoneId)
+    {
+        return sprintf('
+            SELECT c.iso_code_2, ztgz.geo_zone_id
+            FROM ' . DB_PREFIX . 'zone_to_geo_zone ztgz
+            LEFT JOIN ' . DB_PREFIX . 'country c ON c.country_id = ztgz.country_id
+            WHERE ztgz.geo_zone_id = %d',
+            $geoZoneId
+        );
+    }
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Specific">
-    const SPECIFIC_PULL = '
-        SELECT *
-        FROM ' . DB_PREFIX . 'filter_group fg
-        LEFT JOIN jtl_connector_link l ON fg.filter_group_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL
-        LIMIT %d';
-    const SPECIFIC_I18N_PULL = '
-        SELECT fgd.*, l.code
-        FROM ' . DB_PREFIX . 'filter_group_description fgd
-        LEFT JOIN ' . DB_PREFIX . 'language l ON fgd.language_id = l.language_id
-        WHERE fgd.filter_group_id = %d';
-    const SPECIFIC_VALUE_PULL = '
-        SELECT *
-        FROM ' . DB_PREFIX . 'filter f
-        LEFT JOIN jtl_connector_link l ON f.filter_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL AND f.filter_group_id = %d';
-    const SPECIFIC_VALUE_I18N_PULL = '
-        SELECT fd.*, l.code
-        FROM ' . DB_PREFIX . 'filter_description fd
-        LEFT JOIN ' . DB_PREFIX . 'language l ON fd.language_id = l.language_id
-        WHERE fd.filter_id = %d';
-    const SPECIFIC_VALUE_I18N_PUSH = '
-        INSERT INTO ' . DB_PREFIX . 'filter_description (filter_id, language_id, filter_group_id, name)
-        VALUE (%d, %d, %d, "%s")';
-    const SPECIFIC_VALUE_PUSH = 'INSERT INTO ' . DB_PREFIX . 'filter (filter_group_id, sort_order) VALUES (%d, %d)';
-    const SPECIFIC_VALUE_UPDATE = 'UPDATE ' . DB_PREFIX . 'filter SET sort_order = %d WHERE filter_group_id = %d';
-    const SPECIFIC_STATS = '
-        SELECT COUNT(*)
-        FROM ' . DB_PREFIX . 'filter_group fg
-        LEFT JOIN jtl_connector_link l ON fg.filter_group_id = l.endpointId AND l.type = %d
-        WHERE l.hostId IS NULL';
-    const PRODUCT_SPECIFIC_CATEGORY_ADD = '
-        INSERT INTO ' . DB_PREFIX . 'category_filter (category_id, filter_id)
-        VALUES (%d, %d)';
-    const PRODUCT_SPECIFIC_CATEGORY_FIND = '
-        SELECT COUNT(*)
-        FROM ' . DB_PREFIX . 'category_filter
-        WHERE category_id = %d AND filter_id =%d';
+    public static function specificPull($limit)
+    {
+        return sprintf('
+            SELECT *
+            FROM ' . DB_PREFIX . 'filter_group fg
+            LEFT JOIN jtl_connector_link l ON fg.filter_group_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_SPECIFIC, $limit
+        );
+    }
+
+    public static function specificI18nPull($specificId)
+    {
+        return sprintf('
+            SELECT fgd.*, l.code
+            FROM ' . DB_PREFIX . 'filter_group_description fgd
+            LEFT JOIN ' . DB_PREFIX . 'language l ON fgd.language_id = l.language_id
+            WHERE fgd.filter_group_id = %d',
+            $specificId
+        );
+    }
+
+    public static function specificValuePull($specificId)
+    {
+        return sprintf('
+            SELECT *
+            FROM ' . DB_PREFIX . 'filter
+            WHERE filter_group_id = %d',
+            $specificId
+        );
+    }
+
+    public static function specificValueI18nPull($specificValueId)
+    {
+        return sprintf('
+            SELECT fd.*, l.code
+            FROM ' . DB_PREFIX . 'filter_description fd
+            LEFT JOIN ' . DB_PREFIX . 'language l ON fd.language_id = l.language_id
+            WHERE fd.filter_id = %d',
+            $specificValueId
+        );
+    }
+
+    public static function specificValueI18nPush($specificId, $specificValueId, $languageId, $name)
+    {
+        return sprintf('
+            INSERT INTO ' . DB_PREFIX . 'filter_description (filter_id, language_id, filter_group_id, name)
+            VALUE (%d, %d, %d, "%s")',
+            $specificValueId, $languageId, $specificId, $name
+        );
+    }
+
+    public static function specificValuePush($specificValueId, $sortOrder)
+    {
+        return sprintf('
+            INSERT INTO ' . DB_PREFIX . 'filter (filter_group_id, sort_order)
+            VALUES (%d, %d)',
+            $specificValueId, $sortOrder
+        );
+    }
+
+    public static function specificValueUpdate($specificValueId, $sortOrder)
+    {
+        return sprintf('
+            UPDATE ' . DB_PREFIX . 'filter SET sort_order = %d WHERE filter_group_id = %d',
+            $sortOrder, $specificValueId
+        );
+    }
+
+    public static function specificStats()
+    {
+        return sprintf('
+            SELECT COUNT(*)
+            FROM ' . DB_PREFIX . 'filter_group fg
+            LEFT JOIN jtl_connector_link l ON fg.filter_group_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_SPECIFIC
+        );
+    }
+
+    public static function productSpecificPush($categoryId, $specificValueId)
+    {
+        return sprintf('
+            INSERT INTO ' . DB_PREFIX . 'category_filter (category_id, filter_id)
+            VALUES (%d, %d)',
+            $categoryId, $specificValueId
+        );
+    }
+
+    public static function productSpecificFind($categoryId, $specificValueId)
+    {
+        return sprintf('
+            SELECT COUNT(*)
+            FROM ' . DB_PREFIX . 'category_filter
+            WHERE category_id = %d AND filter_id = %d',
+            $categoryId, $specificValueId
+        );
+    }
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Measurement Unit">
-    const MEASUREMENT_UNIT_PULL_LENGTHS = '
-        SELECT CONCAT("l_", length_class_id) as id, value
-        FROM ' . DB_PREFIX . 'length_class';
-    const MEASUREMENT_UNIT_I18N_PULL_LENGTHS = '
-        SELECT CONCAT("l_", lcd.length_class_id) as length_class_id, lcd.title, l.code
-        FROM ' . DB_PREFIX . 'length_class_description lcd
-        LEFT JOIN ' . DB_PREFIX . 'language l ON lcd.language_id = l.language_id
-        WHERE lcd.length_class_id = %d';
-    const MEASUREMENT_UNIT_PULL_WEIGHTS = '
-        SELECT CONCAT("w_", weight_class_id) as id, value
-        FROM ' . DB_PREFIX . 'weight_class';
-    const MEASUREMENT_UNIT_I18N_PULL_WEIGHTS = '
-        SELECT CONCAT("w_", wcd.weight_class_id) as weight_class_id, wcd.title, l.code
-        FROM ' . DB_PREFIX . 'weight_class_description wcd
-        LEFT JOIN ' . DB_PREFIX . 'language l ON wcd.language_id = l.language_id
-        WHERE wcd.weight_class_id = %d';
-    const MEASUREMENT_UNIT_FIND_LENGTH = '
-        SELECT length_class_id
-        FROM ' . DB_PREFIX . 'length_class_description
-        WHERE unit = "%s"';
-    const MEASUREMENT_UNIT_FIND_WEIGHT = '
-        SELECT weight_class_id
-        FROM ' . DB_PREFIX . 'weight_class_description
-        WHERE unit = "%s"';
+    public static function measurementUnitLengthsPull()
+    {
+        return 'SELECT CONCAT("l_", length_class_id) as id, value FROM ' . DB_PREFIX . 'length_class';
+    }
+
+    public static function measurementUnitLengthsI18nPull($lengthClassId)
+    {
+        return sprintf('
+            SELECT CONCAT("l_", lcd.length_class_id) as length_class_id, lcd.title, l.code
+            FROM ' . DB_PREFIX . 'length_class_description lcd
+            LEFT JOIN ' . DB_PREFIX . 'language l ON lcd.language_id = l.language_id
+            WHERE lcd.length_class_id = %d',
+            $lengthClassId
+        );
+    }
+
+    public static function measurementUnitWeightsPull()
+    {
+        return 'SELECT CONCAT("w_", weight_class_id) as id, value FROM ' . DB_PREFIX . 'weight_class';
+    }
+
+    public static function measurementUnitWeightsI18nPull($weightClassId)
+    {
+        return sprintf('
+            SELECT CONCAT("w_", wcd.weight_class_id) as weight_class_id, wcd.title, l.code
+            FROM ' . DB_PREFIX . 'weight_class_description wcd
+            LEFT JOIN ' . DB_PREFIX . 'language l ON wcd.language_id = l.language_id
+            WHERE wcd.weight_class_id = %d',
+            $weightClassId
+        );
+    }
+
+    public static function measurementUnitLengthId($unit)
+    {
+        return sprintf('
+            SELECT length_class_id
+            FROM ' . DB_PREFIX . 'length_class_description
+            WHERE unit = "%s"',
+            $unit
+        );
+    }
+
+    public static function measurementUnitWeightId($unit)
+    {
+        return sprintf('
+            SELECT weight_class_id
+            FROM ' . DB_PREFIX . 'weight_class_description
+            WHERE unit = "%s"',
+            $unit
+        );
+    }
     // </editor-fold>
 }

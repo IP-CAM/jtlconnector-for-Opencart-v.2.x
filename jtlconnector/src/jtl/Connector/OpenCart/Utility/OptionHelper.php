@@ -98,4 +98,12 @@ class OptionHelper extends Singleton
         }
         return $descriptions;
     }
+
+    /**
+     * @return OptionHelper
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
 }

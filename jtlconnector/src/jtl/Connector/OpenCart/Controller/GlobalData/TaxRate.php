@@ -18,6 +18,6 @@ class TaxRate extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return SQLs::TAX_RATE_PULL;
+        return SQLs::taxRatePull();
     }
 }

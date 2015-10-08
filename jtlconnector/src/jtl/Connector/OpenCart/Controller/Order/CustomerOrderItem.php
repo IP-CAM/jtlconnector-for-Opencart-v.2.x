@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller\Order;
 
+use jtl\Connector\Model\CustomerOrderItem as CustomerOrderItemModel;
 use jtl\Connector\Model\CustomerOrderItem as COI;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Controller\BaseController;
@@ -17,8 +18,6 @@ use jtl\Connector\OpenCart\Utility\SQLs;
 
 class CustomerOrderItem extends BaseController
 {
-    const TYPE_METHODS = [COI::TYPE_PRODUCT, COI::TYPE_SHIPPING, COI::TYPE_DISCOUNT];
-
     private $tax;
     private $orderId;
     private $productMapper;
@@ -35,11 +34,11 @@ class CustomerOrderItem extends BaseController
 
     public function pullData($data, $model, $limit = null)
     {
-        $this->orderId = $data['order_id'];
-        $this->tax = doubleval($this->getTax($this->orderId));
         $return = [];
         $orderItemId = 1;
-        foreach (self::TYPE_METHODS as $type) {
+        $this->orderId = $data['order_id'];
+        $this->tax = doubleval($this->getTax($this->orderId));
+        foreach ([COI::TYPE_PRODUCT, COI::TYPE_SHIPPING, COI::TYPE_DISCOUNT] as $type) {
             $items = $this->{'pull' . ucfirst($type) . 's'}($this->orderId);
             foreach ($items as $item) {
                 $return[] = $this->mapItem($type, $item, $orderItemId++);
@@ -52,16 +51,18 @@ class CustomerOrderItem extends BaseController
     {
         $item['order_item_id'] = $this->orderId . '_' . $id;
         $result = $this->{$type . 'Mapper'}->toHost($item);
-        $result->setId(new Identity($this->orderId . '_' . $id));
-        if ($type != COI::TYPE_DISCOUNT) {
-            $result->setVat($this->tax);
+        if ($result instanceof CustomerOrderItemModel) {
+            $result->setId(new Identity($this->orderId . '_' . $id));
+            if ($type != COI::TYPE_DISCOUNT) {
+                $result->setVat($this->tax);
+            }
         }
         return $result;
     }
 
     protected function pullQuery($data, $limit = null)
     {
-        throw new MethodNotAllowedException("Use specific pull methods.");
+        throw new MethodNotAllowedException("Use the specific pull methods.");
     }
 
     private function pullProducts($orderId)
@@ -81,6 +82,6 @@ class CustomerOrderItem extends BaseController
 
     private function getTax($orderId)
     {
-        return $this->database->queryOne(sprintf(SQLs::TAX_RATE_BY_ORDER, $orderId));
+        return $this->database->queryOne(SQLs::taxRate($orderId));
     }
 }

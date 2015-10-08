@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller\GlobalData;
 
+use jtl\Connector\Model\GlobalData as GlobalDataModel;
 use jtl\Connector\OpenCart\Controller\GlobalData\Currency as CurrencyController;
 use jtl\Connector\OpenCart\Controller\GlobalData\MeasurementUnit as MeasurementUnitController;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
@@ -16,8 +17,7 @@ class GlobalData extends MainEntityController
 {
     public function pullData($data, $model, $limit = null)
     {
-        $model = $this->mapper->toHost([]);
-        return [$model];
+        return [$this->mapper->toHost([])];
     }
 
     protected function pullQuery($data, $limit = null)
@@ -25,7 +25,7 @@ class GlobalData extends MainEntityController
         throw new MethodNotAllowedException("Just pull the different global data children.");
     }
 
-    protected function pushData($data, $model)
+    protected function pushData(GlobalDataModel $data, $model)
     {
         $currencyController = new CurrencyController();
         foreach ($data->getCurrencies() as $currency) {
@@ -34,7 +34,7 @@ class GlobalData extends MainEntityController
         return $data;
     }
 
-    protected function deleteData($data)
+    protected function deleteData(GlobalDataModel $data)
     {
         $measurementUnitController = new MeasurementUnitController();
         foreach ($data->getMeasurementUnits() as $unit) {

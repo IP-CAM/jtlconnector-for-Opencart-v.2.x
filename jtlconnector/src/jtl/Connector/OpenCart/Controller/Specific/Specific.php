@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller\Specific;
 
-use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\Model\Specific as SpecificModel;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
 use jtl\Connector\OpenCart\Controller\Specific\SpecificValue as SpecificValueCtrl;
 use jtl\Connector\OpenCart\Utility\SQLs;
@@ -28,10 +28,10 @@ class Specific extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        return sprintf(SQLs::SPECIFIC_PULL, IdentityLinker::TYPE_SPECIFIC, $limit);
+        return SQLs::specificPull($limit);
     }
 
-    public function pushData($data, $model)
+    public function pushData(SpecificModel $data, $model)
     {
         if (!$data->getIsGlobal()) {
             $filterGroup = $this->mapper->toEndpoint($data);
@@ -47,7 +47,7 @@ class Specific extends MainEntityController
         return $data;
     }
 
-    protected function deleteData($data)
+    protected function deleteData(SpecificModel $data)
     {
         $this->ocFilter->deleteFilter($data->getId()->getEndpoint());
         return $data;
@@ -55,6 +55,6 @@ class Specific extends MainEntityController
 
     protected function getStats()
     {
-        return $this->database->queryOne(sprintf(SQLs::SPECIFIC_STATS, IdentityLinker::TYPE_SPECIFIC));
+        return $this->database->queryOne(SQLs::specificStats());
     }
 }

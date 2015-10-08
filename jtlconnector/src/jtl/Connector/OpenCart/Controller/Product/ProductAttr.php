@@ -64,8 +64,7 @@ class ProductAttr extends BaseController
     {
         $attributeId = null;
         foreach ($descriptions as $languageId => $desc) {
-            $attributeId = $this->database->queryOne(sprintf(SQLs::ATTRIBUTE_ID_BY_DESCRIPTION, $languageId,
-                $desc['name']));
+            $attributeId = $this->database->queryOne(SQLs::attributeId($languageId, $desc['name']));
             if (!is_null($attributeId)) {
                 break;
             }
