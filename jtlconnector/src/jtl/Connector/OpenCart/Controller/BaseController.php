@@ -113,7 +113,7 @@ abstract class BaseController extends Controller
         }
         $model[$key] = [];
         foreach ((array)$data->getI18ns() as $i18n) {
-            $languageId = Utils::getInstance()->getLanguageId($i18n->getLanguageISO());
+            $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
             if ($languageId !== false) {
                 $endpoint = $this->mapper->toEndpoint($i18n);
                 $model[$key][intval($languageId)] = $endpoint;

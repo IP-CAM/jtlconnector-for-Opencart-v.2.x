@@ -13,14 +13,6 @@ use jtl\Connector\OpenCart\Utility\Utils;
 
 class SpecificValue extends BaseController
 {
-
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->utils = Utils::getInstance();
-    }
-
     public function pullData($data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $limit);

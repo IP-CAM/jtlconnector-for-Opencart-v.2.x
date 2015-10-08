@@ -9,17 +9,14 @@ use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Mapper\Product\ProductVariationValue as ProductVariationValueMapper;
 use jtl\Connector\OpenCart\Utility\OptionHelper;
 use jtl\Connector\OpenCart\Utility\SQLs;
-use jtl\Connector\OpenCart\Utility\Utils;
 
 class ProductVariation extends BaseController
 {
-    private $utils;
     private $optionHelper;
 
     public function __construct()
     {
         parent::__construct();
-        $this->utils = Utils::getInstance();
         $this->optionHelper = OptionHelper::getInstance();
     }
 
