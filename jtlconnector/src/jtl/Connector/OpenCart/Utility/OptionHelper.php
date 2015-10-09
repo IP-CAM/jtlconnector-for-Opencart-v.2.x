@@ -2,6 +2,7 @@
 
 namespace jtl\Connector\OpenCart\Utility;
 
+use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Core\Utilities\Singleton;
 
 class OptionHelper extends Singleton
@@ -62,6 +63,9 @@ class OptionHelper extends Singleton
             $optionValue['option_value_id'] = $optionValueId;
             $optionValues[] = $optionValue;
         }
+        if (!is_null($optionId)) {
+            $optionValues = $this->addExistingOptionValues($optionValues, $optionId);
+        }
         return $optionValues;
     }
 
@@ -79,6 +83,7 @@ class OptionHelper extends Singleton
         $result = $this->database->query(SQLs::obsoleteOptions());
         foreach ($result as $optionId) {
             $ocOption->deleteOption($optionId['option_id']);
+            $this->database->query(SQLs::deleteObsoleteProductOptions($productId));
         }
     }
 
@@ -97,6 +102,39 @@ class OptionHelper extends Singleton
             }
         }
         return $descriptions;
+    }
+
+    /**
+     * As all the existing option values are deleted and the new ones added, some values can get lost if
+     * a product has less colors than another.
+     *
+     * @param $values array All the option values of an option value.
+     * @param $optionId string The option which should be handled.
+     * @return array The merges array of existing and new options.
+     */
+    private function addExistingOptionValues($values, $optionId)
+    {
+        $result = $this->database->query(SQLs::optionValues($optionId));
+        foreach ($result as $row) {
+            $found = false;
+            foreach ($values as $i => $value) {
+                if ($value['option_value_id'] === $row['option_value_id']) {
+                    $found = true;
+                    Logger::write(json_encode($row), Logger::DEBUG);
+                    $values[$i]['option_value_description'][intval($row['language_id'])] = [
+                        'name' => $row['name']
+                    ];
+                }
+            }
+            if (!$found) {
+                $value = $row;
+                $value['option_value_description'][intval($row['language_id'])] = [
+                    'name' => $row['name']
+                ];
+                $values[] = $value;
+            }
+        }
+        return $values;
     }
 
     /**

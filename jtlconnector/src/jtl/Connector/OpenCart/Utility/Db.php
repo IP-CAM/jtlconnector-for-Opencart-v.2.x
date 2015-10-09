@@ -30,7 +30,7 @@ class Db extends Singleton
     {
         $return = null;
         $result = mysqli_query($this->db->DB(), $query);
-        if ($result !== false) {
+        if ($result instanceof \mysqli_result) {
             $return = mysqli_fetch_row($result)[0];
         }
         return $return;

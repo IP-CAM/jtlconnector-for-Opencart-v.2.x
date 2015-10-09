@@ -112,6 +112,25 @@ final class SQLs
             LEFT JOIN ' . DB_PREFIX . 'product_option po ON po.option_id = o.option_id
             WHERE po.option_id IS NULL';
     }
+
+    public static function deleteObsoleteProductOptions($productId)
+    {
+        return sprintf('
+            DELETE FROM oc_product_option_value pov
+            LEFT JOIN oc_option_value ov ON ov.option_value_id = pov.option_value_id
+            WHERE pov.product_id = 88 AND ov.option_value_id IS NULL',
+            $productId
+        );
+    }
+
+    public static function optionValues($optionId)
+    {
+        return sprintf('
+            SELECT *
+            FROM ' . DB_PREFIX . 'option_value ov
+            LEFT JOIN ' . DB_PREFIX . 'option_value_description ovd ON ovd.option_value_id = ov.option_value_id
+            WHERE ov.option_id = %d', $optionId);
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Module">
     public static function moduleIdTopProducts()
@@ -455,7 +474,7 @@ final class SQLs
     }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Cross Selling">
-    public static function crossSellingPull( $limit)
+    public static function crossSellingPull($limit)
     {
         return sprintf('
             SELECT DISTINCT pr.product_id
@@ -463,7 +482,7 @@ final class SQLs
             LEFT JOIN jtl_connector_link l ON CONCAT_WS("_", pr.product_id, pr.related_id) = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL
             LIMIT %d',
-             IdentityLinker::TYPE_CROSSSELLING, $limit
+            IdentityLinker::TYPE_CROSSSELLING, $limit
         );
     }
 
@@ -479,7 +498,7 @@ final class SQLs
             FROM ' . DB_PREFIX . 'product_related pr
             LEFT JOIN jtl_connector_link l ON CONCAT_WS("_", pr.product_id, pr.related_id) = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL',
-            $id, IdentityLinker::TYPE_CROSSSELLING
+            IdentityLinker::TYPE_CROSSSELLING
         );
     }
 
