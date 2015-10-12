@@ -7,7 +7,7 @@ use jtl\Connector\Model\Product as ProductModel;
 use jtl\Connector\Model\ProductVariation as ProductVariationModel;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Mapper\Product\ProductVariationValue as ProductVariationValueMapper;
-use jtl\Connector\OpenCart\Utility\OptionHelper;
+use jtl\Connector\OpenCart\Utility\Option as OptionHelper;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
 class ProductVariation extends BaseController

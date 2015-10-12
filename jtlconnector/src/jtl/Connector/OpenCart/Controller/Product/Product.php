@@ -6,9 +6,10 @@
 
 namespace jtl\Connector\OpenCart\Controller\Product;
 
+use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Model\Product as ProductModel;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
-use jtl\Connector\OpenCart\Utility\OptionHelper;
+use jtl\Connector\OpenCart\Utility\Option as OptionHelper;
 use jtl\Connector\OpenCart\Utility\SQLs;
 use jtl\Connector\OpenCart\Utility\TopProduct;
 
@@ -20,8 +21,8 @@ class Product extends MainEntityController
     public function __construct()
     {
         parent::__construct();
-        $this->optionHelper = OptionHelper::getInstance();
         $this->topProductUtil = TopProduct::getInstance();
+        $this->optionHelper = OptionHelper::getInstance();
     }
 
     public function pullData($data, $model, $limit = null)

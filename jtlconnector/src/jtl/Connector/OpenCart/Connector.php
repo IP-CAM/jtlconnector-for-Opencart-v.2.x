@@ -14,11 +14,6 @@ use jtl\Connector\OpenCart\Mapper\PrimaryKeyMapper;
 use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\Result\Action;
 
-/**
- * OpenCart Connector
- *
- * @access public
- */
 class Connector extends BaseConnector
 {
     /**
@@ -27,10 +22,6 @@ class Connector extends BaseConnector
      * @var \jtl\Connector\Core\Controller\Controller
      */
     protected $controller;
-
-    /**
-     * @var string
-     */
     protected $action;
 
     public function initialize()
@@ -40,11 +31,6 @@ class Connector extends BaseConnector
             ->setChecksumLoader(new ChecksumLoader());
     }
 
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \jtl\Connector\Application\IEndpointConnector::canHandle()
-     */
     public function canHandle()
     {
         $controller = RpcMethod::buildController($this->getMethod()->getController());
@@ -72,14 +58,8 @@ class Connector extends BaseConnector
         return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
     }
 
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \jtl\Connector\Application\IEndpointConnector::handle()
-     */
     public function handle(RequestPacket $requestpacket)
     {
-        // Set the method to our controller
         $this->controller->setMethod($this->getMethod());
 
         if ($this->action === Method::ACTION_PUSH || $this->action === Method::ACTION_DELETE) {
@@ -100,7 +80,7 @@ class Connector extends BaseConnector
 
                 $action->setHandled(true)
                     ->setResult($results)
-                    ->setError($result->getError());    // Todo: refactor to array of errors
+                    ->setError($result->getError());
             }
 
             return $action;
@@ -108,42 +88,22 @@ class Connector extends BaseConnector
         return $this->controller->{$this->action}($requestpacket->getParams());
     }
 
-    /**
-     * Getter Controller
-     *
-     * @return \jtl\Connector\Core\Controller\Controller
-     */
     public function getController()
     {
         return $this->controller;
     }
 
-    /**
-     * Setter Controller
-     *
-     * @param \jtl\Connector\Core\Controller\Controller $controller
-     */
     public function setController(CoreController $controller)
     {
         $this->controller = $controller;
         return $this;
     }
 
-    /**
-     * Getter Action
-     *
-     * @return string
-     */
     public function getAction()
     {
         return $this->action;
     }
 
-    /**
-     * Setter Action
-     *
-     * @param string $action
-     */
     public function setAction($action)
     {
         $this->action = $action;

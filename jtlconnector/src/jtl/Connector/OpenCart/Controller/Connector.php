@@ -32,7 +32,8 @@ class Connector extends Controller
             'Image',
             'Product',
             'Manufacturer',
-            'Specific'
+            'Specific',
+            'Payment'
         ];
         foreach ($mainControllers as $mainController) {
             $class = Constants::CONTROLLER_NAMESPACE . $mainController;

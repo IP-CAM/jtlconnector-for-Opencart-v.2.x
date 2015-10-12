@@ -22,7 +22,7 @@ class Image extends MainEntityController
     ];
 
     /**
-     * Add as long as the limit is not exceeded images to the result by calling the abstract method for all the
+     * Add, as long as the limit is not exceeded, images to the result by calling the abstract method for all the
      * different image relation types.
      */
     public function pullData($data, $model, $limit = null)

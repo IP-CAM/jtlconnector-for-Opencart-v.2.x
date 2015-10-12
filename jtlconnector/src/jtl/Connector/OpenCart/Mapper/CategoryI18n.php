@@ -10,7 +10,7 @@ class CategoryI18n extends I18nBaseMapper
 {
     protected $pull = [
         'categoryId' => 'category_id',
-        'name' => 'name',
+        'name' => null,
         'description' => 'description',
         'languageISO' => null,
         'metaDescription' => 'meta_description',
@@ -25,6 +25,11 @@ class CategoryI18n extends I18nBaseMapper
         'meta_keyword' => 'metaKeywords',
         'meta_title' => null
     ];
+
+    protected function name(array $data)
+    {
+        return html_entity_decode($data['name']);
+    }
 
     protected function meta_title()
     {

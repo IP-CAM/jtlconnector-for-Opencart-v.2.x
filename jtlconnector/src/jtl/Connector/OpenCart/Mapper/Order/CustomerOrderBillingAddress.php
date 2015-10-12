@@ -26,10 +26,10 @@ class CustomerOrderBillingAddress extends BaseMapper
         'city' => 'payment_city',
         'state' => 'payment_zone',
         'countryIso' => 'iso_code_3',
-        'mobile',
+        /*'mobile',
         'salutation',
         'title',
-        'vatNumber'
+        'vatNumber'*/
     ];
 
     protected function id($data)

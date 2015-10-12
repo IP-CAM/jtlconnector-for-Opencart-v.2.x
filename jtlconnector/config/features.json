@@ -211,7 +211,7 @@
       "delete": false
     },
     "Payment": {
-      "pull": false,
+      "pull": true,
       "push": false,
       "delete": false
     },

@@ -2,24 +2,17 @@
 
 namespace jtl\Connector\OpenCart\Utility;
 
-use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Core\Utilities\Singleton;
 
-class OptionHelper extends Singleton
+class Option extends Singleton
 {
-    /**
-     * @var Db
-     */
-    private $database;
-    /**
-     * @var Utils
-     */
     private $utils;
+    private $database;
 
     public function __construct()
     {
-        $this->database = Db::getInstance();
         $this->utils = Utils::getInstance();
+        $this->database = Db::getInstance();
     }
 
     public function buildOptionDescriptions($variation)
@@ -120,7 +113,6 @@ class OptionHelper extends Singleton
             foreach ($values as $i => $value) {
                 if ($value['option_value_id'] === $row['option_value_id']) {
                     $found = true;
-                    Logger::write(json_encode($row), Logger::DEBUG);
                     $values[$i]['option_value_description'][intval($row['language_id'])] = [
                         'name' => $row['name']
                     ];
@@ -138,7 +130,7 @@ class OptionHelper extends Singleton
     }
 
     /**
-     * @return OptionHelper
+     * @return Option
      */
     public static function getInstance()
     {

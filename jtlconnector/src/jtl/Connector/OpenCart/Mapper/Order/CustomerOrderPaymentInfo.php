@@ -7,13 +7,9 @@
 namespace jtl\Connector\OpenCart\Mapper\Order;
 
 use jtl\Connector\OpenCart\Mapper\I18nBaseMapper;
-use jtl\Connector\OpenCart\Utility\Payment as PaymentHelper;
 
-class CustomerOrder extends I18nBaseMapper
+class CustomerOrderPaymentInfo extends I18nBaseMapper
 {
-    const SHIPPING_ID_PREFIX = "s_";
-    const BILLING_ID_PREFIX = "b_";
-
     protected $pull = [
         'id' => 'order_id',
         'orderNumber' => 'order_id',
@@ -24,15 +20,9 @@ class CustomerOrder extends I18nBaseMapper
         'note' => 'comment',
         'totalSum' => 'total',
         'shippingMethodName' => 'shipping_method',
-        'paymentModuleCode' => null,
+        'paymentModuleCode' => 'payment_code',
         'items' => 'Order\CustomerOrderItem',
-        //'paymentInfo' => 'Order\CustomerOrderPaymentInfo',
         'billingAddress' => 'Order\CustomerOrderBillingAddress',
         'shippingAddress' => 'Order\CustomerOrderShippingAddress'
     ];
-
-    protected function paymentModuleCode(array $data)
-    {
-        return PaymentHelper::parseOpenCartPaymentCode($data['payment_code']);
-    }
 }

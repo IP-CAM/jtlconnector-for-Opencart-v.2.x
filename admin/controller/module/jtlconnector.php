@@ -142,15 +142,6 @@ class ControllerModuleJtlconnector extends Controller
         ]);
     }
 
-    public function uninstall()
-    {
-        $this->db->query('DROP TABLE jtl_connector_link');
-        $this->db->query('DROP TABLE jtl_connector_checksum');
-        $configs = $this->model_setting_setting->getSetting(self::CONFIG_KEY);
-        $this->model_catalog_attribute_group->deleteAttributeGroup($configs[self::CONFIG_ATTRIBUTE_GROUP]);
-        $this->model_setting_setting->deleteSetting(self::CONFIG_KEY);
-    }
-
     private function activateFilter()
     {
         $filterInstalled = 'SELECT * FROM ' . DB_PREFIX . 'extension WHERE type="module" AND CODE="filter"';
@@ -158,7 +149,7 @@ class ControllerModuleJtlconnector extends Controller
             $this->db->query('INSERT INTO ' . DB_PREFIX . 'extension (type, CODE) VALUES ("module", "filter")');
         }
         $filterActivated = 'SELECT * FROM ' . DB_PREFIX . 'setting WHERE `key`="filter_stats"';
-        if (empty($this->db->query($filterInstalled)->rows)) {
+        if (empty($this->db->query($filterActivated)->rows)) {
             $this->db->query('INSERT INTO ' . DB_PREFIX . 'setting SET store_id = 0, `code` = "filter", `key` = "filter_status", `value` = "1"');
         } else {
             $this->db->query('UPDATE ' . DB_PREFIX . 'setting SET `value` = "1" WHERE `key` = "filter_status"');
@@ -205,4 +196,13 @@ class ControllerModuleJtlconnector extends Controller
             mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
 
+
+    public function uninstall()
+    {
+        $this->db->query('DROP TABLE jtl_connector_link');
+        $this->db->query('DROP TABLE jtl_connector_checksum');
+        $configs = $this->model_setting_setting->getSetting(self::CONFIG_KEY);
+        $this->model_catalog_attribute_group->deleteAttributeGroup($configs[self::CONFIG_ATTRIBUTE_GROUP]);
+        $this->model_setting_setting->deleteSetting(self::CONFIG_KEY);
+    }
 }

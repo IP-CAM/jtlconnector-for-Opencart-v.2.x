@@ -9,13 +9,11 @@ namespace jtl\Connector\OpenCart\Checksum;
 use jtl\Connector\Checksum\IChecksumLoader;
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\OpenCart\Utility\Db;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class ChecksumLoader implements IChecksumLoader
 {
-    /**
-     * @var Db
-     */
-    protected $database;
+    private $database;
 
     public function __construct()
     {
@@ -27,12 +25,7 @@ class ChecksumLoader implements IChecksumLoader
         if ($endpointId === null || $type !== IdentityLinker::TYPE_PRODUCT) {
             return '';
         }
-        $result = $this->database->queryOne(sprintf('
-            SELECT checksum
-            FROM jtl_connector_checksum
-            WHERE endpointId = %d AND type = %d',
-            $endpointId, $type
-        ));
+        $result = $this->database->queryOne(SQLs::checksumRead($endpointId, $type));
         return is_null($result) ? '' : $result;
     }
 
@@ -41,13 +34,7 @@ class ChecksumLoader implements IChecksumLoader
         if ($endpointId === null || $type !== IdentityLinker::TYPE_PRODUCT) {
             return false;
         }
-
-        $statement = $this->database->query(sprintf('
-            INSERT IGNORE INTO jtl_connector_checksum (endpointId, type, checksum)
-            VALUES (%d, %d, %d)',
-            $endpointId, $type, $checksum
-        ));
-
+        $statement = $this->database->query(SQLs::checksumWrite($endpointId, $type, $checksum));
         return $statement ? true : false;
     }
 
@@ -56,13 +43,7 @@ class ChecksumLoader implements IChecksumLoader
         if ($endpointId === null || $type !== IdentityLinker::TYPE_PRODUCT) {
             return false;
         }
-
-        $rows = $this->database->query(sprintf('
-            DELETE FROM jtl_connector_checksum
-            WHERE endpointId = %d AND type = %d',
-            $endpointId, $type
-        ));
-
+        $rows = $this->database->query(SQLs::checksumDelete($endpointId, $type));
         return $rows ? true : false;
     }
 }
