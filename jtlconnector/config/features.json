@@ -381,7 +381,7 @@
       "delete": false
     },
     "ShippingMethod": {
-      "pull": false,
+      "pull": true,
       "push": false,
       "delete": false
     },

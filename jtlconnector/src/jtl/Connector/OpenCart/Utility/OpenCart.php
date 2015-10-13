@@ -24,18 +24,18 @@ function modification($filename)
     return $filename;
 }
 
-require_once(modification(DIR_SYSTEM . 'library/db.php'));
-require_once(modification(DIR_SYSTEM . 'library/db/mysqli.php'));
-require_once(modification(DIR_SYSTEM . 'library/cache.php'));
-require_once(modification(DIR_SYSTEM . 'library/cache/file.php'));
-require_once(modification(DIR_SYSTEM . 'library/config.php'));
-require_once(modification(DIR_SYSTEM . 'engine/event.php'));
-require_once(modification(DIR_SYSTEM . 'engine/controller.php'));
-require_once(modification(DIR_SYSTEM . 'engine/model.php'));
-require_once(modification(DIR_SYSTEM . 'engine/loader.php'));
-require_once(modification(DIR_SYSTEM . 'engine/registry.php'));
-require_once(modification(DIR_SYSTEM . 'helper/utf8.php'));
-require_once(Path::combine(DIR_APPLICATION, 'controller', 'module', 'jtlconnector.php'));
+require_once modification(DIR_SYSTEM . 'library/db.php');
+require_once modification(DIR_SYSTEM . 'library/db/mysqli.php');
+require_once modification(DIR_SYSTEM . 'library/cache.php');
+require_once modification(DIR_SYSTEM . 'library/cache/file.php');
+require_once modification(DIR_SYSTEM . 'library/config.php');
+require_once modification(DIR_SYSTEM . 'engine/event.php');
+require_once modification(DIR_SYSTEM . 'engine/controller.php');
+require_once modification(DIR_SYSTEM . 'engine/model.php');
+require_once modification(DIR_SYSTEM . 'engine/loader.php');
+require_once modification(DIR_SYSTEM . 'engine/registry.php');
+require_once modification(DIR_SYSTEM . 'helper/utf8.php');
+require_once Path::combine(DIR_APPLICATION, 'controller', 'module', 'jtlconnector.php');
 
 class OpenCart extends Singleton
 {
@@ -46,16 +46,22 @@ class OpenCart extends Singleton
     protected function __construct()
     {
         parent::__construct();
+        /** @noinspection PhpUndefinedClassInspection */
         $this->registry = new \Registry();
+        /** @noinspection PhpUndefinedClassInspection */
         $this->config = new \Config();
         $this->registry->set('config', $this->config);
+        /** @noinspection PhpUndefinedClassInspection */
         $database = new \DB(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
         $this->registry->set('db', $database);
+        /** @noinspection PhpUndefinedClassInspection */
         $this->loader = new \Loader($this->registry);
         // Cache
+        /** @noinspection PhpUndefinedClassInspection */
         $cache = new \Cache('file');
         $this->registry->set('cache', $cache);
         // Event
+        /** @noinspection PhpUndefinedClassInspection */
         $event = new \Event($this->registry);
         $this->registry->set('event', $event);
         $query = $database->query("SELECT * FROM " . DB_PREFIX . "EVENT");
@@ -90,7 +96,7 @@ class OpenCart extends Singleton
         $class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $model);
 
         if (file_exists($file)) {
-            include_once($file);
+            include_once $file;
             $ocModel = new $class($this->registry);
             $this->registry->set('model_' . str_replace('/', '_', $model), $ocModel);
         } else {

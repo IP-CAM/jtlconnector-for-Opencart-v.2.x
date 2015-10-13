@@ -26,7 +26,6 @@ class CustomerOrder extends I18nBaseMapper
         'shippingMethodName' => 'shipping_method',
         'paymentModuleCode' => null,
         'items' => 'Order\CustomerOrderItem',
-        //'paymentInfo' => 'Order\CustomerOrderPaymentInfo',
         'billingAddress' => 'Order\CustomerOrderBillingAddress',
         'shippingAddress' => 'Order\CustomerOrderShippingAddress'
     ];

@@ -6,14 +6,15 @@
 
 namespace jtl\Connector\OpenCart\Controller\Order;
 
-use jtl\Connector\Model\CustomerOrderItem as CustomerOrderItemModel;
 use jtl\Connector\Model\CustomerOrderItem as COI;
+use jtl\Connector\Model\CustomerOrderItem as CustomerOrderItemModel;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemDiscountMapper;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemProductMapper;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemShippingMapper;
+use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
 class CustomerOrderItem extends BaseController
@@ -23,6 +24,12 @@ class CustomerOrderItem extends BaseController
     private $productMapper;
     private $shippingMapper;
     private $discountMapper;
+
+    private $methods = [
+        'customerOrderProducts' => COI::TYPE_PRODUCT,
+        'customerOrderShippings' => COI::TYPE_SHIPPING,
+        'customerOrderDiscounts' => COI::TYPE_DISCOUNT
+    ];
 
     public function __construct()
     {
@@ -38,8 +45,10 @@ class CustomerOrderItem extends BaseController
         $orderItemId = 1;
         $this->orderId = $data['order_id'];
         $this->tax = doubleval($this->getTax($this->orderId));
-        foreach ([COI::TYPE_PRODUCT, COI::TYPE_SHIPPING, COI::TYPE_DISCOUNT] as $type) {
-            $items = $this->{'pull' . ucfirst($type) . 's'}($this->orderId);
+        foreach ($this->methods as $method => $type) {
+            $sqlMethod = Constants::UTILITY_NAMESPACE . 'SQLs::' . $method;
+            $query = call_user_func($sqlMethod, $this->orderId);
+            $items = $this->database->query($query);
             foreach ($items as $item) {
                 $return[] = $this->mapItem($type, $item, $orderItemId++);
             }
@@ -63,21 +72,6 @@ class CustomerOrderItem extends BaseController
     protected function pullQuery($data, $limit = null)
     {
         throw new MethodNotAllowedException("Use the specific pull methods.");
-    }
-
-    private function pullProducts($orderId)
-    {
-        return $this->database->query(SQLs::customerOrderProducts($orderId));
-    }
-
-    private function pullShippings($orderId)
-    {
-        return $this->database->query(SQLs::customerOrderShippings($orderId));
-    }
-
-    private function pullDiscounts($orderId)
-    {
-        return $this->database->query(SQLs::customerOrderDiscounts($orderId));
     }
 
     private function getTax($orderId)

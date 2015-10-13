@@ -15,11 +15,12 @@ class GlobalData extends BaseMapper
         'currencies' => 'GlobalData\Currency',
         'taxRates' => 'GlobalData\TaxRate',
         'customerGroups' => 'GlobalData\CustomerGroup',
-        'measurementUnits' => 'GlobalData\MeasurementUnit'
+        'measurementUnits' => 'GlobalData\MeasurementUnit',
+        'shippingMethods' => 'GlobalData\ShippingMethod'
     ];
 
     public static function getModels()
     {
-        return ['Language', 'Currency', 'TaxRate', 'CustomerGroup', 'MeasurementUnit'];
+        return ['Language', 'Currency', 'TaxRate', 'CustomerGroup', 'MeasurementUnit', 'ShippingMethod'];
     }
 }

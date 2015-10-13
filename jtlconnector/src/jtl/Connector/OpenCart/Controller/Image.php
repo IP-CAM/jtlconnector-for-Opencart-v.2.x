@@ -9,16 +9,17 @@ namespace jtl\Connector\OpenCart\Controller;
 use jtl\Connector\Drawing\ImageRelationType;
 use jtl\Connector\Model\Image as ImageModel;
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
+use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
 class Image extends MainEntityController
 {
     private $methods = [
-        'productCoverPullQuery' => ImageRelationType::TYPE_PRODUCT,
-        'productImagesPullQuery' => ImageRelationType::TYPE_PRODUCT,
-        'categoryPullQuery' => ImageRelationType::TYPE_CATEGORY,
-        'manufacturerPullQuery' => ImageRelationType::TYPE_MANUFACTURER,
-        'productVariationValuePullQuery' => ImageRelationType::TYPE_PRODUCT_VARIATION_VALUE
+        'imageProductCoverPull' => ImageRelationType::TYPE_PRODUCT,
+        'imageProductsPull' => ImageRelationType::TYPE_PRODUCT,
+        'imageCategoryPull' => ImageRelationType::TYPE_CATEGORY,
+        'imageManufacturerPull' => ImageRelationType::TYPE_MANUFACTURER,
+        'imageProductVariationValuePull' => ImageRelationType::TYPE_PRODUCT_VARIATION_VALUE
     ];
 
     /**
@@ -44,7 +45,8 @@ class Image extends MainEntityController
     {
         list($method, $type) = each($methods);
         if (!is_null($method)) {
-            $query = $this->{$method}($limit);
+            $sqlMethod = Constants::UTILITY_NAMESPACE . 'SQLs::' . $method;
+            $query = call_user_func($sqlMethod, $limit);
             $result = $this->database->query($query);
             foreach ($result as $picture) {
                 $model = $this->mapImageToHost($picture, $type);
@@ -69,31 +71,6 @@ class Image extends MainEntityController
         return $model;
     }
 
-    private function productCoverPullQuery($limit)
-    {
-        return SQLs::imageProductCoverPull($limit);
-    }
-
-    private function productImagesPullQuery($limit)
-    {
-        return SQLs::imageProductsPull($limit);
-    }
-
-    private function categoryPullQuery($limit)
-    {
-        return SQLs::imageCategoryPull($limit);
-    }
-
-    private function manufacturerPullQuery($limit)
-    {
-        return SQLs::imageManufacturerPull($limit);
-    }
-
-    private function productVariationValuePullQuery($limit)
-    {
-        return SQLs::imageProductVariationValuePull($limit);
-    }
-
     protected function pullQuery($data, $limit = null)
     {
         throw new MethodNotAllowedException("Use the queries for the specific types.");
@@ -109,6 +86,7 @@ class Image extends MainEntityController
         return $data;
     }
 
+    /** @noinspection PhpUnusedPrivateMethodInspection */
     private function pushProductImage($foreignKey, ImageModel $data)
     {
         $isCover = $data->getSort() === 1 ? true : false;
@@ -125,6 +103,7 @@ class Image extends MainEntityController
         }
     }
 
+    /** @noinspection PhpUnusedPrivateMethodInspection */
     private function pushCategoryImage($foreignKey, ImageModel $data)
     {
         $path = $this->saveImage($data);
@@ -133,6 +112,7 @@ class Image extends MainEntityController
         }
     }
 
+    /** @noinspection PhpUnusedPrivateMethodInspection */
     private function pushManufacturerImage($foreignKey, ImageModel $data)
     {
         $path = $this->saveImage($data);
@@ -141,6 +121,7 @@ class Image extends MainEntityController
         }
     }
 
+    /** @noinspection PhpUnusedPrivateMethodInspection */
     private function pushProductVariationValueImage($foreignKey, ImageModel $data)
     {
         $path = $this->saveImage($data);

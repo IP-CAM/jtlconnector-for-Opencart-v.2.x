@@ -17,7 +17,7 @@ class CrossSelling extends MainEntityController
 
     protected function pullQuery($data, $limit = null)
     {
-        return SQLs::crossSellingPull('', $limit);
+        return SQLs::crossSellingPull($limit);
     }
 
     protected function pushData($data, $model)

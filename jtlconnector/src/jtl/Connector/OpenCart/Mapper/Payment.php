@@ -13,15 +13,25 @@ class Payment extends BaseMapper
     protected $pull = [
         'id' => 'id',
         'customerOrderId' => 'order_id',
-        'billingInfo' => 'note',
         'creationDate' => 'date_added',
+        'totalSum' => 'amount',
+        'billingInfo' => null,
+        'transactionId' => null,
         'paymentModuleCode' => null,
-        'totalSum' => 'total',
-        'transactionId' => 'transaction_id'
     ];
 
     protected function paymentModuleCode(array $data)
     {
         return PaymentHelper::parseOpenCartPaymentCode($data['payment_code']);
+    }
+
+    protected function billingInfo(array $data)
+    {
+        return isset($data['note']) ? $data['note'] : '';
+    }
+
+    protected function transactionId(array $data)
+    {
+        return isset($data['transaction_id']) ? $data['transaction_id'] : '';
     }
 }

@@ -23,6 +23,7 @@ class OrderItemDiscountMapper extends BaseMapper
         'type' => null
     ];
 
+    /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct()
     {
         $this->database = DB::getInstance();

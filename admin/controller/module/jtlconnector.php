@@ -2,7 +2,6 @@
 
 class ControllerModuleJtlconnector extends Controller
 {
-    const SEPARATOR = '_';
     const CONNECTOR_VERSION = '0.3.1';
     const CONFIG_KEY = 'connector';
     const CONFIG_PASSWORD_KEY = 'connector_password';
@@ -199,8 +198,8 @@ class ControllerModuleJtlconnector extends Controller
 
     public function uninstall()
     {
-        $this->db->query('DROP TABLE jtl_connector_link');
-        $this->db->query('DROP TABLE jtl_connector_checksum');
+        $this->db->query('DROP TABLE IF EXISTS jtl_connector_link');
+        $this->db->query('DROP TABLE IF EXISTS jtl_connector_checksum');
         $configs = $this->model_setting_setting->getSetting(self::CONFIG_KEY);
         $this->model_catalog_attribute_group->deleteAttributeGroup($configs[self::CONFIG_ATTRIBUTE_GROUP]);
         $this->model_setting_setting->deleteSetting(self::CONFIG_KEY);

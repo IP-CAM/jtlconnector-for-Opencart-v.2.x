@@ -7,13 +7,16 @@
 namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
-use jtl\Connector\OpenCart\Utility\SQLs;
+use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\Payment\PaymentTypes;
 
 class Payment extends MainEntityController
 {
     private $methods = [
-        'paymentExpressPullQuery' => PaymentTypes::TYPE_PAYPAL_EXPRESS
+        'paymentPaypalPull' => PaymentTypes::TYPE_PAYPAL_EXPRESS,
+        'paymentWorldpayPull' => PaymentTypes::TYPE_WORLDPAY,
+        'paymentBluepayRedirectPull' => PaymentTypes::TYPE_BPAY,
+        'paymentBluepayHostedPull' => PaymentTypes::TYPE_BPAY
     ];
 
     /**
@@ -39,7 +42,8 @@ class Payment extends MainEntityController
     {
         list($method, $type) = each($methods);
         if (!is_null($method)) {
-            $query = $this->{$method}($limit);
+            $sqlMethod = Constants::UTILITY_NAMESPACE . 'SQLs::' . $method;
+            $query = call_user_func($sqlMethod, $limit);
             $result = $this->database->query($query);
             foreach ($result as $picture) {
                 $model = $this->mapper->toHost($picture);
@@ -49,11 +53,6 @@ class Payment extends MainEntityController
         } else {
             return false;
         }
-    }
-
-    private function paymentExpressPullQuery($limit)
-    {
-        return SQLs::paymentPaypalPull($limit);
     }
 
     protected function pullQuery($data, $limit = null)

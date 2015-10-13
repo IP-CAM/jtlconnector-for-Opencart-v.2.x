@@ -542,12 +542,58 @@ final class SQLs
     public static function paymentPaypalPull($limit)
     {
         return sprintf('
-            SELECT pot.paypal_order_transaction_id as id, po.order_id, pot.date_added, po.total, pot.transaction_id, pot
-            .note, o.payment_code
-            FROM ' . DB_PREFIX . 'paypal_order po
-            LEFT JOIN ' . DB_PREFIX . 'paypal_order_transaction pot ON po.paypal_order_id = pot.paypal_order_id
+            SELECT pot.paypal_order_transaction_id as id, po.order_id, pot.date_added, pot.amount, pot
+            .transaction_id, pot.note, o.payment_code
+            FROM ' . DB_PREFIX . 'paypal_order_transaction pot
+            LEFT JOIN ' . DB_PREFIX . 'paypal_order po ON po.paypal_order_id = pot.paypal_order_id
             LEFT JOIN ' . DB_PREFIX . 'order o ON o.order_id = po.order_id
             LEFT JOIN jtl_connector_link l ON pot.paypal_order_transaction_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_PAYMENT, $limit
+        );
+    }
+
+    public static function paymentWorldpayPull($limit)
+    {
+        return sprintf('
+            SELECT wot.worldpay_order_transaction_id as id, wo.order_id, wot.date_added, wot.amount, o.payment_code
+            FROM ' . DB_PREFIX . 'worldpay_order_transaction wot
+            LEFT JOIN ' . DB_PREFIX . 'worldpay_order wo ON wo.worldpay_order_id = wot.worldpay_order_id
+            LEFT JOIN ' . DB_PREFIX . 'order o ON o.order_id = wo.order_id
+            LEFT JOIN jtl_connector_link l ON wot.worldpay_order_transaction_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_PAYMENT, $limit
+        );
+    }
+
+    public static function paymentBluepayRedirectPull($limit)
+    {
+        return sprintf('
+            SELECT brot.bluepay_redirect_order_transaction_id as id, po.order_id, brot.date_added, brot.amount, bro
+            .transaction_id, o.payment_code
+            FROM ' . DB_PREFIX . 'bluepay_redirect_order_transaction brot
+            LEFT JOIN ' . DB_PREFIX . 'bluepay_redirect_order bro ON bro.bluepay_redirect_order_id = brot
+            .bluepay_redirect_order_id
+            LEFT JOIN ' . DB_PREFIX . 'order o ON o.order_id = bro.order_id
+            LEFT JOIN jtl_connector_link l ON brot.bluepay_redirect_order_transaction_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_PAYMENT, $limit
+        );
+    }
+
+    public static function paymentBluepayHostedPull($limit)
+    {
+        return sprintf('
+            SELECT brot.bluepay_hosted_order_transaction_id as id, po.order_id, brot.date_added, brot.amount, bro
+            .transaction_id, o.payment_code
+            FROM ' . DB_PREFIX . 'bluepay_hosted_order_transaction brot
+            LEFT JOIN ' . DB_PREFIX . 'bluepay_hosted_order bro ON bro.bluepay_hosted_order_id = brot
+            .bluepay_hosted_order_id
+            LEFT JOIN ' . DB_PREFIX . 'order o ON o.order_id = bro.order_id
+            LEFT JOIN jtl_connector_link l ON brot.bluepay_hosted_order_transaction_id = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL
             LIMIT %d',
             IdentityLinker::TYPE_PAYMENT, $limit

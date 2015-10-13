@@ -26,6 +26,7 @@ class OrderItemProductMapper extends BaseMapper
         'variations' => 'Order\CustomerOrderItemVariation'
     ];
 
+    /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct()
     {
         $this->database = DB::getInstance();

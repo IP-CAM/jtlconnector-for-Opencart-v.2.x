@@ -8,15 +8,12 @@ namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Model\FileUpload as FileUploadModel;
 use jtl\Connector\OpenCart\Utility\OpenCart;
-use jtl\Connector\OpenCart\Utility\Option as         OptionHelper;
+use jtl\Connector\OpenCart\Utility\Option as OptionHelper;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
 class FileUpload extends BaseController
 {
     private $ocOption;
-    /**
-     * @var Option
-     */
     private $optionHelper;
 
     public function __construct()

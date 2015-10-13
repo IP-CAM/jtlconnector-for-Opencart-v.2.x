@@ -6,7 +6,6 @@
 
 namespace jtl\Connector\OpenCart\Controller\Product;
 
-use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Model\Product as ProductModel;
 use jtl\Connector\OpenCart\Controller\MainEntityController;
 use jtl\Connector\OpenCart\Utility\Option as OptionHelper;

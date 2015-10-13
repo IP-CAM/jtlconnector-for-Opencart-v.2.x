@@ -2,12 +2,11 @@
 
 namespace jtl\Connector\OpenCart\Utility;
 
-use jtl\Connector\Core\Utilities\Singleton;
 use jtl\Connector\Payment\PaymentTypes;
 
-class Payment extends Singleton
+class Payment
 {
-    private $paymentMapping = [
+    private static $paymentMapping = [
         'pp_express' => PaymentTypes::TYPE_PAYPAL_EXPRESS,
         'bank_transfer' => PaymentTypes::TYPE_BANK_TRANSFER,
         'cod' => PaymentTypes::TYPE_CASH_ON_DELIVERY,
@@ -19,10 +18,10 @@ class Payment extends Singleton
         'worldpay' => PaymentTypes::TYPE_WORLDPAY
     ];
 
-    public function parseOpenCartPaymentCode($code)
+    public static function parseOpenCartPaymentCode($code)
     {
-        if (isset($this->paymentMapping[$code])) {
-            return $this->paymentMapping[$code];
+        if (isset(self::$paymentMapping[$code])) {
+            return self::$paymentMapping[$code];
         } else {
             if (strrpos('alipay', $code) !== false) {
                 return PaymentTypes::TYPE_ALIPAY;
@@ -32,13 +31,5 @@ class Payment extends Singleton
             }
             return '';
         }
-    }
-
-    /**
-     * @return Payment
-     */
-    public static function getInstance()
-    {
-        return parent::getInstance();
     }
 }
