@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @copyright 2010-2013 JTL-Software GmbH
+ */
 
 namespace jtl\Connector\OpenCart\Controller\Product;
 
@@ -22,7 +26,7 @@ class ProductSpecialPrice extends BaseController
     public function pushData(ProductModel $data, &$model)
     {
         $specialPriceItemMapper = new ProductSpecialPriceItem();
-        foreach ((array)$data->getSpecialPrices() as $specialPrice) {
+        foreach ($data->getSpecialPrices() as $specialPrice) {
             for ($count = 0; $count <= count($specialPrice->getItems()); $count++) {
                 $special = $this->mapper->toEndpoint($specialPrice);
                 foreach ($specialPrice->getItems() as $item) {

@@ -1,7 +1,8 @@
 <?php
 /**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @author Daniel Hoffmann <daniel.hoffmann@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Controller
  */
 
 namespace jtl\Connector\OpenCart\Controller;
@@ -66,9 +67,9 @@ abstract class BaseController extends Controller
         $action = new Action();
         $action->setHandled(true);
         try {
-            $result = $this->pushData($data, null);
-            if (method_exists($this, 'postPush')) {
-                $this->postPush($data, $result);
+            $result = null;
+            if (method_exists($this, 'pushData')) {
+                $result = $this->pushData($data, null);
             }
             $action->setResult($result);
         } catch (\Exception $exc) {
@@ -86,7 +87,10 @@ abstract class BaseController extends Controller
         $action = new Action();
         $action->setHandled(true);
         try {
-            $action->setResult($this->deleteData($data));
+            $result = null;
+            if (method_exists($this, 'deleteData')) {
+                $action->setResult($this->deleteData($data));
+            }
         } catch (\Exception $exc) {
             Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
             $err = new Error();

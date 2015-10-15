@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @copyright 2010-2013 JTL-Software GmbH
+ */
 
 namespace jtl\Connector\OpenCart\Controller\Product;
 
@@ -22,7 +26,7 @@ class ProductAttr extends BaseController
     public function pushData(ProductModel $data, &$model)
     {
         $model['product_attribute'] = [];
-        foreach ((array)$data->getAttributes() as $attr) {
+        foreach ($data->getAttributes() as $attr) {
             if (!$attr->getIsCustomProperty()) {
                 list($values, $descriptions) = $this->buildI18ns($attr);
                 $attributeId = $this->getOrCreateAttribute($descriptions);
@@ -70,12 +74,14 @@ class ProductAttr extends BaseController
         }
         if (is_null($attributeId)) {
             $groupId = $this->oc->getConfig(\ControllerModuleJtlconnector::CONFIG_ATTRIBUTE_GROUP);
-            $attribute = $this->oc->loadAdminModel('catalog/attribute');
-            $attributeId = $attribute->addAttribute([
-                'sort_order' => 0,
-                'attribute_group_id' => $groupId,
-                'attribute_description' => $descriptions
-            ]);
+            $ocAttribute = $this->oc->loadAdminModel('catalog/attribute');
+            if ($ocAttribute instanceof \ModelCatalogAttribute) {
+                $attributeId = $ocAttribute->addAttribute([
+                    'sort_order' => 0,
+                    'attribute_group_id' => $groupId,
+                    'attribute_description' => $descriptions
+                ]);
+            }
         }
         return $attributeId;
     }

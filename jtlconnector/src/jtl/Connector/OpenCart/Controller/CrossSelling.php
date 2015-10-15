@@ -1,11 +1,12 @@
 <?php
 /**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Controller
  */
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Model\CrossSelling as CrossSellingModel;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
 class CrossSelling extends MainEntityController
@@ -20,7 +21,7 @@ class CrossSelling extends MainEntityController
         return SQLs::crossSellingPull($limit);
     }
 
-    protected function pushData($data, $model)
+    protected function pushData(CrossSellingModel $data, $model)
     {
         $this->deleteData($data);
         $id = $data->getProductId()->getEndpoint();
@@ -34,7 +35,7 @@ class CrossSelling extends MainEntityController
         return $data;
     }
 
-    protected function deleteData($data)
+    protected function deleteData(CrossSellingModel $data)
     {
         $id = $data->getProductId()->getEndpoint();
         if (!empty($id)) {

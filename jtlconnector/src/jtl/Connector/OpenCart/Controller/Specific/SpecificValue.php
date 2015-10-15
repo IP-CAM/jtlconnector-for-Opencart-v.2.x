@@ -1,7 +1,7 @@
 <?php
 /**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Controller
  */
 
 namespace jtl\Connector\OpenCart\Controller\Specific;
@@ -24,7 +24,7 @@ class SpecificValue extends BaseController
 
     public function pushData(SpecificModel $data, &$model)
     {
-        foreach ((array)$data->getValues() as $value) {
+        foreach ($data->getValues() as $value) {
             if (is_null($value->getId()->getEndpoint())) {
                 $query = SQLs::specificValuePush($data->getId()->getEndpoint(), $value->getSort());
                 $id = $this->database->query($query);

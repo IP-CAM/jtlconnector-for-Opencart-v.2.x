@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @copyright 2010-2013 JTL-Software GmbH
+ */
 
 namespace jtl\Connector\OpenCart\Controller\Product;
 
@@ -20,8 +24,8 @@ class ProductPrice extends BaseController
 
     public function pushData(ProductModel $data, &$model)
     {
-        foreach ((array)$data->getPrices() as $price) {
-            foreach ((array)$price->getItems() as $item) {
+        foreach ($data->getPrices() as $price) {
+            foreach ($price->getItems() as $item) {
                 $model['price'] = $item->getNetPrice();
             }
         }

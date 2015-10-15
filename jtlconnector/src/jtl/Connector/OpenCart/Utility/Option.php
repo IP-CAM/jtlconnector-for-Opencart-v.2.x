@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @copyright 2010-2013 JTL-Software GmbH
+ */
 
 namespace jtl\Connector\OpenCart\Utility;
 
@@ -70,13 +74,15 @@ class Option extends Singleton
         return $optionValueId;
     }
 
-    public function deleteObsoleteOptions($productId)
+    public function deleteObsoleteOptions()
     {
         $ocOption = OpenCart::getInstance()->loadAdminModel('catalog/option');
-        $result = $this->database->query(SQLs::obsoleteOptions());
-        foreach ($result as $optionId) {
-            $ocOption->deleteOption($optionId['option_id']);
-            $this->database->query(SQLs::deleteObsoleteProductOptions($productId));
+        if ($ocOption instanceof \ModelCatalogOption) {
+            $result = $this->database->query(SQLs::obsoleteOptions());
+            foreach ($result as $optionId) {
+                $ocOption->deleteOption($optionId['option_id']);
+                $this->database->query(SQLs::deleteObsoleteProductOptions());
+            }
         }
     }
 

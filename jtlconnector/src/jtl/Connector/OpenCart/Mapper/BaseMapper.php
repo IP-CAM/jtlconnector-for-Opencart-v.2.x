@@ -1,7 +1,8 @@
 <?php
 /**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @author Daniel Hoffmann <daniel.hoffmann@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Mapper
  */
 
 namespace jtl\Connector\OpenCart\Mapper;

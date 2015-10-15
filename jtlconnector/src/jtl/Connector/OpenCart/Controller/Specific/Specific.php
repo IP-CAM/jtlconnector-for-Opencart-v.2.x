@@ -1,7 +1,7 @@
 <?php
 /**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Controller
  */
 
 namespace jtl\Connector\OpenCart\Controller\Specific;
@@ -13,14 +13,6 @@ use jtl\Connector\OpenCart\Utility\SQLs;
 
 class Specific extends MainEntityController
 {
-    private $ocFilter;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->ocFilter = $this->oc->loadAdminModel('catalog/filter');
-    }
-
     public function pullData(array $data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $limit);
@@ -35,11 +27,14 @@ class Specific extends MainEntityController
     {
         if (!$data->getIsGlobal()) {
             $filterGroup = $this->mapper->toEndpoint($data);
-            if (is_null($data->getId()->getEndpoint())) {
-                $id = $this->ocFilter->addFilter($filterGroup);
-                $data->getId()->setEndpoint($id);
-            } else {
-                $this->ocFilter->editFilter($data->getId()->getEndpoint(), $filterGroup);
+            $ocFilter = $this->oc->loadAdminModel('catalog/filter');
+            if ($ocFilter instanceof \ModelCatalogFilter) {
+                if (is_null($data->getId()->getEndpoint())) {
+                    $id = $ocFilter->addFilter($filterGroup);
+                    $data->getId()->setEndpoint($id);
+                } else {
+                    $ocFilter->editFilter($data->getId()->getEndpoint(), $filterGroup);
+                }
             }
             $specificValueCtrl = new SpecificValueCtrl();
             $specificValueCtrl->pushData($data, $model);
@@ -49,7 +44,10 @@ class Specific extends MainEntityController
 
     protected function deleteData(SpecificModel $data)
     {
-        $this->ocFilter->deleteFilter($data->getId()->getEndpoint());
+        $ocFilter = $this->oc->loadAdminModel('catalog/filter');
+        if ($ocFilter instanceof \ModelCatalogFilter) {
+            $ocFilter->deleteFilter($data->getId()->getEndpoint());
+        }
         return $data;
     }
 

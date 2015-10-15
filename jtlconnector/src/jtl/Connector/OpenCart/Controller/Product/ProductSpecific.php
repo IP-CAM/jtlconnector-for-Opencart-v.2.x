@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @copyright 2010-2013 JTL-Software GmbH
+ */
 
 namespace jtl\Connector\OpenCart\Controller\Product;
 
@@ -21,7 +25,7 @@ class ProductSpecific extends BaseController
     public function pushData(ProductModel $data, &$model)
     {
         $model['product_filter'] = [];
-        foreach ((array)$data->getSpecifics() as $specific) {
+        foreach ($data->getSpecifics() as $specific) {
             if (!is_null($specific->getSpecificValueId()->getEndpoint())) {
                 $specificValueId = $specific->getSpecificValueId()->getEndpoint();
                 $model['product_filter'][] = $specificValueId;

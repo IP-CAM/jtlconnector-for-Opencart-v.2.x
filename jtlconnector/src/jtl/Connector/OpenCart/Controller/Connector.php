@@ -1,7 +1,8 @@
 <?php
 /**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @author Daniel Böhmer <daniel.boehmer@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Controller
  */
 
 namespace jtl\Connector\OpenCart\Controller;
@@ -15,6 +16,7 @@ use jtl\Connector\Model\ConnectorIdentification;
 use jtl\Connector\Model\ConnectorServerInfo;
 use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\OpenCart\Utility\OpenCart;
+use jtl\Connector\OpenCart\Utility\Option;
 use jtl\Connector\Result\Action;
 
 class Connector extends Controller
@@ -90,6 +92,16 @@ class Connector extends Controller
     {
         $action = new Action();
         $action->setHandled(true);
+        try {
+            $optionHelper = Option::getInstance();
+            $optionHelper->deleteObsoleteOptions();
+        } catch (\Exception $exc) {
+            Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
+            $err = new Error();
+            $err->setCode($exc->getCode());
+            $err->setMessage($exc->getMessage());
+            $action->setError($err);
+        }
         $action->setResult(true);
         return $action;
     }

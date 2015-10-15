@@ -1,7 +1,7 @@
 <?php
 /**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Controller
  */
 
 namespace jtl\Connector\OpenCart\Controller;
@@ -86,7 +86,10 @@ class Image extends MainEntityController
         $foreignKey = $data->getForeignKey()->getEndpoint();
         if (!empty($foreignKey)) {
             $this->deleteData($data);
-            $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($foreignKey, $data);
+            $path = $this->saveImage($data);
+            if ($path !== false) {
+                $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($foreignKey, $path);
+            }
         }
         return $data;
     }
@@ -109,30 +112,21 @@ class Image extends MainEntityController
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
-    private function pushCategoryImage($foreignKey, ImageModel $data)
+    private function pushCategoryImage($foreignKey, $path)
     {
-        $path = $this->saveImage($data);
-        if ($path !== false) {
-            $this->database->query(SQLs::imageCategoryPush($path, $foreignKey));
-        }
+        $this->database->query(SQLs::imageCategoryPush($path, $foreignKey));
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
-    private function pushManufacturerImage($foreignKey, ImageModel $data)
+    private function pushManufacturerImage($foreignKey, $path)
     {
-        $path = $this->saveImage($data);
-        if ($path !== false) {
-            $this->database->query(SQLs::imageManufacturerPush($path, $foreignKey));
-        }
+        $this->database->query(SQLs::imageManufacturerPush($path, $foreignKey));
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
-    private function pushProductVariationValueImage($foreignKey, ImageModel $data)
+    private function pushProductVariationValueImage($foreignKey, $path)
     {
-        $path = $this->saveImage($data);
-        if ($path !== false) {
-            $this->database->query(SQLs::imageProductVariationValuePush($path, $foreignKey));
-        }
+        $this->database->query(SQLs::imageProductVariationValuePush($path, $foreignKey));
     }
 
     private function saveImage(ImageModel $data)

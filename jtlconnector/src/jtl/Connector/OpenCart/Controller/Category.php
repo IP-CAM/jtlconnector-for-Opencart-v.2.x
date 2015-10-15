@@ -1,7 +1,7 @@
 <?php
 /**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Controller
  */
 
 namespace jtl\Connector\OpenCart\Controller;
@@ -12,14 +12,6 @@ use jtl\Connector\OpenCart\Utility\SQLs;
 class Category extends MainEntityController
 {
     private static $idCache = [];
-    private $ocCategory;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->ocCategory = $this->oc->loadAdminModel('catalog/category');
-    }
-
 
     public function pullData(array $data, $model, $limit = null)
     {
@@ -37,19 +29,25 @@ class Category extends MainEntityController
             $data->getParentCategoryId()->setEndpoint(self::$idCache[$data->getParentCategoryId()->getHost()]);
         }
         $category = $this->mapper->toEndpoint($data);
-        if (is_null($data->getId()->getEndpoint())) {
-            $id = $this->ocCategory->addCategory($category);
-            $data->getId()->setEndpoint($id);
-            self::$idCache[$data->getId()->getHost()] = $id;
-        } else {
-            $this->ocCategory->editCategory($data->getId()->getEndpoint(), $category);
+        $ocCategory = $this->oc->loadAdminModel('catalog/category');
+        if ($ocCategory instanceof \ModelCatalogCategory) {
+            if (is_null($data->getId()->getEndpoint())) {
+                $id = $ocCategory->addCategory($category);
+                $data->getId()->setEndpoint($id);
+                self::$idCache[$data->getId()->getHost()] = $id;
+            } else {
+                $ocCategory->editCategory($data->getId()->getEndpoint(), $category);
+            }
         }
         return $data;
     }
 
     protected function deleteData(CategoryModel $data)
     {
-        $this->ocCategory->deleteCategory($data->getId()->getEndpoint());
+        $ocCategory = $this->oc->loadAdminModel('catalog/category');
+        if ($ocCategory instanceof \ModelCatalogCategory) {
+            $ocCategory->deleteCategory($data->getId()->getEndpoint());
+        }
         return $data;
     }
 

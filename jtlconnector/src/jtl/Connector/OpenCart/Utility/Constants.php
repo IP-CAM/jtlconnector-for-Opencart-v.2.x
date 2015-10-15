@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Sven
- * Date: 19.08.2015
- * Time: 08:27
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @copyright 2010-2013 JTL-Software GmbH
  */
 
 namespace jtl\Connector\OpenCart\Utility;

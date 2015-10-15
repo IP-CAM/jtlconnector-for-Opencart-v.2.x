@@ -1,4 +1,9 @@
 <?php
+/**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @copyright 2010-2013 JTL-Software GmbH
+ */
+
 namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\Model\Product as ProductModel;
@@ -43,10 +48,12 @@ class ProductVariation extends BaseController
             $option['option_description'] = $descriptions;
             $option['option_value'] = $this->optionHelper->buildOptionValues($variation, $id);
             $ocOption = $this->oc->loadAdminModel('catalog/option');
-            if (is_null($id)) {
-                $id = $ocOption->addOption($option);
-            } else {
-                $ocOption->editOption($id, $option);
+            if ($ocOption instanceof \ModelCatalogOption) {
+                if (is_null($id)) {
+                    $id = $ocOption->addOption($option);
+                } else {
+                    $ocOption->editOption($id, $option);
+                }
             }
             $productOption = $this->mapper->toEndpoint($variation);
             $productOption['option_id'] = $id;

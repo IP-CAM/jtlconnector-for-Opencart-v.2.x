@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @copyright 2010-2013 JTL-Software GmbH
+ */
 
 namespace jtl\Connector\OpenCart\Utility;
 
@@ -24,18 +28,18 @@ function modification($filename)
     return $filename;
 }
 
-require_once modification(DIR_SYSTEM . 'library/db.php');
-require_once modification(DIR_SYSTEM . 'library/db/mysqli.php');
-require_once modification(DIR_SYSTEM . 'library/cache.php');
-require_once modification(DIR_SYSTEM . 'library/cache/file.php');
-require_once modification(DIR_SYSTEM . 'library/config.php');
-require_once modification(DIR_SYSTEM . 'engine/event.php');
-require_once modification(DIR_SYSTEM . 'engine/controller.php');
-require_once modification(DIR_SYSTEM . 'engine/model.php');
-require_once modification(DIR_SYSTEM . 'engine/loader.php');
-require_once modification(DIR_SYSTEM . 'engine/registry.php');
-require_once modification(DIR_SYSTEM . 'helper/utf8.php');
-require_once Path::combine(DIR_APPLICATION, 'controller', 'module', 'jtlconnector.php');
+require_once(modification(DIR_SYSTEM . 'library/db.php'));
+require_once(modification(DIR_SYSTEM . 'library/db/mysqli.php'));
+require_once(modification(DIR_SYSTEM . 'library/cache.php'));
+require_once(modification(DIR_SYSTEM . 'library/cache/file.php'));
+require_once(modification(DIR_SYSTEM . 'library/config.php'));
+require_once(modification(DIR_SYSTEM . 'engine/event.php'));
+require_once(modification(DIR_SYSTEM . 'engine/controller.php'));
+require_once(modification(DIR_SYSTEM . 'engine/model.php'));
+require_once(modification(DIR_SYSTEM . 'engine/loader.php'));
+require_once(modification(DIR_SYSTEM . 'engine/registry.php'));
+require_once(modification(DIR_SYSTEM . 'helper/utf8.php'));
+require_once(Path::combine(DIR_APPLICATION, 'controller', 'module', 'jtlconnector.php'));
 
 class OpenCart extends Singleton
 {
@@ -49,18 +53,17 @@ class OpenCart extends Singleton
         /** @noinspection PhpUndefinedClassInspection */
         $this->registry = new \Registry();
         /** @noinspection PhpUndefinedClassInspection */
+        $this->loader = new \Loader($this->registry);
+        $this->registry->set('load', $this->loader);
+        /** @noinspection PhpUndefinedClassInspection */
         $this->config = new \Config();
         $this->registry->set('config', $this->config);
         /** @noinspection PhpUndefinedClassInspection */
-        $database = new \DB(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+        $database = new \DB(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT);
         $this->registry->set('db', $database);
-        /** @noinspection PhpUndefinedClassInspection */
-        $this->loader = new \Loader($this->registry);
-        // Cache
         /** @noinspection PhpUndefinedClassInspection */
         $cache = new \Cache('file');
         $this->registry->set('cache', $cache);
-        // Event
         /** @noinspection PhpUndefinedClassInspection */
         $event = new \Event($this->registry);
         $this->registry->set('event', $event);

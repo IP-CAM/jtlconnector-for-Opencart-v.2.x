@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @copyright 2010-2013 JTL-Software GmbH
+ */
 
 namespace jtl\Connector\OpenCart\Utility;
 
@@ -43,16 +47,20 @@ class TopProduct extends Singleton
         $data['limit'] = 1;
         $data['product'] = [$id];
         $ocModule = $this->oc->loadAdminModel('extension/module');
-        $ocModule->addModule('featured', $data);
+        if ($ocModule instanceof \ModelExtensionModule) {
+            $ocModule->addModule('featured', $data);
+        }
     }
 
     private function updateTopProduct($id, $data, $moduleId)
     {
         $ocModule = $this->oc->loadAdminModel('extension/module');
-        $module = $ocModule->getModule($moduleId);
-        $data['product'] = array_unique(array_merge((array)$module['product'], [$id]), SORT_NUMERIC);
-        $data['limit'] = count($data['product']);
-        $ocModule->editModule($moduleId, $data);
+        if ($ocModule instanceof \ModelExtensionModule) {
+            $module = $ocModule->getModule($moduleId);
+            $data['product'] = array_unique(array_merge((array)$module['product'], [$id]), SORT_NUMERIC);
+            $data['limit'] = count($data['product']);
+            $ocModule->editModule($moduleId, $data);
+        }
     }
 
     private function handleTopProductsAppearInLayout($moduleId)
@@ -62,18 +70,20 @@ class TopProduct extends Singleton
             'position' => 'content_bottom',
             'sort_order' => 1
         ];
-        $ocModule = $this->oc->loadAdminModel('design/layout');
-        $layout = $ocModule->getLayout(self::LAYOUT_KEY);
-        if (is_null($layout)) {
-            $this->addTopProductToLayout($ocModule, $layoutModule);
-        } else {
-            $this->editTopProductForLayout($layout, $layoutModule, $ocModule);
+        $ocLayout = $this->oc->loadAdminModel('design/layout');
+        if ($ocLayout instanceof \ModelDesignLayout) {
+            $layout = $ocLayout->getLayout(self::LAYOUT_KEY);
+            if (is_null($layout)) {
+                $this->addTopProductToLayout($ocLayout, $layoutModule);
+            } else {
+                $this->editTopProductForLayout($ocLayout, $layout, $layoutModule);
+            }
         }
     }
 
-    private function addTopProductToLayout($ocModule, $layoutModule)
+    private function addTopProductToLayout(\ModelDesignLayout $ocLayout, $layoutModule)
     {
-        $ocModule->addLayout([
+        $ocLayout->addLayout([
             'name' => self::LAYOUT_NAME,
             'layout_route' => [
                 'store_id' => 0,
@@ -83,10 +93,10 @@ class TopProduct extends Singleton
         ]);
     }
 
-    private function editTopProductForLayout($layout, $layoutModule, $ocModule)
+    private function editTopProductForLayout(\ModelDesignLayout $ocLayout, $layout, $layoutModule)
     {
         $found = false;
-        $modules = $ocModule->getLayoutModules(self::LAYOUT_KEY);
+        $modules = $ocLayout->getLayoutModules(self::LAYOUT_KEY);
         foreach ($modules as $module) {
             if ($module['code'] === $layoutModule['code']) {
                 $found = true;
@@ -95,8 +105,8 @@ class TopProduct extends Singleton
         if (!$found) {
             $modules[] = $layoutModule;
             $layout['layout_module'] = $modules;
-            $layout['layout_route'] = $ocModule->getLayoutRoutes(self::LAYOUT_KEY);
-            $ocModule->editLayout(self::LAYOUT_KEY, $layout);
+            $layout['layout_route'] = $ocLayout->getLayoutRoutes(self::LAYOUT_KEY);
+            $ocLayout->editLayout(self::LAYOUT_KEY, $layout);
         }
     }
 

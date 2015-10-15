@@ -1,4 +1,9 @@
 <?php
+/**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @copyright 2010-2013 JTL-Software GmbH
+ */
+
 namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\Model\Product as ProductModel;
@@ -19,7 +24,7 @@ class Product2Category extends BaseController
 
     public function pushData(ProductModel $data, &$model)
     {
-        foreach ((array)$data->getCategories() as $category) {
+        foreach ($data->getCategories() as $category) {
             $model['product_category'][] = $category->getCategoryId()->getEndpoint();
         }
     }

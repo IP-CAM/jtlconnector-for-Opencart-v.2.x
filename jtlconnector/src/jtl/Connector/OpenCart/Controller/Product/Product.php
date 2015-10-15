@@ -1,7 +1,7 @@
 <?php
 /**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Controller
  */
 
 namespace jtl\Connector\OpenCart\Controller\Product;
@@ -74,8 +74,10 @@ class Product extends MainEntityController
 
     protected function deleteData(ProductModel $data)
     {
-        $product = $this->oc->loadAdminModel('catalog/product');
-        $product->deleteProduct($data->getId()->getEndpoint());
+        $ocProduct = $this->oc->loadAdminModel('catalog/product');
+        if ($ocProduct instanceof \ModelCatalogProduct) {
+            $ocProduct->deleteProduct($data->getId()->getEndpoint());
+        }
         return $data;
     }
 

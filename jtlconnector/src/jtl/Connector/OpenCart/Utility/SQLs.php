@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @copyright 2010-2013 JTL-Software GmbH
+ */
 
 namespace jtl\Connector\OpenCart\Utility;
 
@@ -525,14 +529,12 @@ final class SQLs
             WHERE po.option_id IS NULL';
     }
 
-    public static function deleteObsoleteProductOptions($productId)
+    public static function deleteObsoleteProductOptions()
     {
-        return sprintf('
+        return '
             DELETE FROM oc_product_option_value pov
             LEFT JOIN oc_option_value ov ON ov.option_value_id = pov.option_value_id
-            WHERE pov.product_id = %d AND ov.option_value_id IS NULL',
-            $productId
-        );
+            WHERE ov.option_value_id IS NULL';
     }
 
     public static function optionValues($optionId)
