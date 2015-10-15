@@ -9,7 +9,7 @@ namespace jtl\Connector\OpenCart\Controller\GlobalData;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
-class CustomerGroupI18n extends BaseController
+class ShippingMethod extends BaseController
 {
     public function pullData(array $data, $model, $limit = null)
     {
@@ -18,6 +18,6 @@ class CustomerGroupI18n extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return SQLs::customerGroupI18nPull($data['customer_group_id']);
+        return SQLs::shippingMethodsPull();
     }
 }

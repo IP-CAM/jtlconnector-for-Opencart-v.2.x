@@ -50,4 +50,14 @@ class Utils extends Singleton
         }
         return null;
     }
+
+    /**
+     * @return Utils
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+
 }

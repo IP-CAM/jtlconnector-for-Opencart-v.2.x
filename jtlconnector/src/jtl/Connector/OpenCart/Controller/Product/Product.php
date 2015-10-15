@@ -24,9 +24,22 @@ class Product extends MainEntityController
         $this->optionHelper = OptionHelper::getInstance();
     }
 
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
-        return parent::pullDataDefault($data, $limit);
+        $return = [];
+        $query = $this->pullQuery($data, $limit);
+        $result = $this->database->query($query);
+        foreach ($result as $row) {
+            $host = $this->mapper->toHost($row);
+            if ($host instanceof ProductModel) {
+                $vat = $this->database->queryOne(SQLs::taxRate($row['tax_class_id']));
+                if (is_string($vat)) {
+                    $host->setVat(doubleval($vat));
+                }
+            }
+            $return[] = $host;
+        }
+        return $return;
     }
 
     protected function pullQuery($data, $limit = null)
@@ -43,9 +56,10 @@ class Product extends MainEntityController
         }
         $endpoint = $this->mapper->toEndpoint($data);
         $this->setTaxClass($data, $endpoint);
-        $product = $this->oc->loadAdminModel('catalog/product');
-        $product->editProduct($id, $endpoint);
-        $this->optionHelper->deleteObsoleteOptions($id);
+        $ocProduct = $this->oc->loadAdminModel('catalog/product');
+        if ($ocProduct instanceof \ModelCatalogProduct) {
+            $ocProduct->editProduct($id, $endpoint);
+        }
         if ($data->getIsTopProduct()) {
             $this->topProductUtil->handleTopProduct($id);
         }

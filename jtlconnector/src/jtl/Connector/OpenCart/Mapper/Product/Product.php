@@ -38,7 +38,6 @@ class Product extends BaseMapper
         'considerStock' => 'subtract',
         'considerVariationStock' => null,
         'upc' => 'upc',
-        'vat' => 'rate',
         'width' => 'width',
         'attributes' => 'Product\ProductAttr',
         'categories' => 'Product\Product2Category',
@@ -49,8 +48,8 @@ class Product extends BaseMapper
         'variations' => 'Product\ProductVariation',
         'stockLevel' => 'Product\ProductStockLevel',
         'specifics' => 'Product\ProductSpecific',
+        //'fileDownloads' => 'Product\ProductFileDownload',
         // TODO: not supported yet
-        // 'fileDownloads' => 'Product\ProductFileDownload',
         // 'configGroups' => '\jtl\Connector\Model\ProductConfigGroup',
     ];
 

@@ -11,7 +11,7 @@ use jtl\Connector\OpenCart\Exceptions\DataAlreadyFetchedException;
 
 class CustomerOrderShippingAddress extends BaseController
 {
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         return $this->mapper->toHost($data);
     }

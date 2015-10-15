@@ -146,12 +146,12 @@
       "delete": false
     },
     "DeliveryNote": {
-      "pull": false,
+      "pull": true,
       "push": false,
       "delete": false
     },
     "DeliveryNoteItem": {
-      "pull": false,
+      "pull": true,
       "push": false,
       "delete": false
     },
@@ -161,7 +161,7 @@
       "delete": false
     },
     "DeliveryNoteTrackingList": {
-      "pull": false,
+      "pull": true,
       "push": false,
       "delete": false
     },
@@ -241,8 +241,8 @@
       "delete": false
     },
     "ProductFileDownload": {
-      "pull": true,
-      "push": true,
+      "pull": false,
+      "push": false,
       "delete": false
     },
     "ProductFileDownloadI18n": {

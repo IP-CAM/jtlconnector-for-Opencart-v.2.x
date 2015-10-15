@@ -21,7 +21,7 @@ class Specific extends MainEntityController
         $this->ocFilter = $this->oc->loadAdminModel('catalog/filter');
     }
 
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $limit);
     }

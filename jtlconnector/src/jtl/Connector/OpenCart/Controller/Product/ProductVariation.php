@@ -1,8 +1,6 @@
 <?php
 namespace jtl\Connector\OpenCart\Controller\Product;
 
-use jtl\Connector\Linker\ChecksumLinker;
-use jtl\Connector\Model\Checksum;
 use jtl\Connector\Model\Product as ProductModel;
 use jtl\Connector\Model\ProductVariation as ProductVariationModel;
 use jtl\Connector\OpenCart\Controller\BaseController;
@@ -21,7 +19,7 @@ class ProductVariation extends BaseController
     }
 
 
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         return parent::pullDataDefault($data);
     }
@@ -36,27 +34,27 @@ class ProductVariation extends BaseController
     public function pushData(ProductModel $data, &$model)
     {
         $model['product_option'] = [];
-        if (count($data->getVariations()) > 0) {
-            $checksum = ChecksumLinker::find($data, Checksum::TYPE_VARIATION);
-            if ($checksum === null || $checksum->hasChanged() === true) {
-                foreach ($data->getVariations() as $variation) {
-                    $option = $this->mapper->toEndpoint($variation);
-                    list($id, $descriptions) = $this->optionHelper->buildOptionDescriptions($variation);
-                    $option['option_description'] = $descriptions;
-                    $option['option_value'] = $this->optionHelper->buildOptionValues($variation, $id);
-                    $ocOption = $this->oc->loadAdminModel('catalog/option');
-                    if (is_null($id)) {
-                        $id = $ocOption->addOption($option);
-                    } else {
-                        $ocOption->editOption($id, $option);
-                    }
-                    $productOption = $this->mapper->toEndpoint($variation);
-                    $productOption['option_id'] = $id;
-                    $this->buildProductOptionValues($variation, $productOption);
-                    $model['product_option'][] = $productOption;
-                }
+        //if (count($data->getVariations()) > 0) {
+        //    $checksum = ChecksumLinker::find($data, Checksum::TYPE_VARIATION);
+        //    if ($checksum === null || $checksum->hasChanged() === true) {
+        foreach ($data->getVariations() as $variation) {
+            $option = $this->mapper->toEndpoint($variation);
+            list($id, $descriptions) = $this->optionHelper->buildOptionDescriptions($variation, $variation->getType());
+            $option['option_description'] = $descriptions;
+            $option['option_value'] = $this->optionHelper->buildOptionValues($variation, $id);
+            $ocOption = $this->oc->loadAdminModel('catalog/option');
+            if (is_null($id)) {
+                $id = $ocOption->addOption($option);
+            } else {
+                $ocOption->editOption($id, $option);
             }
+            $productOption = $this->mapper->toEndpoint($variation);
+            $productOption['option_id'] = $id;
+            $this->buildProductOptionValues($variation, $productOption);
+            $model['product_option'][] = $productOption;
         }
+        //    }
+        //}
     }
 
     private function buildProductOptionValues(ProductVariationModel $variation, &$productOption)

@@ -10,7 +10,7 @@ use jtl\Connector\OpenCart\Utility\SQLs;
 
 class CrossSelling extends MainEntityController
 {
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $limit);
     }

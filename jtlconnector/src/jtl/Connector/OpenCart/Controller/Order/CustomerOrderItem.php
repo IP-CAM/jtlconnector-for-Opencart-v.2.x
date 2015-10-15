@@ -39,7 +39,7 @@ class CustomerOrderItem extends BaseController
         $this->discountMapper = new OrderItemDiscountMapper();
     }
 
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         $return = [];
         $orderItemId = 1;
@@ -76,6 +76,6 @@ class CustomerOrderItem extends BaseController
 
     private function getTax($orderId)
     {
-        return $this->database->queryOne(SQLs::taxRate($orderId));
+        return $this->database->queryOne(SQLs::taxRateOfOrder($orderId));
     }
 }

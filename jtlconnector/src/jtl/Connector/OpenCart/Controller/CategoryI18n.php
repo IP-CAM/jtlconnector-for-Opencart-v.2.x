@@ -10,7 +10,7 @@ use jtl\Connector\OpenCart\Utility\SQLs;
 
 class CategoryI18n extends BaseController
 {
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         return parent::pullDataDefault($data);
     }

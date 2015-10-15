@@ -14,7 +14,7 @@ use jtl\Connector\OpenCart\Utility\SQLs;
 
 class StatusChange extends BaseController
 {
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         throw new MethodNotAllowedException();
     }

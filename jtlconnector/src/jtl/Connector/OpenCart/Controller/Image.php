@@ -25,8 +25,12 @@ class Image extends MainEntityController
     /**
      * Add, as long as the limit is not exceeded, images to the result by calling the abstract method for all the
      * different image relation types.
+     * @param array $data
+     * @param object $model
+     * @param null $limit
+     * @return array
      */
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         $return = [];
         reset($this->methods);
@@ -51,6 +55,7 @@ class Image extends MainEntityController
             foreach ($result as $picture) {
                 $model = $this->mapImageToHost($picture, $type);
                 $return[] = $model;
+                $limit--;
             }
             return true;
         } else {

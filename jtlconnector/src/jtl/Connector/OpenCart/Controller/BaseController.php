@@ -49,7 +49,7 @@ abstract class BaseController extends Controller
         $action = new Action();
         $action->setHandled(true);
         try {
-            $result = $this->pullData(null, null, $query->getLimit());
+            $result = $this->pullData([], null, $query->getLimit());
             $action->setResult($result);
         } catch (\Exception $exc) {
             Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
@@ -67,6 +67,9 @@ abstract class BaseController extends Controller
         $action->setHandled(true);
         try {
             $result = $this->pushData($data, null);
+            if (method_exists($this, 'postPush')) {
+                $this->postPush($data, $result);
+            }
             $action->setResult($result);
         } catch (\Exception $exc) {
             Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
@@ -129,7 +132,7 @@ abstract class BaseController extends Controller
      * @param $limit int    The limit.
      * @return array A list of models resulting from the pull query.
      */
-    public abstract function pullData($data, $model, $limit = null);
+    public abstract function pullData(array $data, $model, $limit = null);
 
     /**
      * Just return the query for the the pulling of data.

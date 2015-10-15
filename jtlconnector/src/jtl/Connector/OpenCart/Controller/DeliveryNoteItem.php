@@ -1,15 +1,14 @@
 <?php
 /**
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\OpenCart\Controller\GlobalData
+ * @package jtl\Connector\OpenCart\Controller
  */
 
-namespace jtl\Connector\OpenCart\Controller\GlobalData;
+namespace jtl\Connector\OpenCart\Controller;
 
-use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
-class CustomerGroupI18n extends BaseController
+class DeliveryNoteItem extends BaseController
 {
     public function pullData(array $data, $model, $limit = null)
     {
@@ -18,6 +17,6 @@ class CustomerGroupI18n extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return SQLs::customerGroupI18nPull($data['customer_group_id']);
+        return SQLs::deliveryNoteItemPull($data['order_id']);
     }
 }

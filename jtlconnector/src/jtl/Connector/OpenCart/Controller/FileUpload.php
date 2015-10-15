@@ -23,7 +23,7 @@ class FileUpload extends BaseController
         $this->ocOption = OpenCart::getInstance()->loadAdminModel('catalog/option');
     }
 
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         return parent::pullDataDefault($data, $limit);
     }
@@ -36,15 +36,15 @@ class FileUpload extends BaseController
     public function pushData(FileUploadModel $data, $model)
     {
         $option = ['type' => 'file', 'sort_order' => null];
-        list($id, $descriptions) = $this->optionHelper->buildOptionDescriptions($data);
+        list($id, $descriptions) = $this->optionHelper->buildOptionDescriptions($data, 'file');
         $option['option_description'] = $descriptions;
         if (is_null($id)) {
             $id = $this->ocOption->addOption($option);
+            $query = SQLs::fileUploadPush($data->getProductId()->getEndpoint(), $id, $data->getIsRequired());
+            $this->database->query($query);
         } else {
             $this->ocOption->editOption($id, $option);
         }
-        $query = SQLs::fileUploadPush($data->getProductId()->getHost(), $id, $data->getIsRequired());
-        $this->database->query($query);
         return $data;
     }
 

@@ -22,8 +22,12 @@ class Payment extends MainEntityController
     /**
      * Add, as long as the limit is not exceeded, payments to the result by calling the abstract method for all the
      * different payment types.
+     * @param array $data
+     * @param object $model
+     * @param null $limit
+     * @return array
      */
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         $return = [];
         reset($this->methods);
@@ -45,9 +49,10 @@ class Payment extends MainEntityController
             $sqlMethod = Constants::UTILITY_NAMESPACE . 'SQLs::' . $method;
             $query = call_user_func($sqlMethod, $limit);
             $result = $this->database->query($query);
-            foreach ($result as $picture) {
-                $model = $this->mapper->toHost($picture);
+            foreach ((array)$result as $payment) {
+                $model = $this->mapper->toHost($payment);
                 $return[] = $model;
+                $limit--;
             }
             return true;
         } else {

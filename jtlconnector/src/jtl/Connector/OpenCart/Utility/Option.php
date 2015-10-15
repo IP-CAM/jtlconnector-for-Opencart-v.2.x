@@ -15,7 +15,7 @@ class Option extends Singleton
         $this->database = Db::getInstance();
     }
 
-    public function buildOptionDescriptions($variation)
+    public function buildOptionDescriptions($variation, $type)
     {
         $optionId = null;
         $descriptions = [];
@@ -27,7 +27,7 @@ class Option extends Singleton
                 ];
             }
             if (is_null($optionId)) {
-                $optionId = $this->findExistingOption($i18n, $variation->getType());
+                $optionId = $this->findExistingOption($i18n, $type);
             }
         }
         return array($optionId, $descriptions);

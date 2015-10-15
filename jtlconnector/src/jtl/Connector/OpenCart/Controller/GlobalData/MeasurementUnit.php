@@ -13,7 +13,7 @@ use jtl\Connector\OpenCart\Utility\SQLs;
 
 class MeasurementUnit extends BaseController
 {
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         $return = [];
         $lengths = $this->database->query(SQLs::measurementUnitLengthsPull());
@@ -35,14 +35,18 @@ class MeasurementUnit extends BaseController
     {
         $id = $this->database->queryOne(SQLs::measurementUnitLengthId($data->getDisplayCode()));
         if (!is_null($id)) {
-            $length = $this->oc->loadAdminModel('localisation/length_class');
-            $length->deleteLengthClass($id);
+            $ocLength = $this->oc->loadAdminModel('localisation/length_class');
+            if ($ocLength instanceof \ModelLocalisationLengthClass) {
+                $ocLength->deleteLengthClass($id);
+            }
             return $data;
         }
         $id = $this->database->queryOne(SQLs::measurementUnitWeightId($data->getDisplayCode()));
         if (!is_null($id)) {
-            $weight = $this->oc->loadAdminModel('localisation/weight_class');
-            $weight->deleteWeigthClass($id);
+            $ocWeight = $this->oc->loadAdminModel('localisation/weight_class');
+            if ($ocWeight instanceof \ModelLocalisationWeightClass) {
+                $ocWeight->deleteWeightClass($id);
+            }
             return $data;
         }
         return $data;

@@ -13,7 +13,7 @@ class ProductI18n extends I18nBaseMapper
     protected $pull = [
         'productId' => 'product_id',
         'name' => null,
-        'description' => 'description',
+        'description' => null,
         'languageISO' => null,
         'titleTag' => 'tag',
         'metaKeywords' => 'meta_keyword',
@@ -33,6 +33,11 @@ class ProductI18n extends I18nBaseMapper
     protected function name($data)
     {
         return html_entity_decode($data['name']);
+    }
+
+    protected function description($data)
+    {
+        return html_entity_decode($data['description']);
     }
 
     protected function meta_title()

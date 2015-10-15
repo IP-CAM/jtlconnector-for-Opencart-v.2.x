@@ -347,6 +347,13 @@ final class SQLs
     }
 
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Shipping">
+    public static function shippingMethodsPull()
+    {
+        return 'SELECT * FROM ' . DB_PREFIX . 'extension WHERE type = "shipping"';
+    }
+
+    // </editor-fold>
     public static function languagePull()
     {
         return '
@@ -523,7 +530,7 @@ final class SQLs
         return sprintf('
             DELETE FROM oc_product_option_value pov
             LEFT JOIN oc_option_value ov ON ov.option_value_id = pov.option_value_id
-            WHERE pov.product_id = 88 AND ov.option_value_id IS NULL',
+            WHERE pov.product_id = %d AND ov.option_value_id IS NULL',
             $productId
         );
     }
@@ -571,7 +578,7 @@ final class SQLs
     public static function paymentBluepayRedirectPull($limit)
     {
         return sprintf('
-            SELECT brot.bluepay_redirect_order_transaction_id as id, po.order_id, brot.date_added, brot.amount, bro
+            SELECT brot.bluepay_redirect_order_transaction_id as id, bro.order_id, brot.date_added, brot.amount, bro
             .transaction_id, o.payment_code
             FROM ' . DB_PREFIX . 'bluepay_redirect_order_transaction brot
             LEFT JOIN ' . DB_PREFIX . 'bluepay_redirect_order bro ON bro.bluepay_redirect_order_id = brot
@@ -587,7 +594,7 @@ final class SQLs
     public static function paymentBluepayHostedPull($limit)
     {
         return sprintf('
-            SELECT brot.bluepay_hosted_order_transaction_id as id, po.order_id, brot.date_added, brot.amount, bro
+            SELECT brot.bluepay_hosted_order_transaction_id as id, bro.order_id, brot.date_added, brot.amount, bro
             .transaction_id, o.payment_code
             FROM ' . DB_PREFIX . 'bluepay_hosted_order_transaction brot
             LEFT JOIN ' . DB_PREFIX . 'bluepay_hosted_order bro ON bro.bluepay_hosted_order_id = brot
@@ -599,6 +606,33 @@ final class SQLs
             IdentityLinker::TYPE_PAYMENT, $limit
         );
     }
+
+    public static function paymentBluepayHostedCard($orderId)
+    {
+        return sprintf('
+            SELECT brc.*, o.order_id
+            FROM ' . DB_PREFIX . 'bluepay_hosted_card brc
+            LEFT JOIN ' . DB_PREFIX . 'order o ON o.customer_id = brc.customer_id
+            WHERE o.order_id = %d',
+            $orderId
+        );
+    }
+
+    public static function paymentBluepayRedirectCard($orderId)
+    {
+        return sprintf('
+            SELECT brc.*, o.order_id
+            FROM ' . DB_PREFIX . 'bluepay_redirect_card brc
+            LEFT JOIN ' . DB_PREFIX . 'order o ON o.customer_id = brc.customer_id
+            WHERE o.order_id = %d',
+            $orderId
+        );
+    }
+
+    public static function paymentWorldpayCard($orderId)
+    {
+        return sprintf('SELECT * FROM ' . DB_PREFIX . 'worldpay_card WHERE order_id = %d', $orderId);
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Product">
     public static function productInsert()
@@ -609,11 +643,8 @@ final class SQLs
     public static function productPull($limit)
     {
         return sprintf('
-            SELECT p.*, tr.rate
+            SELECT p.*
             FROM ' . DB_PREFIX . 'product p
-            LEFT JOIN ' . DB_PREFIX . 'tax_class tc ON p.tax_class_id = tc.tax_class_id
-            LEFT JOIN ' . DB_PREFIX . 'tax_rule r ON r.tax_class_id = tc.tax_class_id
-            LEFT JOIN ' . DB_PREFIX . 'tax_rate tr ON tr.tax_rate_id = r.tax_rate_id
             LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL
             LIMIT %d',
@@ -691,6 +722,16 @@ final class SQLs
             $productId, $image, $sortOrder
         );
     }
+
+    public static function productFileDownloadPull($productId)
+    {
+        return sprintf('
+            SELECT *
+            FROM ' . DB_PREFIX . 'product_to_download
+            WHERE product_id = %d',
+            $productId
+        );
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Product Variation">
     public static function productVariationPull($productId)
@@ -743,7 +784,7 @@ final class SQLs
         return sprintf('
             SELECT *
             FROM ' . DB_PREFIX . 'product_option po
-            LEFT JOIN ' . DB_PREFIX . 'OPTION o ON po.option_id = o.option_id
+            LEFT JOIN ' . DB_PREFIX . 'option o ON po.option_id = o.option_id
             LEFT JOIN ' . DB_PREFIX . 'option_description od ON od.option_id = o.option_id
             WHERE o.type = "file"
             LIMIT %d',
@@ -929,7 +970,7 @@ final class SQLs
         return 'SELECT * FROM ' . DB_PREFIX . 'tax_class';
     }
 
-    public static function taxRate($orderId)
+    public static function taxRateOfOrder($orderId)
     {
         return sprintf('
             SELECT tr.rate
@@ -937,6 +978,17 @@ final class SQLs
             LEFT JOIN ' . DB_PREFIX . 'tax_rate tr ON tr.name = ot.title
             WHERE ot.code = "tax" AND ot.order_id = %d',
             $orderId
+        );
+    }
+
+    public static function taxRate($class)
+    {
+        return sprintf('
+            SELECT SUM(tr.rate)
+            FROM ' . DB_PREFIX . 'tax_rule r
+            LEFT JOIN ' . DB_PREFIX . 'tax_rate tr ON tr.tax_rate_id = r.tax_rate_id
+            WHERE r.tax_class_id = %d AND tr.type = "P"',
+            $class
         );
     }
 
@@ -954,6 +1006,35 @@ final class SQLs
             WHERE ztgz.geo_zone_id = %d',
             $geoZoneId
         );
+    }
+    // </editor-fold>
+    //// <editor-fold defaultstate="collapsed" desc="Delivery Note">
+    public static function deliveryNoteStats()
+    {
+        return sprintf('
+            SELECT COUNT(*)
+            FROM ' . DB_PREFIX . 'order o
+            LEFT JOIN jtl_connector_link l ON o.order_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL',
+            IdentityLinker::TYPE_DELIVERY_NOTE
+        );
+    }
+
+    public static function deliveryNotePull($limit)
+    {
+        return sprintf('
+            SELECT o.order_id, o.date_added, o.shipping_method, o.tracking
+            FROM ' . DB_PREFIX . 'order o
+            LEFT JOIN jtl_connector_link l ON o.order_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL AND o.tracking IS NOT NULL AND o.tracking != ""
+            LIMIT %d',
+            IdentityLinker::TYPE_DELIVERY_NOTE, $limit
+        );
+    }
+
+    public static function deliveryNoteItemPull($orderId)
+    {
+        return sprintf('SELECT * FROM ' . DB_PREFIX . 'order_product WHERE order_id = %d', $orderId);
     }
     // </editor-fold>
 }

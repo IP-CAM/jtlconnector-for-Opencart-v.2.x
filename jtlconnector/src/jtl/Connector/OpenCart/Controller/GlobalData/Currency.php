@@ -12,7 +12,7 @@ use jtl\Connector\OpenCart\Utility\SQLs;
 
 class Currency extends BaseController
 {
-    public function pullData($data, $model, $limit = null)
+    public function pullData(array $data, $model, $limit = null)
     {
         return parent::pullDataDefault($data);
     }
@@ -26,15 +26,19 @@ class Currency extends BaseController
     {
         $currencyId = $data->getId()->getEndpoint();
         $ocCurrency = $this->oc->loadAdminModel('localisation/currency');
-        if (is_null($currencyId)) {
-            $currency = $this->mapper->toEndpoint($data);
-            $ocCurrency->addCurrency($currency);
-        } else {
-            $ocCurrency->refresh();
+        if ($ocCurrency instanceof \ModelLocalisationCurrency) {
+            if (is_null($currencyId)) {
+                $currency = $this->mapper->toEndpoint($data);
+                $ocCurrency->addCurrency($currency);
+            } else {
+                $ocCurrency->refresh();
+            }
         }
         if ($data->getIsDefault()) {
             $ocSetting = $this->oc->loadAdminModel('setting/setting');
-            $ocSetting->editSettingValue('config', 'config_currency', strtoupper($data->getIso()));
+            if ($ocSetting instanceof \ModelSettingSetting) {
+                $ocSetting->editSettingValue('config', 'config_currency', strtoupper($data->getIso()));
+            }
         }
     }
 }
