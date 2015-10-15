@@ -88,17 +88,20 @@ class Image extends MainEntityController
             $this->deleteData($data);
             $path = $this->saveImage($data);
             if ($path !== false) {
-                $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($foreignKey, $path);
+                if ($data->getRelationType() === ImageRelationType::TYPE_PRODUCT) {
+                    $this->pushProductImage($foreignKey, $path, $data);
+                } else {
+                    $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($foreignKey, $path);
+                }
             }
         }
         return $data;
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
-    private function pushProductImage($foreignKey, ImageModel $data)
+    private function pushProductImage($foreignKey, $path, ImageModel $data)
     {
         $isCover = $data->getSort() === 1 ? true : false;
-        $path = $this->saveImage($data);
         if ($path !== false) {
             if ($isCover) {
                 $this->database->query(SQLs::productSetCover($path, $foreignKey));
@@ -112,25 +115,36 @@ class Image extends MainEntityController
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
-    private function pushCategoryImage($foreignKey, $path)
-    {
+    private
+    function pushCategoryImage(
+        $foreignKey,
+        $path
+    ) {
         $this->database->query(SQLs::imageCategoryPush($path, $foreignKey));
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
-    private function pushManufacturerImage($foreignKey, $path)
-    {
+    private
+    function pushManufacturerImage(
+        $foreignKey,
+        $path
+    ) {
         $this->database->query(SQLs::imageManufacturerPush($path, $foreignKey));
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
-    private function pushProductVariationValueImage($foreignKey, $path)
-    {
+    private
+    function pushProductVariationValueImage(
+        $foreignKey,
+        $path
+    ) {
         $this->database->query(SQLs::imageProductVariationValuePush($path, $foreignKey));
     }
 
-    private function saveImage(ImageModel $data)
-    {
+    private
+    function saveImage(
+        ImageModel $data
+    ) {
         $path = $data->getFilename();
         $filename = $this->buildImageFilename($path);
         $imagePath = $this->buildImagePath($filename);
@@ -150,8 +164,10 @@ class Image extends MainEntityController
         return false;
     }
 
-    protected function deleteData(ImageModel $data)
-    {
+    protected
+    function deleteData(
+        ImageModel $data
+    ) {
         $path = $data->getFilename();
         $filename = $this->buildImageFilename($path);
         $imagePath = $this->buildImagePath($filename);
@@ -182,17 +198,22 @@ class Image extends MainEntityController
         return $data;
     }
 
-    private function buildImageFilename($path)
-    {
+    private
+    function buildImageFilename(
+        $path
+    ) {
         return basename(html_entity_decode($path, ENT_QUOTES, 'UTF-8'));
     }
 
-    private function buildImagePath($filename)
-    {
+    private
+    function buildImagePath(
+        $filename
+    ) {
         return "catalog/{$filename}";
     }
 
-    protected function getStats()
+    protected
+    function getStats()
     {
         $return = [];
         $limit = PHP_INT_MAX;
