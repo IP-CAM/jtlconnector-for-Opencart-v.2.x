@@ -64,7 +64,7 @@ class OpenCart extends Singleton
         /** @noinspection PhpUndefinedClassInspection */
         $event = new \Event($this->registry);
         $this->registry->set('event', $event);
-        $query = $database->query("SELECT * FROM " . DB_PREFIX . "EVENT");
+        $query = $database->query("SELECT * FROM " . DB_PREFIX . "event");
         foreach ($query->rows as $result) {
             $event->register($result['trigger'], $result['action']);
         }
@@ -94,7 +94,6 @@ class OpenCart extends Singleton
     private function loadOcModel($file, $model)
     {
         $class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $model);
-
         if (file_exists($file)) {
             include_once $file;
             $ocModel = new $class($this->registry);
@@ -118,7 +117,15 @@ class OpenCart extends Singleton
 
     public function getConfig($key)
     {
-        $settings = $this->loadAdminModel('setting/setting');
-        return $settings->getSetting(\ControllerModuleJtlconnector::CONFIG_KEY)[$key];
+        $ocSetting = $this->loadAdminModel('setting/setting');
+        if ($ocSetting instanceof \ModelSettingSetting) {
+            return $ocSetting->getSetting(\ControllerModuleJtlconnector::CONFIG_KEY)[$key];
+        }
+        return "";
+    }
+
+    public function getModelString($model, $key)
+    {
+
     }
 }
