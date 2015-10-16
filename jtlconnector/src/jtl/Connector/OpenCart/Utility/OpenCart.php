@@ -9,43 +9,26 @@ namespace jtl\Connector\OpenCart\Utility;
 use jtl\Connector\Core\IO\Path;
 use jtl\Connector\Core\Utilities\Singleton;
 
-function modification($filename)
-{
-    if (!defined('DIR_CATALOG')) {
-        $file = DIR_MODIFICATION . 'catalog/' . substr($filename, strlen(DIR_APPLICATION));
-    } else {
-        $file = DIR_MODIFICATION . 'admin/' . substr($filename, strlen(DIR_APPLICATION));
-    }
-
-    if (substr($filename, 0, strlen(DIR_SYSTEM)) == DIR_SYSTEM) {
-        $file = DIR_MODIFICATION . 'system/' . substr($filename, strlen(DIR_SYSTEM));
-    }
-
-    if (is_file($file)) {
-        return $file;
-    }
-
-    return $filename;
-}
-
-require_once(modification(DIR_SYSTEM . 'library/db.php'));
-require_once(modification(DIR_SYSTEM . 'library/db/mysqli.php'));
-require_once(modification(DIR_SYSTEM . 'library/cache.php'));
-require_once(modification(DIR_SYSTEM . 'library/cache/file.php'));
-require_once(modification(DIR_SYSTEM . 'library/config.php'));
-require_once(modification(DIR_SYSTEM . 'engine/event.php'));
-require_once(modification(DIR_SYSTEM . 'engine/controller.php'));
-require_once(modification(DIR_SYSTEM . 'engine/model.php'));
-require_once(modification(DIR_SYSTEM . 'engine/loader.php'));
-require_once(modification(DIR_SYSTEM . 'engine/registry.php'));
-require_once(modification(DIR_SYSTEM . 'helper/utf8.php'));
-require_once(Path::combine(DIR_APPLICATION, 'controller', 'module', 'jtlconnector.php'));
+require_once Path::combine(DIR_SYSTEM, 'library', 'db.php');
+require_once Path::combine(DIR_SYSTEM, 'library', 'db', 'mysqli.php');
+require_once Path::combine(DIR_SYSTEM, 'library', 'cache.php');
+require_once Path::combine(DIR_SYSTEM, 'library', 'cache', 'file.php');
+require_once Path::combine(DIR_SYSTEM, 'library', 'config.php');
+require_once Path::combine(DIR_SYSTEM, 'library', 'language.php');
+require_once Path::combine(DIR_SYSTEM, 'engine', 'event.php');
+require_once Path::combine(DIR_SYSTEM, 'engine', 'controller.php');
+require_once Path::combine(DIR_SYSTEM, 'engine', 'model.php');
+require_once Path::combine(DIR_SYSTEM, 'engine', 'loader.php');
+require_once Path::combine(DIR_SYSTEM, 'engine', 'registry.php');
+require_once Path::combine(DIR_SYSTEM, 'helper', 'utf8.php');
+require_once Path::combine(DIR_APPLICATION, 'controller', 'module', 'jtlconnector.php');
 
 class OpenCart extends Singleton
 {
     private $config = null;
     private $loader = null;
     private $registry = null;
+    private $directory = null;
 
     protected function __construct()
     {
@@ -67,9 +50,15 @@ class OpenCart extends Singleton
         /** @noinspection PhpUndefinedClassInspection */
         $event = new \Event($this->registry);
         $this->registry->set('event', $event);
-        $query = $database->query("SELECT * FROM " . DB_PREFIX . "event");
+        $query = $database->query('SELECT * FROM ' . DB_PREFIX . 'event');
         foreach ($query->rows as $result) {
             $event->register($result['trigger'], $result['action']);
+        }
+        $result = $database->query('SELECT directory FROM ' . DB_PREFIX . 'language WHERE code = "de"');
+        if ($result->num_rows === 0) {
+            $this->directory = 'english';
+        } else {
+            $this->directory = $result->row['directory'];
         }
     }
 
@@ -124,11 +113,13 @@ class OpenCart extends Singleton
         if ($ocSetting instanceof \ModelSettingSetting) {
             return $ocSetting->getSetting(\ControllerModuleJtlconnector::CONFIG_KEY)[$key];
         }
-        return "";
+        return '';
     }
 
-    public function getModelString($model, $key)
+    public function getFrontendModelString($model, $key)
     {
-
+        $_ = [];
+        include_once DIR_CATALOG . 'language/' . $this->directory . '/' . $model . '.php';
+        return isset($_[$key]) ? $_[$key] : '';
     }
 }

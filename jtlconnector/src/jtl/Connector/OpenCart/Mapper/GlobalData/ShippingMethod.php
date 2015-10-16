@@ -19,6 +19,6 @@ class ShippingMethod extends BaseMapper
     protected function name(array $data)
     {
         $oc = OpenCart::getInstance();
-        return $oc->getModelString('shipping/' . $data['code'], 'text_title');
+        return $oc->getFrontendModelString('shipping/' . $data['code'], 'text_description');
     }
 }
