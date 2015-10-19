@@ -3,37 +3,14 @@
 namespace jtl\Connector\OpenCart\Tests\Mapper;
 
 use DateTime;
+use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Mapper\Customer;
 
 class CustomerTest extends AbstractMapperTest
 {
     protected function getMapper()
     {
-        return new Customer();
-    }
-
-    protected function getHost()
-    {
-        return [
-            'id' => 1,
-            'firstName' => 'Hannibal',
-            'lastName' => 'Smith',
-            'street' => 'In the black car',
-            'extraAddressLine' => 'On the Road',
-            'zipCode' => '1234',
-            'city' => 'Los Angels',
-            'state' => 'California',
-            'countryIso' => 'US',
-            'company' => 'The A-Team',
-            'eMail' => 'h.smith@ateam.com',
-            'phone' => '30823089',
-            'fax' => '30823090',
-            'customerGroupId' => 2,
-            'creationDate' => new DateTime('2015-09-25'),
-            'hasNewsletterSubscription' => false,
-            'isActive' => true,
-            'hasCustomerAccount' => true
-        ];
+        return new CustomerMock();
     }
 
     protected function getEndpoint()
@@ -60,49 +37,57 @@ class CustomerTest extends AbstractMapperTest
         ];
     }
 
-    protected function assertPull($result)
-    {
-        $this->assertEquals($this->host['id'], $result->getId()->getEndpoint());
-        $this->assertEquals($this->host['customerGroupId'], $result->getCustomerGroupId()->getEndpoint());
-        $this->assertEquals($this->host['city'], $result->getCity());
-        $this->assertEquals($this->host['company'], $result->getCompany());
-        $this->assertEquals($this->host['countryIso'], $result->getCountryIso());
-        $this->assertEquals($this->host['creationDate'], $result->getCreationDate());
-        $this->assertEquals($this->host['eMail'], $result->getEMail());
-        $this->assertEquals($this->host['extraAddressLine'], $result->getExtraAddressLine());
-        $this->assertEquals($this->host['fax'], $result->getFax());
-        $this->assertEquals($this->host['firstName'], $result->getFirstName());
-        $this->assertEquals($this->host['hasCustomerAccount'], $result->getHasCustomerAccount());
-        $this->assertEquals($this->host['hasNewsletterSubscription'], $result->getHasNewsletterSubscription());
-        $this->assertEquals($this->host['lastName'], $result->getLastName());
-        $this->assertEquals($this->host['isActive'], $result->getIsActive());
-        $this->assertEquals($this->host['phone'], $result->getPhone());
-        $this->assertEquals($this->host['state'], $result->getState());
-        $this->assertEquals($this->host['street'], $result->getStreet());
-        $this->assertEquals($this->host['zipCode'], $result->getZipCode());
-        // Default values
-        $this->assertEquals(0.0, $result->getAccountCredit());
-        $this->assertEquals(0.0, $result->getDiscount());
-        $this->assertEmpty($result->getBirthday());
-        $this->assertEmpty($result->getCustomerNumber());
-        $this->assertEmpty($result->getDeliveryInstruction());
-        $this->assertEmpty($result->getLanguageISO());
-        $this->assertEmpty($result->getMobile());
-        $this->assertEmpty($result->getOrigin());
-        $this->assertEmpty($result->getSalutation());
-        $this->assertEmpty($result->getVatNumber());
-        $this->assertEmpty($result->getTitle());
-        $this->assertEmpty($result->getWebsiteUrl());
-        $this->assertEmpty($result->getAttributes());
-    }
-
     protected function getMappedHost()
     {
-        // TODO: Implement getMappedHost() method.
+        $result = new \jtl\Connector\Model\Customer();
+        $result->setId(new Identity('1', 0));
+        $result->setTitle('Dr.');
+        $result->setSalutation('Herr');
+        $result->setFirstName('Hannibal');
+        $result->setLastName('Smith');
+        $result->setStreet('In the black car');
+        $result->setExtraAddressLine('On the Road');
+        $result->setZipCode('1234');
+        $result->setCity('Los Angels');
+        $result->setState('California');
+        $result->setCountryIso('US');
+        $result->setCompany('The A-Team');
+        $result->setVatNumber('97382978243');
+        $result->setEMail('h.smith@ateam.com');
+        $result->setPhone('30823089');
+        $result->setFax('30823090');
+        $result->setCustomerGroupId(new Identity('2', 0));
+        $result->setCreationDate(new DateTime('2015-09-25'));
+        $result->setHasNewsletterSubscription(false);
+        $result->setIsActive(true);
+        $result->setHasCustomerAccount(true);
+        return $result;
     }
 
-    protected function getMappedEndpoint()
+    public function testPush()
     {
-        // TODO: Implement getMappedEndpoint() method.
+    }
+}
+
+class CustomerMock extends Customer
+{
+    public function __construct()
+    {
+        parent::__construct(get_parent_class());
+    }
+
+    protected function vatNumber(array $data)
+    {
+        return '97382978243';
+    }
+
+    protected function title(array $data)
+    {
+        return 'Dr.';
+    }
+
+    protected function salutation(array $data)
+    {
+        return 'Herr';
     }
 }

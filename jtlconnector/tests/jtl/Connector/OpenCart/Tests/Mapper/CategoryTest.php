@@ -56,11 +56,14 @@ class CategoryTest extends AbstractMapperTest
     protected function getMappedEndpoint()
     {
         return [
-            'category_id' => "1",
-            'parent_id' => null,
+            'category_id' => '',
+            'parent_id' => '',
             'column' => 0,
-            'status' => 1,
-            'sort_order' => 3
+            'status' => true,
+            'sort_order' => 3,
+            'top' => true,
+            'keyword' => '',
+            'category_store' => [0]
         ];
     }
 }
@@ -71,5 +74,6 @@ class CategoryMock extends Category
     {
         parent::__construct(get_parent_class());
         unset($this->pull['i18ns']);
+        unset($this->push['CategoryI18n']);
     }
 }

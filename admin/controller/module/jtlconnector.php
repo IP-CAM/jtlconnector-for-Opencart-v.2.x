@@ -408,9 +408,9 @@ class ControllerModuleJtlconnector extends Controller
             $data = [
                 'type' => 'text',
                 'value' => '',
-                'location' => 'account',
+                'location' => 'address',
                 'status' => 1,
-                'sort_order' => 3
+                'sort_order' => 1
             ];
             $customFieldDescription = [];
             if ($german->num_rows !== 0) {

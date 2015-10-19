@@ -10,13 +10,13 @@ class ShippingMethodTest extends AbstractMapperTest
 {
     protected function getMapper()
     {
-        return new ShippingMethod();
+        return new ShippingMethodMock();
     }
 
     protected function getEndpoint()
     {
         return [
-            'id' => '1',
+            'extension_id' => '1',
             'name' => 'UPS'
         ];
     }
@@ -24,12 +24,25 @@ class ShippingMethodTest extends AbstractMapperTest
     protected function getMappedHost()
     {
         $result = new \jtl\Connector\Model\ShippingMethod();
-        $result->setId(new Identity("1", 0));
-        $result->setName("UPS");
+        $result->setId(new Identity('1', 0));
+        $result->setName('UPS');
         return $result;
     }
 
     public function testPush()
     {
+    }
+}
+
+class ShippingMethodMock extends ShippingMethod
+{
+    public function __construct()
+    {
+        parent::__construct(get_parent_class());
+    }
+
+    protected function name(array $data)
+    {
+        return 'UPS';
     }
 }
