@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpunit bootstrap="./vendor/autoload.php">
+
+    <testsuites>
+        <testsuite name="Controller">
+            <directory>./tests/jtl/Connector/OpenCart/Tests/Controller</directory>
+        </testsuite>
+        <testsuite name="Mapper">
+            <directory>./tests/jtl/Connector/OpenCart/Tests/Mapper</directory>
+        </testsuite>
+    </testsuites>
+
+</phpunit>

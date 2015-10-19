@@ -2,10 +2,11 @@
 
 namespace jtl\Connector\OpenCart\Tests\Mapper\GlobalData;
 
+use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Mapper\GlobalData\Currency;
-use jtl\Connector\OpenCart\Tests\Mapper\AbstractMapper;
+use jtl\Connector\OpenCart\Tests\Mapper\AbstractMapperTest;
 
-class CurrencyTest extends AbstractMapper
+class CurrencyTest extends AbstractMapperTest
 {
 
     protected function getMapper()
@@ -15,14 +16,17 @@ class CurrencyTest extends AbstractMapper
 
     protected function getHost()
     {
-        return [
-            'id' => 1,
-            'factor' => 0.98,
-            'name' => 'Swiss Francs',
-            'iso' => 'CHF',
-            'nameHTML' => 'CHF',
-            'hasCurrencySignBeforeValue' => false
-        ];
+        $result = new \jtl\Connector\Model\Currency();
+        $result->setId(new Identity("", 1));
+        $result->setFactor(0.98);
+        $result->setIso('CHF');
+        $result->setName('Swiss Francs');
+        $result->setNameHtml('CHF');
+        $result->setIsDefault(true);
+        $result->setDelimiterCent(',');
+        $result->setDelimiterThousand('.');
+        $result->setHasCurrencySignBeforeValue(false);
+        return $result;
     }
 
     protected function getEndpoint()
@@ -33,21 +37,34 @@ class CurrencyTest extends AbstractMapper
             'title' => 'Swiss Francs',
             'code' => 'CHF',
             'symbol_right' => 'CHF',
-            'hasCurrencySignBeforeValue' => false
+            'symbol_left' => '',
+            'decimal_place' => '2',
+            'status' => 1
         ];
     }
 
-    protected function assertToHost($result)
+    protected function getMappedHost()
     {
-        $this->assertEquals($this->host['id'], $result->getId()->getEndpoint());
-        $this->assertEquals($this->host['factor'], $result->getFactor());
-        $this->assertEquals($this->host['name'], $result->getName());
-        $this->assertEquals($this->host['iso'], $result->getISO());
-        $this->assertEquals($this->host['nameHTML'], $result->getNameHTML());
-        $this->assertEquals($this->host['hasCurrencySignBeforeValue'], $result->getHasCurrencySignBeforeValue());
-        // Default values
-        $this->assertFalse($result->getIsDefault());
-        $this->assertEmpty($result->getDelimiterThousand());
-        $this->assertEmpty($result->getDelimiterCent());
+        $result = new \jtl\Connector\Model\Currency();
+        $result->setId(new Identity("1", 0));
+        $result->setFactor(0.98);
+        $result->setIso('CHF');
+        $result->setName('Swiss Francs');
+        $result->setNameHtml('CHF');
+        return $result;
+    }
+
+    protected function getMappedEndpoint()
+    {
+        return [
+            'currency_id' => '',
+            'title' => 'Swiss Francs',
+            'value' => 0.98,
+            'code' => 'CHF',
+            'symbol_left' => '',
+            'symbol_right' => 'CHF',
+            'decimal_place' => '2',
+            'status' => 1
+        ];
     }
 }

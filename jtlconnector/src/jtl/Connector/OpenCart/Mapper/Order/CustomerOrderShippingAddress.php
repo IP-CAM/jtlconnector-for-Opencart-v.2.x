@@ -8,6 +8,7 @@ namespace jtl\Connector\OpenCart\Mapper\Order;
 
 use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Mapper\BaseMapper;
+use jtl\Connector\OpenCart\Utility\CustomField;
 
 class CustomerOrderShippingAddress extends BaseMapper
 {
@@ -25,8 +26,26 @@ class CustomerOrderShippingAddress extends BaseMapper
         'zipCode' => 'shipping_postcode',
         'city' => 'shipping_city',
         'state' => 'shipping_zone',
-        'countryIso' => 'iso_code_3'
+        'countryIso' => 'iso_code_3',
+        'vatNumber' => null,
+        'title' => null,
+        'salutation' => null
     ];
+
+    protected function vatNumber(array $data)
+    {
+        return CustomField::getInstance()->vatNumber($data);
+    }
+
+    protected function title(array $data)
+    {
+        return CustomField::getInstance()->title($data);
+    }
+
+    protected function salutation(array $data)
+    {
+        return CustomField::getInstance()->salutation($data);
+    }
 
     protected function id($data)
     {

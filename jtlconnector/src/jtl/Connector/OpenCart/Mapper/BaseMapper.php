@@ -13,7 +13,6 @@ use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\OpenCart\Utility\Date;
-use jtl\Connector\OpenCart\Utility\Db;
 use jtl\Connector\Type\DataType;
 
 abstract class BaseMapper extends Singleton
@@ -27,9 +26,13 @@ abstract class BaseMapper extends Singleton
     protected $push = [];
     protected $pull = [];
 
-    public function __construct()
+    public function __construct($subClass = null)
     {
-        $reflect = new \ReflectionClass($this);
+        if (is_null($subClass)) {
+            $reflect = new \ReflectionClass($this);
+        } else {
+            $reflect = new \ReflectionClass($subClass);
+        }
         $shortName = $reflect->getShortName();
         $typeClass = Constants::CORE_TYPE_NAMESPACE . $shortName;
         $this->model = Constants::CORE_MODEL_NAMESPACE . $shortName;

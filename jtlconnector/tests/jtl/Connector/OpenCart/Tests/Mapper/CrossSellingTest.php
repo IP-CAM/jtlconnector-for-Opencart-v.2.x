@@ -1,41 +1,54 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Sven
- * Date: 25.08.2015
- * Time: 14:10
- */
 
 namespace jtl\Connector\OpenCart\Tests\Mapper;
 
+use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Mapper\CrossSelling;
 
-class CrossSellingTest extends AbstractMapper
+class CrossSellingTest extends AbstractMapperTest
 {
     function getMapper()
     {
-        return new CrossSelling();
+        return new CrossSellingMock();
     }
 
     function getHost()
     {
-        return [
-            'productId' => 1,
-            'items' => []
-        ];
+        $return = new \jtl\Connector\Model\CrossSelling();
+        $return->setProductId(new Identity("", 1));
+        $return->setItems([]);
+        return $return;
     }
 
     function getEndpoint()
     {
         return [
-            'product_id' => "1",
-            'CrossSellingItem' => []
+            'product_id' => "1"
         ];
     }
 
-    protected function assertToHost($result)
+    protected function getMappedHost()
     {
-        $this->assertEquals($this->host['productId'], $result->getProductId()->getEndpoint());
-        $this->assertEmpty($result->getItems());
+        $return = new \jtl\Connector\Model\CrossSelling();
+        $return->setProductId(new Identity("1", 0));
+        $return->setItems([]);
+        return $return;
+    }
+
+    protected function getMappedEndpoint()
+    {
+        return [
+            'product_id' => ""
+        ];
+    }
+}
+
+class CrossSellingMock extends CrossSelling
+{
+    public function __construct()
+    {
+        parent::__construct(get_parent_class());
+        unset($this->pull['items']);
+        unset($this->push['CrossSellingItem']);
     }
 }

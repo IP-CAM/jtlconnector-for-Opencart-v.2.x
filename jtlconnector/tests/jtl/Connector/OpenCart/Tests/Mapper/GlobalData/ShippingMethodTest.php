@@ -3,29 +3,29 @@
 namespace jtl\Connector\OpenCart\Tests\Mapper\GlobalData;
 
 use jtl\Connector\Model\Identity;
-use jtl\Connector\OpenCart\Mapper\GlobalData\TaxRate;
+use jtl\Connector\OpenCart\Mapper\GlobalData\ShippingMethod;
 use jtl\Connector\OpenCart\Tests\Mapper\AbstractMapperTest;
 
-class TaxRateTest extends AbstractMapperTest
+class ShippingMethodTest extends AbstractMapperTest
 {
     protected function getMapper()
     {
-        return new TaxRate();
+        return new ShippingMethod();
     }
 
     protected function getEndpoint()
     {
         return [
-            'tax_rate_id' => '1',
-            'rate' => 12.43
+            'id' => '1',
+            'name' => 'UPS'
         ];
     }
 
     protected function getMappedHost()
     {
-        $result = new \jtl\Connector\Model\TaxRate();
+        $result = new \jtl\Connector\Model\ShippingMethod();
         $result->setId(new Identity("1", 0));
-        $result->setRate(12.43);
+        $result->setName("UPS");
         return $result;
     }
 

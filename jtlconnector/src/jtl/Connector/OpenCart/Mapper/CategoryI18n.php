@@ -13,6 +13,7 @@ class CategoryI18n extends I18nBaseMapper
         'name' => null,
         'description' => null,
         'languageISO' => null,
+        'titleTag' => 'meta_title',
         'metaKeywords' => 'meta_keyword',
         'metaDescription' => 'meta_description'
     ];
@@ -23,7 +24,7 @@ class CategoryI18n extends I18nBaseMapper
         'description' => 'description',
         'meta_keyword' => 'metaKeywords',
         'meta_description' => 'metaDescription',
-        'meta_title' => null
+        'meta_title' => 'titleTag'
     ];
 
     protected function name(array $data)
@@ -34,10 +35,5 @@ class CategoryI18n extends I18nBaseMapper
     protected function description($data)
     {
         return html_entity_decode($data['description']);
-    }
-
-    protected function meta_title()
-    {
-        return "";
     }
 }

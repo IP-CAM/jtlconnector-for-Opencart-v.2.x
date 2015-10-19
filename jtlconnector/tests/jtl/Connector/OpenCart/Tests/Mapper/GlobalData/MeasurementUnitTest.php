@@ -3,30 +3,29 @@
 namespace jtl\Connector\OpenCart\Tests\Mapper\GlobalData;
 
 use jtl\Connector\Model\Identity;
-use jtl\Connector\OpenCart\Mapper\GlobalData\CustomerGroup;
+use jtl\Connector\OpenCart\Mapper\GlobalData\MeasurementUnit;
 use jtl\Connector\OpenCart\Tests\Mapper\AbstractMapperTest;
 
-class CustomerGroupTest extends AbstractMapperTest
+class MeasurementUnitTest extends AbstractMapperTest
 {
     protected function getMapper()
     {
-        return new CustomerGroupMock();
+        return new MeasurementUnitMock();
     }
 
     protected function getEndpoint()
     {
         return [
-            'customer_group_id' => '1',
-            'sort_order' => 1,
-            'is_default' => true
+            'id' => '1',
+            'unit' => 'mm'
         ];
     }
 
     protected function getMappedHost()
     {
-        $result = new \jtl\Connector\Model\CustomerGroup();
-        $result->setId(new Identity("1", 0));
-        $result->setIsDefault(true);
+        $result = new \jtl\Connector\Model\MeasurementUnit();
+        $result->setId(new Identity('1', 0));
+        $result->setDisplayCode('mm');
         $result->setI18ns([]);
         return $result;
     }
@@ -36,7 +35,7 @@ class CustomerGroupTest extends AbstractMapperTest
     }
 }
 
-class CustomerGroupMock extends CustomerGroup
+class MeasurementUnitMock extends MeasurementUnit
 {
     public function __construct()
     {

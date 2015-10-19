@@ -2,24 +2,15 @@
 
 namespace jtl\Connector\OpenCart\Tests\Mapper\GlobalData;
 
+use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Mapper\GlobalData\Language;
-use jtl\Connector\OpenCart\Tests\Mapper\AbstractMapper;
+use jtl\Connector\OpenCart\Tests\Mapper\AbstractMapperTest;
 
-class LanguageTest extends AbstractMapper
+class LanguageTest extends AbstractMapperTest
 {
     protected function getMapper()
     {
         return new Language();
-    }
-
-    protected function getHost()
-    {
-        return [
-            'id' => 1,
-            'isDefault' => true,
-            'languageISO' => 'de',
-            'nameGerman' => 'Deutsch'
-        ];
     }
 
     protected function getEndpoint()
@@ -28,15 +19,23 @@ class LanguageTest extends AbstractMapper
             'language_id' => '1',
             'sort_order' => 1,
             'code' => 'de',
-            'name' => 'Deutsch'
+            'name' => 'Deutsch',
+            'is_default' => true
         ];
     }
 
-    protected function assertToHost($result)
+    protected function getMappedHost()
     {
-        $this->assertEquals($this->host['id'], $result->getId()->getEndpoint());
-        $this->assertEquals($this->host['isDefault'], $result->getIsDefault());
-        $this->assertEquals($this->host['languageISO'], $result->getLanguageISO());
-        $this->assertEquals($this->host['nameGerman'], $result->getNameGerman());
+        $result = new \jtl\Connector\Model\Language();
+        $result->setId(new Identity("1", 0));
+        $result->setIsDefault(true);
+        $result->setLanguageISO("ger");
+        $result->setNameGerman("Deutsch");
+        return $result;
+    }
+
+    public function testPush()
+    {
+
     }
 }

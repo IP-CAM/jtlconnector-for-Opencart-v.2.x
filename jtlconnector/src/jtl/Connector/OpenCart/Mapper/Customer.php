@@ -6,8 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
-use jtl\Connector\OpenCart\Utility\Db;
-use jtl\Connector\OpenCart\Utility\SQLs;
+use jtl\Connector\OpenCart\Utility\CustomField;
 
 class Customer extends BaseMapper
 {
@@ -35,40 +34,19 @@ class Customer extends BaseMapper
         'salutation' => null
     ];
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->database = Db::getInstance();
-    }
-
-
     protected function vatNumber(array $data)
     {
-        $valueId = $this->database->queryOne(SQLs::freeFieldVatId());
-        if (!is_null($valueId)) {
-            return json_decode($data['custom_field'])->$valueId;
-        }
-        return "";
+        return CustomField::getInstance()->vatNumber($data);
     }
 
     protected function title(array $data)
     {
-        $freeFieldId = $this->database->queryOne(SQLs::freeFieldTitleId());
-        if (!is_null($freeFieldId)) {
-            $valueId = json_decode($data['custom_field'])->$freeFieldId;
-            return $this->database->queryOne(SQLs::freeFieldValue($valueId));
-        }
-        return "";
+        return CustomField::getInstance()->title($data);
     }
 
     protected function salutation(array $data)
     {
-        $freeFieldId = $this->database->queryOne(SQLs::freeFieldSalutationId());
-        if (!is_null($freeFieldId)) {
-            $valueId = json_decode($data['custom_field'])->$freeFieldId;
-            return $this->database->queryOne(SQLs::freeFieldValue($valueId));
-        }
-        return "";
+        return CustomField::getInstance()->salutation($data);
     }
 
     protected function hasCustomerAccount()

@@ -1,57 +1,75 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Sven
- * Date: 25.08.2015
- * Time: 14:10
- */
 
 namespace jtl\Connector\OpenCart\Tests\Mapper;
 
+use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Mapper\Category;
 
-class CategoryTest extends AbstractMapper
+class CategoryTest extends AbstractMapperTest
 {
     function getMapper()
     {
-        return new Category();
+        return new CategoryMock();
     }
 
     function getHost()
     {
-        return [
-            'id' => 1,
-            'parentCategoryId' => 0,
-            'level' => 0,
-            'isActive' => 1,
-            'sort' => 3,
-            'i18ns' => []
-        ];
+        $result = new \jtl\Connector\Model\Category();
+        $result->setId(new Identity("", 1));
+        $result->setParentCategoryId(new Identity());
+        $result->setLevel(0);
+        $result->setSort(3);
+        $result->setIsActive(true);
+        $result->setAttributes([]);
+        $result->setCustomerGroups([]);
+        $result->setInvisibilities([]);
+        $result->setI18ns([]);
+        return $result;
     }
 
     function getEndpoint()
     {
         return [
             'category_id' => "1",
-            'parent_id' => "0",
+            'parent_id' => null,
             'column' => 0,
             'status' => 1,
-            'sort_order' => 3,
-            'CategoryI18n' => []
+            'sort_order' => 3
         ];
     }
 
-    protected function assertToHost($result)
+    protected function getMappedHost()
     {
-        $this->assertEquals($this->host['id'], $result->getId()->getEndpoint());
-        $this->assertEquals($this->host['parentCategoryId'], $result->getParentCategoryId()->getEndpoint());
-        $this->assertEquals($this->host['level'], $result->getLevel());
-        $this->assertEquals($this->host['isActive'], $result->getIsActive());
-        $this->assertEquals($this->host['sort'], $result->getSort());
-        $this->assertEmpty($result->getI18ns());
-        // Default values
-        $this->assertEmpty($result->getAttributes());
-        $this->assertEmpty($result->getCustomerGroups());
-        $this->assertEmpty($result->getInvisibilities());
+        $result = new \jtl\Connector\Model\Category();
+        $result->setId(new Identity("1", 0));
+        $result->setParentCategoryId(new Identity());
+        $result->setLevel(0);
+        $result->setSort(3);
+        $result->setIsActive(true);
+        $result->setAttributes([]);
+        $result->setCustomerGroups([]);
+        $result->setInvisibilities([]);
+        $result->setI18ns([]);
+        return $result;
+    }
+
+    protected function getMappedEndpoint()
+    {
+        return [
+            'category_id' => "1",
+            'parent_id' => null,
+            'column' => 0,
+            'status' => 1,
+            'sort_order' => 3
+        ];
+    }
+}
+
+class CategoryMock extends Category
+{
+    public function __construct()
+    {
+        parent::__construct(get_parent_class());
+        unset($this->pull['i18ns']);
     }
 }

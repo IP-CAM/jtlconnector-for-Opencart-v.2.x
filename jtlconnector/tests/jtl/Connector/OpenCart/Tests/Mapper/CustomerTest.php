@@ -5,7 +5,7 @@ namespace jtl\Connector\OpenCart\Tests\Mapper;
 use DateTime;
 use jtl\Connector\OpenCart\Mapper\Customer;
 
-class CustomerTest extends AbstractMapper
+class CustomerTest extends AbstractMapperTest
 {
     protected function getMapper()
     {
@@ -60,7 +60,7 @@ class CustomerTest extends AbstractMapper
         ];
     }
 
-    protected function assertToHost($result)
+    protected function assertPull($result)
     {
         $this->assertEquals($this->host['id'], $result->getId()->getEndpoint());
         $this->assertEquals($this->host['customerGroupId'], $result->getCustomerGroupId()->getEndpoint());
@@ -94,5 +94,15 @@ class CustomerTest extends AbstractMapper
         $this->assertEmpty($result->getTitle());
         $this->assertEmpty($result->getWebsiteUrl());
         $this->assertEmpty($result->getAttributes());
+    }
+
+    protected function getMappedHost()
+    {
+        // TODO: Implement getMappedHost() method.
+    }
+
+    protected function getMappedEndpoint()
+    {
+        // TODO: Implement getMappedEndpoint() method.
     }
 }

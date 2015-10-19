@@ -34,12 +34,12 @@ class Currency extends BaseMapper
 
     protected function hasCurrencySignBeforeValue($data)
     {
-        return isset($data['symbol_left']);
+        return !empty($data['symbol_left']);
     }
 
     protected function nameHTML($data)
     {
-        $symbol = (isset($data['symbol_left'])) ? $data['symbol_left'] : $data['symbol_right'];
+        $symbol = empty($data['symbol_left']) ? $data['symbol_right'] : $data['symbol_left'];
         return htmlentities($symbol);
     }
 
