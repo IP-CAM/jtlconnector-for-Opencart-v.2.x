@@ -139,7 +139,7 @@ class Image extends MainEntityController
     {
         $path = $data->getFilename();
         $filename = $this->buildImageFilename($path);
-        $imagePath = $this->buildImagePath($filename);
+        $imagePath = "catalog/" . $filename;
         $destination = DIR_IMAGE . $imagePath;
 
         $allowed = ['jpg', 'jpeg', 'gif', 'png'];

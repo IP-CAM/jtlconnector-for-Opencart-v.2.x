@@ -144,6 +144,40 @@ final class SQLs
         );
     }
 
+    public static function freeFieldVatId()
+    {
+        return '
+            SELECT DISTINCT(custom_field_id)
+            FROM ' . DB_PREFIX . 'custom_field_description
+            WHERE name IN ("USt-IdNr.", "VAT number")';
+    }
+
+    public static function freeFieldTitleId()
+    {
+        return '
+            SELECT DISTINCT(custom_field_id)
+            FROM ' . DB_PREFIX . 'custom_field_description
+            WHERE name IN ("Titel", "Title")';
+    }
+
+    public static function freeFieldSalutationId()
+    {
+        return '
+            SELECT DISTINCT(custom_field_id)
+            FROM ' . DB_PREFIX . 'custom_field_description
+            WHERE name IN ("Anrede", "Salutation")';
+    }
+
+    public static function freeFieldValue($valueId)
+    {
+        return sprintf('
+            SELECT name
+            FROM ' . DB_PREFIX . 'custom_field_value_description
+            WHERE custom_field_value_id = %d',
+            $valueId
+        );
+    }
+
     public static function customerStats()
     {
         return sprintf('

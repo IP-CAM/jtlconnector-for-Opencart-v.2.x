@@ -6,6 +6,9 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
+use jtl\Connector\OpenCart\Utility\Db;
+use jtl\Connector\OpenCart\Utility\SQLs;
+
 class Customer extends BaseMapper
 {
     protected $pull = [
@@ -26,36 +29,49 @@ class Customer extends BaseMapper
         'creationDate' => 'date_added',
         'hasNewsletterSubscription' => 'newsletter',
         'isActive' => 'status',
-        'hasCustomerAccount' => null
+        'hasCustomerAccount' => null,
+        'vatNumber' => null,
+        'title' => null,
+        'salutation' => null
     ];
 
-    protected $push = [
-        'customer_id' => 'id',
-        'firstname' => 'firstName',
-        'lastname' => 'lastName',
-        'address_1' => 'street',
-        'address_2' => 'extraAddressLine',
-        'postcode' => 'zipCode',
-        'city' => 'city',
-        'name' => 'state',
-        'iso_code_2' => 'countryIso',
-        'company' => 'company',
-        'email' => 'eMail',
-        'telephone' => 'phone',
-        'fax' => 'fax',
-        'customer_group_id' => 'customerGroupId',
-        'date_added' => 'creationDate',
-        'newsletter' => 'hasNewsletterSubscription',
-        'status' => 'isActive',
-        'has_customer_account' => 'hasCustomerAccount'
-    ];
-
-    protected function hasCustomerAccount()
+    public function __construct()
     {
-        return true;
+        parent::__construct();
+        $this->database = Db::getInstance();
     }
 
-    protected function has_customer_account()
+
+    protected function vatNumber(array $data)
+    {
+        $valueId = $this->database->queryOne(SQLs::freeFieldVatId());
+        if (!is_null($valueId)) {
+            return json_decode($data['custom_field'])->$valueId;
+        }
+        return "";
+    }
+
+    protected function title(array $data)
+    {
+        $freeFieldId = $this->database->queryOne(SQLs::freeFieldTitleId());
+        if (!is_null($freeFieldId)) {
+            $valueId = json_decode($data['custom_field'])->$freeFieldId;
+            return $this->database->queryOne(SQLs::freeFieldValue($valueId));
+        }
+        return "";
+    }
+
+    protected function salutation(array $data)
+    {
+        $freeFieldId = $this->database->queryOne(SQLs::freeFieldSalutationId());
+        if (!is_null($freeFieldId)) {
+            $valueId = json_decode($data['custom_field'])->$freeFieldId;
+            return $this->database->queryOne(SQLs::freeFieldValue($valueId));
+        }
+        return "";
+    }
+
+    protected function hasCustomerAccount()
     {
         return true;
     }

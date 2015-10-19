@@ -15,14 +15,14 @@
             </ul>
         </div>
     </div>
-    <div class="container-fluid">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><?= $text_info; ?></h3>
-            </div>
-            <div class="panel-body">
-                <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-connector"
-                      class="form-horizontal">
+    <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-connector"
+          class="form-horizontal">
+        <div class="container-fluid">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><?= $text_info; ?></h3>
+                </div>
+                <div class="panel-body">
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="input-status"><?= $text_url ?></label>
 
@@ -44,52 +44,91 @@
                             <p><?= $connector_password ?></p>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><?= $text_requirements; ?></h3>
-            </div>
-            <div class="panel-body">
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" for="input-status"><?= $text_php_version ?></label>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><?= $text_requirements; ?></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-status"><?= $text_php_version ?></label>
 
-                        <div class="col-sm-10">
-                            <?php if ($php_version): ?>
-                            <p class="text-success"><span class="fa fa-check"></span></p>
-                            <?php else: ?>
-                            <p class="text-danger"><span class="fa fa-times"></span></p>
-                            <?php endif; ?>
+                            <div class="col-sm-10">
+                                <?php if ($php_version): ?>
+                                <p class="text-success"><span class="fa fa-check"></span></p>
+                                <?php else: ?>
+                                <p class="text-danger"><span class="fa fa-times"></span></p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><?= $text_write_access; ?></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-horizontal">
+                        <?php foreach($write_access as $folder => $success): ?>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-status"><?= $folder; ?></label>
+
+                            <div class="col-sm-10">
+                                <?php if ($success): ?>
+                                <p class="text-success"><span class="fa fa-check"></span></p>
+                                <?php else: ?>
+                                <p class="text-danger"><span class="fa fa-times"></span></p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><?= $text_free_fields; ?></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-status">
+                                <?= $text_free_field_salutation; ?>
+                            </label>
+
+                            <div class="col-sm-10 checkbox">
+                                <input type="checkbox" name="free_field_salutation"
+                                <?= ($salutation_activated) ? 'checked' : '' ?>>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-status">
+                                <?= $text_free_field_title; ?>
+                            </label>
+
+                            <div class="col-sm-10 checkbox">
+                                <input type="checkbox" name="free_field_title"
+                                <?= $title_activated ? 'checked' : '' ?>>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-status">
+                                <?= $text_free_field_vat_number; ?>
+                            </label>
+
+                            <div class="col-sm-10 checkbox">
+                                <input type="checkbox" name="free_field_vat_number"
+                                <?= $vat_activated ? 'checked' : '' ?>>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><?= $text_write_access; ?></h3>
-            </div>
-            <div class="panel-body">
-                <div class="form-horizontal">
-                    <?php foreach($write_access as $folder => $success): ?>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" for="input-status"><?= $folder; ?></label>
-
-                        <div class="col-sm-10">
-                            <?php if ($success): ?>
-                            <p class="text-success"><span class="fa fa-check"></span></p>
-                            <?php else: ?>
-                            <p class="text-danger"><span class="fa fa-times"></span></p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-    </div>
+    </form>
 </div>
 <style type="text/css">
     .col-sm-10 > p {

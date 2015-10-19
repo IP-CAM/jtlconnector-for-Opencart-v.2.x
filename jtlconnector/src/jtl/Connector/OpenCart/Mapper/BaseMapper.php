@@ -10,6 +10,7 @@ namespace jtl\Connector\OpenCart\Mapper;
 use jtl\Connector\Core\Model\Model;
 use jtl\Connector\Core\Utilities\Singleton;
 use jtl\Connector\Model\Identity;
+use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\OpenCart\Utility\Date;
 use jtl\Connector\OpenCart\Utility\Db;
@@ -17,12 +18,11 @@ use jtl\Connector\Type\DataType;
 
 abstract class BaseMapper extends Singleton
 {
-    protected $model = null;
     /**
      * @var $type DataType
      */
     protected $type = null;
-    protected $database = null;
+    protected $model = null;
     protected $endpointModel = null;
     protected $push = [];
     protected $pull = [];
@@ -31,8 +31,7 @@ abstract class BaseMapper extends Singleton
     {
         $reflect = new \ReflectionClass($this);
         $shortName = $reflect->getShortName();
-        $typeClass = "\\jtl\\Connector\\Type\\{$shortName}";
-        $this->database = DB::getInstance();
+        $typeClass = Constants::CORE_TYPE_NAMESPACE . $shortName;
         $this->model = Constants::CORE_MODEL_NAMESPACE . $shortName;
         $this->type = new $typeClass();
     }
@@ -56,7 +55,9 @@ abstract class BaseMapper extends Singleton
                     $subControllerName = Constants::CONTROLLER_NAMESPACE . $endpoint;
                     if (class_exists($subControllerName)) {
                         $subController = new $subControllerName();
-                        $value = $subController->pullData($data, $model);
+                        if ($subController instanceof BaseController) {
+                            $value = $subController->pullData($data, $model);
+                        }
                     }
                 } elseif ($property->isIdentity()) {
                     $value = new Identity($value);
@@ -93,7 +94,9 @@ abstract class BaseMapper extends Singleton
                     $subControllerName = Constants::CONTROLLER_NAMESPACE . $endpoint;
                     if (class_exists($subControllerName)) {
                         $subController = new $subControllerName();
-                        $subController->pushData($data, $model);
+                        if ($subController instanceof BaseController) {
+                            $subController->pushData($data, $model);
+                        }
                     }
                 } else {
                     if ($property->isIdentity()) {

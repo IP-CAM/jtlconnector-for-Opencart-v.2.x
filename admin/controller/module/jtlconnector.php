@@ -17,6 +17,7 @@ class ControllerModuleJtlconnector extends Controller
         $this->load->model('catalog/attribute_group');
     }
 
+    //// <editor-fold defaultstate="collapsed" desc="Edit Action">
     public function index()
     {
         $this->load->language('module/jtlconnector');
@@ -24,7 +25,7 @@ class ControllerModuleJtlconnector extends Controller
         $this->document->setTitle($this->language->get('heading_title'));
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-            // If an input field is required the actions are done here
+            $this->handleCustomFields();
 
             $this->session->data['success'] = $this->language->get('text_success');
 
@@ -41,12 +42,19 @@ class ControllerModuleJtlconnector extends Controller
         $data['text_password'] = $this->language->get('text_password');
         $data['text_version'] = $this->language->get('text_version');
         $data['text_php_version'] = $this->language->get('text_php_version');
+        $data['text_free_fields'] = $this->language->get('text_free_fields');
+        $data['text_free_field_salutation'] = $this->language->get('text_free_field_salutation');
+        $data['text_free_field_title'] = $this->language->get('text_free_field_title');
+        $data['text_free_field_vat_number'] = $this->language->get('text_free_field_vat_number');
 
         $data['url'] = HTTP_CATALOG . 'jtlconnector/';
         $data['version'] = self::CONNECTOR_VERSION;
         $data['php_version'] = version_compare(PHP_VERSION, '5.4', '>=');
         $data['zipping'] = class_exists('ZipArchive');
         $data['write_access'] = $this->writeAccess();
+        $data['salutation_activated'] = $this->salutationActivated();
+        $data['title_activated'] = $this->titleActivated();
+        $data['vat_activated'] = $this->vatActivated();
 
         $data['button_save'] = $this->language->get('button_save');
         $data['button_cancel'] = $this->language->get('button_cancel');
@@ -103,6 +111,41 @@ class ControllerModuleJtlconnector extends Controller
         ];
     }
 
+    private function salutationActivated()
+    {
+        $result = $this->db->query('
+            SELECT *
+            FROM ' . DB_PREFIX . 'custom_field_description
+            WHERE name IN ("Anrede", "Salutation")');
+        return $result->num_rows > 0;
+    }
+
+    private function titleActivated()
+    {
+        $result = $this->db->query('
+            SELECT *
+            FROM ' . DB_PREFIX . 'custom_field_description
+            WHERE name IN ("Titel", "Title")');
+        return $result->num_rows > 0;
+    }
+
+    private function vatActivated()
+    {
+        $result = $this->db->query('
+            SELECT *
+            FROM ' . DB_PREFIX . 'custom_field_description
+            WHERE name IN ("USt-IdNr.", "VAT number")');
+        return $result->num_rows > 0;
+    }
+
+    private function setCustomFieldStatus($id, $status)
+    {
+        $this->db->query(sprintf('
+            UPDATE ' . DB_PREFIX . 'custom_field SET status = %d
+            WHERE custom_field_id = %d', $status, $id
+        ));
+    }
+
     protected function validate()
     {
         if (!$this->user->hasPermission('modify', 'module/jtlconnector')) {
@@ -111,13 +154,14 @@ class ControllerModuleJtlconnector extends Controller
 
         return !$this->error;
     }
+    //// </editor-fold>
 
+    //// <editor-fold defaultstate="collapsed" desc="Install Action">
     public function install()
     {
         $this->activateLinking();
         $this->activateChecksum();
         $this->activateFilter();
-        // TODO: unit, delivery note, payment
 
         $result = $this->db->query('SELECT * FROM oc_language');
         $groupDescriptions = [];
@@ -194,7 +238,200 @@ class ControllerModuleJtlconnector extends Controller
         return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535),
             mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
+    //// </editor-fold>
 
+    //// <editor-fold defaultstate="collapsed" desc="Custom Fields">
+    private function handleCustomFields()
+    {
+        $post = $this->request->post;
+        $this->load->model('customer/custom_field');
+        $german = $this->db->query('SELECT language_id FROM ' . DB_PREFIX . 'language WHERE code = "de"');
+        $otherLanguages = $this->db->query('SELECT language_id FROM ' . DB_PREFIX . 'language WHERE code != "de"');
+        if (isset($post['free_field_salutation']) && $post['free_field_salutation'] === 'on') {
+            $this->handleCustomFieldSalutation($german, $otherLanguages);
+        } else {
+            $result = $this->db->query('
+                    SELECT DISTINCT(custom_field_id)
+                    FROM ' . DB_PREFIX . 'custom_field_description
+                    WHERE name IN ("Anrede", "Salutation")');
+            if ($result->num_rows > 0) {
+                $this->setCustomFieldStatus($result->row['custom_field_id'], 0);
+            }
+        }
+        if (isset($post['free_field_title']) && $post['free_field_title'] === 'on') {
+            $this->handleCustomFieldTitle($german, $otherLanguages);
+        } else {
+            $result = $this->db->query('
+                    SELECT DISTINCT(custom_field_id)
+                    FROM ' . DB_PREFIX . 'custom_field_description
+                    WHERE name IN ("Titel", "Title")');
+            if ($result->num_rows > 0) {
+                $this->setCustomFieldStatus($result->row['custom_field_id'], 0);
+            }
+        }
+        if (isset($post['free_field_vat_number']) && $post['free_field_vat_number'] === 'on') {
+            $this->handleCustomFieldVatNumber($german, $otherLanguages);
+        } else {
+            $result = $this->db->query('
+                    SELECT DISTINCT(custom_field_id)
+                    FROM ' . DB_PREFIX . 'custom_field_description
+                    WHERE name IN ("USt-IdNr.", "VAT number")');
+            if ($result->num_rows > 0) {
+                $this->setCustomFieldStatus($result->row['custom_field_id'], 0);
+            }
+        }
+    }
+
+    private function handleCustomFieldSalutation($german, $otherLanguages)
+    {
+        $result = $this->db->query('
+            SELECT DISTINCT(custom_field_id)
+            FROM ' . DB_PREFIX . 'custom_field_description
+            WHERE name IN ("Anrede", "Salutation")'
+        );
+        if ($result->num_rows === 0) {
+            $data = [
+                'type' => 'select',
+                'value' => '',
+                'location' => 'account',
+                'status' => 1,
+                'sort_order' => 1
+            ];
+            $customFieldDescription = [];
+            $sirDescription = ['sort_order' => 1];
+            $madamDescription = ['sort_order' => 2];
+            $companyDescription = ['sort_order' => 3];
+            if ($german->num_rows !== 0) {
+                $customFieldDescription[$german->row['language_id']] = [
+                    'name' => 'Anrede'
+                ];
+                $sirDescription['custom_field_value_description'][$german->row['language_id']] = [
+                    'name' => 'Herr'
+                ];
+                $madamDescription['custom_field_value_description'][$german->row['language_id']] = [
+                    'name' => 'Frau'
+                ];
+                $companyDescription['custom_field_value_description'][$german->row['language_id']] = [
+                    'name' => 'Firma'
+                ];
+            }
+            foreach ($otherLanguages->rows as $row) {
+                $customFieldDescription[$row['language_id']] = [
+                    'name' => 'Salutation'
+                ];
+                $sirDescription['custom_field_value_description'][$row['language_id']] = [
+                    'name' => 'Sir'
+                ];
+                $madamDescription['custom_field_value_description'][$row['language_id']] = [
+                    'name' => 'Madam'
+                ];
+                $companyDescription['custom_field_value_description'][$row['language_id']] = [
+                    'name' => 'Company'
+                ];
+            }
+            $data['custom_field_description'] = $customFieldDescription;
+            $data['custom_field_value'] = [$sirDescription, $madamDescription, $companyDescription];
+            $this->addCustomerGroup($data);
+            $this->model_customer_custom_field->addCustomField($data);
+        } elseif ($result->num_rows === 1) {
+            $this->setCustomFieldStatus($result->row['custom_field_id'], 1);
+        }
+    }
+
+    private function addCustomerGroup(&$data)
+    {
+        $result = $this->db->query('SELECT customer_group_id FROM ' . DB_PREFIX . 'customer_group');
+        foreach ($result->rows as $row) {
+            $data['custom_field_customer_group'][] = [
+                'customer_group_id' => $row['customer_group_id']
+            ];
+        }
+    }
+
+    private function handleCustomFieldTitle($german, $otherLanguages)
+    {
+        $result = $this->db->query('
+            SELECT DISTINCT(custom_field_id)
+            FROM ' . DB_PREFIX . 'custom_field_description
+            WHERE name IN ("Titel", "Title")'
+        );
+        if ($result->num_rows === 0) {
+            $data = [
+                'type' => 'select',
+                'value' => '',
+                'location' => 'account',
+                'status' => 1,
+                'sort_order' => 2
+            ];
+            $customFieldDescription = [];
+            $drDescription = ['sort_order' => 1];
+            $profDescription = ['sort_order' => 2];
+            if ($german->num_rows !== 0) {
+                $customFieldDescription[$german->row['language_id']] = [
+                    'name' => 'Titel'
+                ];
+                $drDescription['custom_field_value_description'][$german->row['language_id']] = [
+                    'name' => 'Dr.'
+                ];
+                $profDescription['custom_field_value_description'][$german->row['language_id']] = [
+                    'name' => 'Prof.'
+                ];
+            }
+            foreach ($otherLanguages->rows as $row) {
+                $customFieldDescription[$row['language_id']] = [
+                    'name' => 'Title'
+                ];
+                $drDescription['custom_field_value_description'][$row['language_id']] = [
+                    'name' => 'Dr.'
+                ];
+                $profDescription['custom_field_value_description'][$row['language_id']] = [
+                    'name' => 'Prof.'
+                ];
+            }
+            $data['custom_field_description'] = $customFieldDescription;
+            $data['custom_field_value'] = [$drDescription, $profDescription];
+            $this->addCustomerGroup($data);
+            $this->model_customer_custom_field->addCustomField($data);
+        } elseif ($result->num_rows === 1) {
+            $this->setCustomFieldStatus($result->row['custom_field_id'], 1);
+        }
+    }
+
+    private function handleCustomFieldVatNumber($german, $otherLanguages)
+    {
+        $result = $this->db->query('
+            SELECT DISTINCT(custom_field_id)
+            FROM ' . DB_PREFIX . 'custom_field_description
+            WHERE name IN ("USt-IdNr.", "VAT number")'
+        );
+        if ($result->num_rows === 0) {
+            $data = [
+                'type' => 'text',
+                'value' => '',
+                'location' => 'account',
+                'status' => 1,
+                'sort_order' => 3
+            ];
+            $customFieldDescription = [];
+            if ($german->num_rows !== 0) {
+                $customFieldDescription[$german->row['language_id']] = [
+                    'name' => 'USt-IdNr.'
+                ];
+            }
+            foreach ($otherLanguages->rows as $row) {
+                $customFieldDescription[$row['language_id']] = [
+                    'name' => 'VAT number'
+                ];
+            }
+            $data['custom_field_description'] = $customFieldDescription;
+            $this->addCustomerGroup($data);
+            $this->model_customer_custom_field->addCustomField($data);
+        } elseif ($result->num_rows === 1) {
+            $this->setCustomFieldStatus($result->row['custom_field_id'], 1);
+        }
+    }
+
+    //// </editor-fold>
 
     public function uninstall()
     {
