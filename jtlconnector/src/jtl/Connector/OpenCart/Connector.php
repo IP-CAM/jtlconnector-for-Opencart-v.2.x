@@ -39,7 +39,7 @@ class Connector extends BaseConnector
     public function canHandle()
     {
         $controller = RpcMethod::buildController($this->getMethod()->getController());
-        if ($this->startsWith($controller, 'Product')) {
+        if ($this->startsWith($controller, 'Product') && $controller !== 'ProductStockLevel') {
             $controller = 'Product\\' . $controller;
         } elseif (strpos($controller, 'Order') !== false) {
             $controller = 'Order\\' . $controller;

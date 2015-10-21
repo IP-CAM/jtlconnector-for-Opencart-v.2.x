@@ -6,12 +6,6 @@
 
 namespace jtl\Connector\OpenCart\Mapper\Product;
 
-use jtl\Connector\OpenCart\Mapper\BaseMapper;
-
-class ProductStockLevel extends BaseMapper
+class ProductStockLevel extends \jtl\Connector\OpenCart\Mapper\ProductStockLevel
 {
-    protected $pull = [
-        'productId' => 'product_id',
-        'stockLevel' => 'quantity'
-    ];
 }

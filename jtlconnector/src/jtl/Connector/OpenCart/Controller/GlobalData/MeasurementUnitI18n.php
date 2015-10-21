@@ -21,9 +21,11 @@ class MeasurementUnitI18n extends BaseController
             $query = SQLs::measurementUnitWeightsI18nPull(str_replace('w_', '', $data['id']));
         }
         $result = $this->database->query($query);
-        foreach ($result as $row) {
-            $host = $this->mapper->toHost($row);
-            $return[] = $host;
+        if (is_array($result)) {
+            foreach ($result as $row) {
+                $host = $this->mapper->toHost($row);
+                $return[] = $host;
+            }
         }
         return $return;
     }

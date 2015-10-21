@@ -106,7 +106,7 @@ abstract class BaseController extends Controller
         $return = [];
         $query = $this->pullQuery($data, $limit);
         $result = $this->database->query($query);
-        foreach ($result as $row) {
+        foreach ((array)$result as $row) {
             $host = $this->mapper->toHost($row);
             $return[] = $host;
         }

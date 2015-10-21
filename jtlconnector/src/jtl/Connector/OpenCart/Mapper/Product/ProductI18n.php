@@ -17,8 +17,7 @@ class ProductI18n extends I18nBaseMapper
         'languageISO' => null,
         'titleTag' => 'tag',
         'metaKeywords' => 'meta_keyword',
-        'metaDescription' => 'meta_description',
-        // deliveryStatus, measurementUnitName, unitName, urlPath
+        'metaDescription' => 'meta_description'
     ];
 
     protected $push = [

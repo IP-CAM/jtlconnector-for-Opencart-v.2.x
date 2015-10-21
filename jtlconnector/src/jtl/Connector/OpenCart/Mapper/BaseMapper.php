@@ -7,6 +7,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
+use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Core\Model\Model;
 use jtl\Connector\Core\Utilities\Singleton;
 use jtl\Connector\Model\Identity;

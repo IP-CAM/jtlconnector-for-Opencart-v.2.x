@@ -40,7 +40,7 @@ final class SQLs
         return sprintf('
             SELECT c.*, l.code
             FROM ' . DB_PREFIX . 'category_description c
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON c.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'language l ON c.language_id = l.language_id
             WHERE c.category_id = %d',
             $categoryId
         );
@@ -194,8 +194,8 @@ final class SQLs
     {
         return sprintf('
             SELECT o.*, l.code, c.iso_code_3
-            FROM ' . DB_PREFIX . 'ORDER o
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON o.language_id = l.language_id
+            FROM ' . DB_PREFIX . 'order o
+            LEFT JOIN ' . DB_PREFIX . 'language l ON o.language_id = l.language_id
             LEFT JOIN ' . DB_PREFIX . 'country c ON o.payment_country_id = c.country_id
             LEFT JOIN jtl_connector_link cl ON o.order_id = cl.endpointId AND cl.type = %d
             WHERE cl.hostId IS NULL
@@ -208,7 +208,7 @@ final class SQLs
     {
         return sprintf('
             SELECT COUNT(*)
-            FROM ' . DB_PREFIX . 'ORDER o
+            FROM ' . DB_PREFIX . 'order o
             LEFT JOIN jtl_connector_link l ON o.order_id = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL',
             IdentityLinker::TYPE_CUSTOMER_ORDER
@@ -219,8 +219,8 @@ final class SQLs
     {
         return sprintf('
             SELECT os.name, oh.date_added
-            FROM ' . DB_PREFIX . 'ORDER o
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON o.language_id = l.language_id
+            FROM ' . DB_PREFIX . 'order o
+            LEFT JOIN ' . DB_PREFIX . 'language l ON o.language_id = l.language_id
             LEFT JOIN ' . DB_PREFIX . 'order_status os ON os.order_status_id = o.order_status_id AND os.language_id = l.language_id
             LEFT JOIN ' . DB_PREFIX . 'order_history oh ON oh.order_status_id = o.order_status_id
             WHERE oh.order_id = %d
@@ -234,8 +234,8 @@ final class SQLs
     {
         return sprintf('
             SELECT oh.comment, oh.date_added
-            FROM ' . DB_PREFIX . 'ORDER o
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON o.language_id = l.language_id
+            FROM ' . DB_PREFIX . 'order o
+            LEFT JOIN ' . DB_PREFIX . 'language l ON o.language_id = l.language_id
             LEFT JOIN ' . DB_PREFIX . 'order_history oh ON oh.order_status_id = o.order_status_id
             WHERE oh.order_id = %d AND oh.comment != "" AND oh.comment IN (%s)
             ORDER BY oh.date_added
@@ -282,7 +282,7 @@ final class SQLs
             SELECT oo.*, u.name AS filename, pov.price_prefix, pov.price
             FROM ' . DB_PREFIX . 'order_option oo
             LEFT JOIN ' . DB_PREFIX . 'product_option po ON oo.product_option_id = po.product_option_id
-            LEFT JOIN ' . DB_PREFIX . 'OPTION o ON o.option_id = po.option_id
+            LEFT JOIN ' . DB_PREFIX . 'option o ON o.option_id = po.option_id
             LEFT JOIN ' . DB_PREFIX . 'upload u ON u.code = oo.value
             LEFT JOIN ' . DB_PREFIX . 'product_option_value pov ON pov.product_option_value_id = oo.product_option_value_id
             WHERE oo.order_id = %d
@@ -307,7 +307,7 @@ final class SQLs
         return sprintf('
             SELECT c.*, l.code
             FROM ' . DB_PREFIX . 'customer_group_description c
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON c.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'language l ON c.language_id = l.language_id
             WHERE c.customer_group_id = %d',
             $customerGroupId
         );
@@ -342,7 +342,7 @@ final class SQLs
         return sprintf('
             SELECT CONCAT("l_", lcd.length_class_id) AS length_class_id, lcd.title, l.code
             FROM ' . DB_PREFIX . 'length_class_description lcd
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON lcd.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'language l ON lcd.language_id = l.language_id
             WHERE lcd.length_class_id = %d',
             $lengthClassId
         );
@@ -358,7 +358,7 @@ final class SQLs
         return sprintf('
             SELECT CONCAT("w_", wcd.weight_class_id) AS weight_class_id, wcd.title, l.code
             FROM ' . DB_PREFIX . 'weight_class_description wcd
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON wcd.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'language l ON wcd.language_id = l.language_id
             WHERE wcd.weight_class_id = %d',
             $weightClassId
         );
@@ -396,7 +396,7 @@ final class SQLs
     {
         return '
             SELECT l.*, s.key IS NOT NULL AS is_default
-            FROM ' . DB_PREFIX . 'LANGUAGE l
+            FROM ' . DB_PREFIX . 'language l
             LEFT JOIN ' . DB_PREFIX . 'setting s ON l.code = s.value
             WHERE l.status = 1';
     }
@@ -537,7 +537,7 @@ final class SQLs
     {
         return sprintf('
             SELECT o.option_id
-            FROM ' . DB_PREFIX . 'OPTION o
+            FROM ' . DB_PREFIX . 'option o
             LEFT JOIN ' . DB_PREFIX . 'option_description od ON o.option_id = od.option_id
             WHERE od.language_id = %d AND od.name = "%s" AND o.type = "%s"',
             $languageId, $name, $type
@@ -558,7 +558,7 @@ final class SQLs
     {
         return '
             SELECT o.option_id
-            FROM ' . DB_PREFIX . 'OPTION o
+            FROM ' . DB_PREFIX . 'option o
             LEFT JOIN ' . DB_PREFIX . 'product_option po ON po.option_id = o.option_id
             WHERE po.option_id IS NULL';
     }
@@ -693,7 +693,7 @@ final class SQLs
         return sprintf('
             SELECT p.*, l.code
             FROM ' . DB_PREFIX . 'product_description p
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON p.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'language l ON p.language_id = l.language_id
             WHERE p.product_id = %d',
             $productId
         );
@@ -728,6 +728,17 @@ final class SQLs
     public static function productAttributePull($productId)
     {
         return sprintf('SELECT * FROM ' . DB_PREFIX . 'product_attribute WHERE product_id = %d', $productId);
+    }
+
+    public static function productAttributeI18nPull($attributeId)
+    {
+        return sprintf('
+            SELECT ad.name, l.code, ad.attribute_id
+            FROM ' . DB_PREFIX . 'attribute_description ad
+            LEFT JOIN ' . DB_PREFIX . 'language l ON ad.language_id = l.language_id
+            WHERE ad.attribute_id = %d',
+            $attributeId
+        );
     }
 
     public static function productSpecificPull($productId)
@@ -768,6 +779,24 @@ final class SQLs
             $productId
         );
     }
+
+    public static function productStockLevelPull()
+    {
+        return sprintf('
+            SELECT p.quantity, p.product_id
+            FROM ' . DB_PREFIX . 'product p
+            LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d',
+            IdentityLinker::TYPE_PRODUCT
+        );
+    }
+
+    public static function productStockLevelPush($productId, $stockLevel)
+    {
+        return sprintf('
+            UPDATE ' . DB_PREFIX . 'product SET quantity = %d WHERE product_id = %d',
+            $stockLevel, $productId
+        );
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Product Variation">
     public static function productVariationPull($productId)
@@ -775,7 +804,7 @@ final class SQLs
         return sprintf('
             SELECT *
             FROM ' . DB_PREFIX . 'product_option po
-            LEFT JOIN ' . DB_PREFIX . 'OPTION o ON po.option_id = o.option_id
+            LEFT JOIN ' . DB_PREFIX . 'option o ON po.option_id = o.option_id
             WHERE po.product_id = %d AND o.type NOT IN ("checkbox", "file")',
             $productId
         );
@@ -787,7 +816,7 @@ final class SQLs
             SELECT po.product_option_id, od.name, l.code
             FROM ' . DB_PREFIX . 'option_description od
             LEFT JOIN ' . DB_PREFIX . 'product_option po ON po.option_id = od.option_id
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON l.language_id = od.language_id
+            LEFT JOIN ' . DB_PREFIX . 'language l ON l.language_id = od.language_id
             WHERE po.product_option_id = %d',
             $productOptionId
         );
@@ -809,7 +838,7 @@ final class SQLs
             SELECT pov.product_option_value_id, ovd.name, l.code
             FROM ' . DB_PREFIX . 'product_option_value pov
             LEFT JOIN ' . DB_PREFIX . 'option_value_description ovd ON pov.option_value_id = ovd.option_value_id
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON ovd.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'language l ON ovd.language_id = l.language_id
             WHERE pov.product_option_value_id = %d',
             $productOptionValueId
         );
@@ -863,7 +892,7 @@ final class SQLs
         return sprintf('
             SELECT fgd.*, l.code
             FROM ' . DB_PREFIX . 'filter_group_description fgd
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON fgd.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'language l ON fgd.language_id = l.language_id
             WHERE fgd.filter_group_id = %d',
             $specificId
         );
@@ -884,7 +913,7 @@ final class SQLs
         return sprintf('
             SELECT fd.*, l.code
             FROM ' . DB_PREFIX . 'filter_description fd
-            LEFT JOIN ' . DB_PREFIX . 'LANGUAGE l ON fd.language_id = l.language_id
+            LEFT JOIN ' . DB_PREFIX . 'language l ON fd.language_id = l.language_id
             WHERE fd.filter_id = %d',
             $specificValueId
         );
@@ -949,7 +978,7 @@ final class SQLs
     //// <editor-fold defaultstate="collapsed" desc="Status Change">
     public static function statusChangeByOrder($orderId)
     {
-        return sprintf('SELECT count(*) FROM ' . DB_PREFIX . 'ORDER WHERE order_id = %d', $orderId);
+        return sprintf('SELECT count(*) FROM ' . DB_PREFIX . 'order WHERE order_id = %d', $orderId);
     }
 
     public static function statusChangeAdd($orderId, $statusId, $payment)

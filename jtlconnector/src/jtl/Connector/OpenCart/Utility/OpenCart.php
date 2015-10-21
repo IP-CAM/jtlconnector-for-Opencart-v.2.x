@@ -55,7 +55,7 @@ class OpenCart extends Singleton
             $event->register($result['trigger'], $result['action']);
         }
         $result = $database->query('SELECT directory FROM ' . DB_PREFIX . 'language WHERE code = "de"');
-        if ($result->num_rows === 0) {
+        if ($result->num_rows === 0 || !is_dir(DIR_CATALOG . 'language/' . $result->row['directory'])) {
             $this->directory = 'english';
         } else {
             $this->directory = $result->row['directory'];

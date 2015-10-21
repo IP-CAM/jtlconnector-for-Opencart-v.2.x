@@ -30,6 +30,7 @@
                 <include name="index.php"/>
                 <include name="LICENSE"/>
                 <include name="CHANGELOG.md"/>
+                <include name="version"/>
             </fileset>
         </copy>
 
@@ -57,19 +58,16 @@
         </copy>
         <!-- Deutsche Sprache hinzufügen -->
 
-        <delete dir="./build"/>
         <copy todir="./build/">
             <fileset dir="./jtlconnector">
                 <include name="src/"/>
                 <include name="vendor/"/>
-                <include name="version"/>
             </fileset>
         </copy>
     </target>
 
     <target name="package" depends="build">
         <loadfile property="version" file="jtlconnector/version"/>
-        <delete file="./dist/jtlconnector/connector.phar"/>
         <pharpackage
                 destfile="./dist/jtlconnector/index.phar"
                 basedir="./build"
