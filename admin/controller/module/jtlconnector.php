@@ -20,7 +20,11 @@ class ControllerModuleJtlconnector extends Controller
     //// <editor-fold defaultstate="collapsed" desc="Edit Action">
     public function index()
     {
-        $this->load->language('module/jtlconnector');
+        if (version_compare(VERSION, '2.1.0.0', '<')) {
+            $this->load->language('module/jtlconnector');
+        } else {
+            $this->language->load('module/jtlconnector');
+        }
 
         $this->document->setTitle($this->language->get('heading_title'));
 
