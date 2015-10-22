@@ -19,7 +19,7 @@ class ProductStockLevel extends BaseController
 
     protected function pullQuery($data, $limit = null)
     {
-        return SQLs::productStockLevelPull();
+        return SQLs::productStockLevelPull($limit);
     }
 
     public function pushData(ProductStockLevelModel $data, $model)

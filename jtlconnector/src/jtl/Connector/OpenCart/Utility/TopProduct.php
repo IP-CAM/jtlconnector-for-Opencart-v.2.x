@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Utility;
 
 use jtl\Connector\Core\Utilities\Singleton;
+use jtl\Connector\Model\Product;
 
 class TopProduct extends Singleton
 {
@@ -24,7 +25,20 @@ class TopProduct extends Singleton
         $this->oc = OpenCart::getInstance();
     }
 
-    public function handleTopProduct($id)
+    public function isTopProduct($productId)
+    {
+        $ocModule = $this->oc->loadAdminModel('extension/module');
+        if ($ocModule instanceof \ModelExtensionModule) {
+            $moduleId = $this->database->queryOne(SQLs::topProductsId(self::TOP_PRODUCTS_NAME));
+            $module = $ocModule->getModule($moduleId);
+            if (isset($module['product'])) {
+                return in_array($productId, $module['product']);
+            }
+        }
+        return false;
+    }
+
+    public function handleTopProductPush($id)
     {
         $data = [
             'name' => self::TOP_PRODUCTS_NAME,

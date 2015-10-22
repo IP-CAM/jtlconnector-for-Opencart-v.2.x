@@ -72,7 +72,7 @@ final class SQLs
     {
         return sprintf('
             INSERT IGNORE INTO jtl_connector_checksum (endpointId, type, checksum)
-            VALUES (%d, %d, %d)',
+            VALUES (%d, %d, "%s")',
             $endpointId, $type, $checksum
         );
     }
@@ -326,7 +326,7 @@ final class SQLs
     public static function updateCurrency($currencyId, $value)
     {
         return sprintf(
-            'UPDATE ' . DB_PREFIX . 'currency SET value = %d WHERE currency_id = %d',
+            'UPDATE ' . DB_PREFIX . 'currency SET value = %f WHERE currency_id = %d',
             $currencyId, $value
         );
     }
@@ -780,13 +780,19 @@ final class SQLs
         );
     }
 
-    public static function productStockLevelPull()
+    public static function topProductsId($moduleName)
+    {
+        return sprintf('SELECT module_id FROM ' . DB_PREFIX . 'module WHERE name = "%s"', $moduleName);
+    }
+
+    public static function productStockLevelPull($limit)
     {
         return sprintf('
             SELECT p.quantity, p.product_id
             FROM ' . DB_PREFIX . 'product p
-            LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d',
-            IdentityLinker::TYPE_PRODUCT
+            LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
+            LIMIT %d',
+            IdentityLinker::TYPE_PRODUCT, $limit
         );
     }
 
@@ -795,6 +801,25 @@ final class SQLs
         return sprintf('
             UPDATE ' . DB_PREFIX . 'product SET quantity = %d WHERE product_id = %d',
             $stockLevel, $productId
+        );
+    }
+
+    public static function productPricePull($limit)
+    {
+        return sprintf('
+            SELECT p.price, p.product_id
+            FROM ' . DB_PREFIX . 'product p
+            LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
+            LIMIT %d',
+            IdentityLinker::TYPE_PRODUCT, $limit
+        );
+    }
+
+    public static function productPricePush($productId, $price)
+    {
+        return sprintf('
+            UPDATE ' . DB_PREFIX . 'product SET price = %f WHERE product_id = %d',
+            $price, $productId
         );
     }
     // </editor-fold>
@@ -1025,7 +1050,7 @@ final class SQLs
             SELECT r.tax_class_id
             FROM ' . DB_PREFIX . 'tax_rule r
             LEFT JOIN ' . DB_PREFIX . 'tax_rate tr ON tr.tax_rate_id = r.tax_rate_id
-            WHERE tr.rate = %d',
+            WHERE tr.rate = %f',
             $rate
         );
     }

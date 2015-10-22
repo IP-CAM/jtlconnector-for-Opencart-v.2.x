@@ -87,12 +87,6 @@
             </metadata>
         </pharpackage>
         <move file="./dist/jtlconnector/index.phar" tofile="./dist/jtlconnector/connector.phar"/>
-        <phingcall target="zip">
-            <property name="version" value="${version}"/>
-        </phingcall>
-    </target>
-
-    <target name="zip">
         <zip destfile="./dist/jtl-connector-opencart-${version}.zip" basedir="./dist"/>
     </target>
 

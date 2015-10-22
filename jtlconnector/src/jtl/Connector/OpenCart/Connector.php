@@ -14,7 +14,6 @@ use jtl\Connector\Core\Rpc\RequestPacket;
 use jtl\Connector\Core\Utilities\RpcMethod;
 use jtl\Connector\OpenCart\Authentication\TokenLoader;
 use jtl\Connector\OpenCart\Checksum\ChecksumLoader;
-use jtl\Connector\OpenCart\Mapper\GlobalData\GlobalData;
 use jtl\Connector\OpenCart\Mapper\PrimaryKeyMapper;
 use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\Result\Action;
@@ -39,13 +38,13 @@ class Connector extends BaseConnector
     public function canHandle()
     {
         $controller = RpcMethod::buildController($this->getMethod()->getController());
-        if ($this->startsWith($controller, 'Product') && $controller !== 'ProductStockLevel') {
+        if ($controller === 'Product') {
             $controller = 'Product\\' . $controller;
-        } elseif (strpos($controller, 'Order') !== false) {
+        } elseif ($controller === 'CustomerOrder') {
             $controller = 'Order\\' . $controller;
-        } elseif (in_array($controller, array_merge(['GlobalData'], GlobalData::getModels()))) {
+        } elseif ($controller === 'GlobalData') {
             $controller = 'GlobalData\\' . $controller;
-        } elseif (strpos($controller, 'Specific') !== false) {
+        } elseif ($controller === 'Specific') {
             $controller = 'Specific\\' . $controller;
         }
         $class = Constants::CONTROLLER_NAMESPACE . $controller;
@@ -55,12 +54,6 @@ class Connector extends BaseConnector
             return is_callable(array($this->controller, $this->action));
         }
         return false;
-    }
-
-    private function startsWith($haystack, $needle)
-    {
-        // search backwards starting from haystack length characters from the end
-        return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
     }
 
     public function handle(RequestPacket $requestpacket)

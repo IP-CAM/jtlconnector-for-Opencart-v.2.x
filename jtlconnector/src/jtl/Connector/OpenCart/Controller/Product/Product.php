@@ -36,6 +36,8 @@ class Product extends MainEntityController
                 if (is_string($vat)) {
                     $host->setVat(doubleval($vat));
                 }
+                $isTopProduct = $this->topProductUtil->isTopProduct($row['product_id']);
+                $host->setIsTopProduct($isTopProduct);
             }
             $return[] = $host;
         }
@@ -61,7 +63,7 @@ class Product extends MainEntityController
             $ocProduct->editProduct($id, $endpoint);
         }
         if ($data->getIsTopProduct()) {
-            $this->topProductUtil->handleTopProduct($id);
+            $this->topProductUtil->handleTopProductPush($id);
         }
         return $data;
     }

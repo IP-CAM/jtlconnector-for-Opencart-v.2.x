@@ -6,12 +6,6 @@
 
 namespace jtl\Connector\OpenCart\Mapper\Product;
 
-use jtl\Connector\OpenCart\Mapper\BaseMapper;
-
-class ProductPriceItem extends BaseMapper
+class ProductPriceItem extends \jtl\Connector\OpenCart\Mapper\ProductPriceItem
 {
-    protected $pull = [
-        'productPriceId' => 'product_id',
-        'netPrice' => 'price'
-    ];
 }
