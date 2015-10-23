@@ -20,10 +20,10 @@ class ControllerModuleJtlconnector extends Controller
     //// <editor-fold defaultstate="collapsed" desc="Edit Action">
     public function index()
     {
-        if (version_compare(VERSION, '2.1.0.0', '<')) {
-            $this->load->language('module/jtlconnector');
-        } else {
+        if (version_compare(VERSION, '2.0.3.1', '>')) {
             $this->language->load('module/jtlconnector');
+        } else {
+            $this->load->language('module/jtlconnector');
         }
 
         $this->document->setTitle($this->language->get('heading_title'));
@@ -251,10 +251,10 @@ class ControllerModuleJtlconnector extends Controller
     private function handleCustomFields()
     {
         $post = $this->request->post;
-        if (version_compare(VERSION, '2.1.0.0', '<')) {
-            $this->load->model('sale/custom_field');
-        } else {
+        if (version_compare(VERSION, '2.0.3.1', '>')) {
             $this->load->model('customer/custom_field');
+        } else {
+            $this->load->model('sale/custom_field');
         }
         $german = $this->db->query('SELECT language_id FROM ' . DB_PREFIX . 'language WHERE code = "de"');
         $otherLanguages = $this->db->query('SELECT language_id FROM ' . DB_PREFIX . 'language WHERE code != "de"');
@@ -343,10 +343,10 @@ class ControllerModuleJtlconnector extends Controller
             $data['custom_field_description'] = $customFieldDescription;
             $data['custom_field_value'] = [$sirDescription, $madamDescription, $companyDescription];
             $this->addCustomerGroup($data);
-            if (version_compare(VERSION, '2.1.0.0', '<')) {
-                $this->model_sale_custom_field->addCustomField($data);
-            } else {
+            if (version_compare(VERSION, '2.0.3.1', '>')) {
                 $this->model_customer_custom_field->addCustomField($data);
+            } else {
+                $this->model_sale_custom_field->addCustomField($data);
             }
         } elseif ($result->num_rows === 1) {
             $this->setCustomFieldStatus($result->row['custom_field_id'], 1);
@@ -406,10 +406,10 @@ class ControllerModuleJtlconnector extends Controller
             $data['custom_field_description'] = $customFieldDescription;
             $data['custom_field_value'] = [$drDescription, $profDescription];
             $this->addCustomerGroup($data);
-            if (version_compare(VERSION, '2.1.0.0', '<')) {
-                $this->model_sale_custom_field->addCustomField($data);
-            } else {
+            if (version_compare(VERSION, '2.0.3.1', '>')) {
                 $this->model_customer_custom_field->addCustomField($data);
+            } else {
+                $this->model_sale_custom_field->addCustomField($data);
             }
         } elseif ($result->num_rows === 1) {
             $this->setCustomFieldStatus($result->row['custom_field_id'], 1);
@@ -444,10 +444,10 @@ class ControllerModuleJtlconnector extends Controller
             }
             $data['custom_field_description'] = $customFieldDescription;
             $this->addCustomerGroup($data);
-            if (version_compare(VERSION, '2.1.0.0', '<')) {
-                $this->model_sale_custom_field->addCustomField($data);
-            } else {
+            if (version_compare(VERSION, '2.0.3.1', '>')) {
                 $this->model_customer_custom_field->addCustomField($data);
+            } else {
+                $this->model_sale_custom_field->addCustomField($data);
             }
         } elseif ($result->num_rows === 1) {
             $this->setCustomFieldStatus($result->row['custom_field_id'], 1);

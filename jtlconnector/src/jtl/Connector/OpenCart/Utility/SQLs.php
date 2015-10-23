@@ -193,10 +193,11 @@ final class SQLs
     public static function customerOrderPull($limit)
     {
         return sprintf('
-            SELECT o.*, l.code, c.iso_code_3
+            SELECT o.*, l.code, c.iso_code_3, (o.total - ot.value) as total_sum
             FROM ' . DB_PREFIX . 'order o
             LEFT JOIN ' . DB_PREFIX . 'language l ON o.language_id = l.language_id
             LEFT JOIN ' . DB_PREFIX . 'country c ON o.payment_country_id = c.country_id
+            LEFT JOIN ' . DB_PREFIX . 'order_total ot ON o.order_id = ot.order_id AND ot.code = "tax"
             LEFT JOIN jtl_connector_link cl ON o.order_id = cl.endpointId AND cl.type = %d
             WHERE cl.hostId IS NULL
             LIMIT %d',

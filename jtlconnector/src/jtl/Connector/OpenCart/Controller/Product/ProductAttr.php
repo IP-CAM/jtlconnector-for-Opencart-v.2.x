@@ -52,7 +52,7 @@ class ProductAttr extends BaseController
         $descriptions = [];
         foreach ($attr->getI18ns() as $i18n) {
             $languageId = $this->utils->getLanguageId($i18n->getLanguageISO());
-            if ($languageId !== false) {
+            if (!is_null($languageId)) {
                 $values[intval($languageId)] = [
                     'text' => $i18n->getValue()
                 ];

@@ -19,11 +19,7 @@ class CustomField extends Singleton
     {
         $valueId = $this->database->queryOne(SQLs::freeFieldVatId());
         if (!is_null($valueId)) {
-            if (version_compare($this->ocVersion, '2.1.0.0', '<')) {
-                $customFields = unserialize($data['custom_field']);
-            } else {
-                $customFields = json_decode($data['custom_field'], true);
-            }
+            $customFields = $this->parseCustomFields($data);
             return (isset($customFields[$valueId])) ? $customFields[$valueId] : '';
         }
         return '';
@@ -33,11 +29,7 @@ class CustomField extends Singleton
     {
         $freeFieldId = $this->database->queryOne(SQLs::freeFieldTitleId());
         if (!is_null($freeFieldId)) {
-            if (version_compare($this->ocVersion, '2.1.0.0', '<')) {
-                $customFields = unserialize($data['custom_field']);
-            } else {
-                $customFields = json_decode($data['custom_field'], true);
-            }
+            $customFields = $this->parseCustomFields($data);
             if (isset($customFields[$freeFieldId])) {
                 return $this->database->queryOne(SQLs::freeFieldValue($customFields[$freeFieldId]));
             } else {
@@ -51,11 +43,7 @@ class CustomField extends Singleton
     {
         $freeFieldId = $this->database->queryOne(SQLs::freeFieldSalutationId());
         if (!is_null($freeFieldId)) {
-            if (version_compare($this->ocVersion, '2.1.0.0', '<')) {
-                $customFields = unserialize($data['custom_field']);
-            } else {
-                $customFields = json_decode($data['custom_field'], true);
-            }
+            $customFields = $this->parseCustomFields($data);
             if (isset($customFields[$freeFieldId])) {
                 return $this->database->queryOne(SQLs::freeFieldValue($customFields[$freeFieldId]));
             } else {
@@ -63,6 +51,17 @@ class CustomField extends Singleton
             }
         }
         return '';
+    }
+
+    private function parseCustomFields(array $data)
+    {
+        if (version_compare($this->ocVersion, '2.0.3.1', '>')) {
+            $customFields = json_decode($data['custom_field'], true);
+            return $customFields;
+        } else {
+            $customFields = unserialize($data['custom_field']);
+            return $customFields;
+        }
     }
 
     /**

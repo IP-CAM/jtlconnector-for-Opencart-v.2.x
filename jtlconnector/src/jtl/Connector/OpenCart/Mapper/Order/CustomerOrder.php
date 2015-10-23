@@ -22,7 +22,7 @@ class CustomerOrder extends I18nBaseMapper
         'currencyIso' => 'currency_code',
         'languageISO' => null,
         'note' => 'comment',
-        'totalSum' => 'total',
+        'totalSum' => 'total_sum',
         'shippingMethodName' => 'shipping_method',
         'paymentModuleCode' => null,
         'items' => 'Order\CustomerOrderItem',
