@@ -1,5 +1,5 @@
+- Support of version 2 OpenCart shops
 - Category and Manufacturer can only have one picture
-- Payment und Shipping are not supported
 - Base price is not supported
 - Units are not supported
 - Warehouse is not supported

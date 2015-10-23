@@ -31,12 +31,13 @@ class Category extends MainEntityController
         $category = $this->mapper->toEndpoint($data);
         $ocCategory = $this->oc->loadAdminModel('catalog/category');
         if ($ocCategory instanceof \ModelCatalogCategory) {
-            if (is_null($data->getId()->getEndpoint())) {
+            $id = $data->getId()->getEndpoint();
+            if (empty($id)) {
                 $id = $ocCategory->addCategory($category);
                 $data->getId()->setEndpoint($id);
                 self::$idCache[$data->getId()->getHost()] = $id;
             } else {
-                $ocCategory->editCategory($data->getId()->getEndpoint(), $category);
+                $ocCategory->editCategory($id, $category);
             }
         }
         return $data;

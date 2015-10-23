@@ -64,6 +64,32 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-status"><?= $text_sqlite ?></label>
+
+                            <div class="col-sm-10">
+                                <?php if ($sqlite): ?>
+                                <p class="text-success"><span class="fa fa-check"></span></p>
+                                <?php else: ?>
+                                <p class="text-danger"><span class="fa fa-times"></span></p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-status"><?= $text_zipping ?></label>
+
+                            <div class="col-sm-10">
+                                <?php if ($zipping): ?>
+                                <p class="text-success"><span class="fa fa-check"></span></p>
+                                <?php else: ?>
+                                <p class="text-danger"><span class="fa fa-times"></span></p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="panel panel-default">

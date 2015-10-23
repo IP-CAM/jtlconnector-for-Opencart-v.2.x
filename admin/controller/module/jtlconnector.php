@@ -46,6 +46,8 @@ class ControllerModuleJtlconnector extends Controller
         $data['text_password'] = $this->language->get('text_password');
         $data['text_version'] = $this->language->get('text_version');
         $data['text_php_version'] = $this->language->get('text_php_version');
+        $data['text_sqlite'] = $this->language->get('text_sqlite');
+        $data['text_zipping'] = $this->language->get('text_zipping');
         $data['text_free_fields'] = $this->language->get('text_free_fields');
         $data['text_free_field_salutation'] = $this->language->get('text_free_field_salutation');
         $data['text_free_field_title'] = $this->language->get('text_free_field_title');
@@ -54,6 +56,7 @@ class ControllerModuleJtlconnector extends Controller
         $data['url'] = HTTP_CATALOG . 'jtlconnector/';
         $data['version'] = self::CONNECTOR_VERSION;
         $data['php_version'] = version_compare(PHP_VERSION, '5.4', '>=');
+        $data['sqlite'] = extension_loaded('sqlite3') && class_exists('Sqlite3');
         $data['zipping'] = class_exists('ZipArchive');
         $data['write_access'] = $this->writeAccess();
         $data['salutation_activated'] = $this->salutationActivated();

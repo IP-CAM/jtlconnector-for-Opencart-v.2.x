@@ -26,11 +26,12 @@ class Manufacturer extends MainEntityController
         $ocManufacturer = $this->oc->loadAdminModel('catalog/manufacturer');
         if ($ocManufacturer instanceof \ModelCatalogManufacturer) {
             $endpoint = $this->mapper->toEndpoint($data);
-            if (is_null($data->getId()->getEndpoint())) {
+            $id = $data->getId()->getEndpoint();
+            if (empty($id)) {
                 $id = $ocManufacturer->addManufacturer($endpoint);
                 $data->getId()->setEndpoint($id);
             } else {
-                $ocManufacturer->editManufacturer($data->getId()->getEndpoint(), $endpoint);
+                $ocManufacturer->editManufacturer($id, $endpoint);
             }
         }
         return $data;

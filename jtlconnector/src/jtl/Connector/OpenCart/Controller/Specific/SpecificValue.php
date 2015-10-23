@@ -25,7 +25,8 @@ class SpecificValue extends BaseController
     public function pushData(SpecificModel $data, &$model)
     {
         foreach ($data->getValues() as $value) {
-            if (is_null($value->getId()->getEndpoint())) {
+            $id = $value->getId()->getEndpoint();
+            if (empty($id)) {
                 $query = SQLs::specificValuePush($data->getId()->getEndpoint(), $value->getSort());
                 $id = $this->database->query($query);
                 $value->getId()->setEndpoint($id);

@@ -90,9 +90,9 @@ final class SQLs
     public static function crossSellingPull($limit)
     {
         return sprintf('
-            SELECT DISTINCT pr.product_id
+            SELECT DISTINCT(pr.product_id)
             FROM ' . DB_PREFIX . 'product_related pr
-            LEFT JOIN jtl_connector_link l ON CONCAT_WS("_", pr.product_id, pr.related_id) = l.endpointId AND l.type = %d
+            LEFT JOIN jtl_connector_link l ON pr.product_id = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL
             LIMIT %d',
             IdentityLinker::TYPE_CROSSSELLING, $limit
@@ -118,7 +118,7 @@ final class SQLs
         return sprintf('
             SELECT COUNT(DISTINCT(pr.product_id))
             FROM ' . DB_PREFIX . 'product_related pr
-            LEFT JOIN jtl_connector_link l ON CONCAT_WS("_", pr.product_id, pr.related_id) = l.endpointId AND l.type = %d
+            LEFT JOIN jtl_connector_link l ON pr.product_id = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL',
             IdentityLinker::TYPE_CROSSSELLING
         );

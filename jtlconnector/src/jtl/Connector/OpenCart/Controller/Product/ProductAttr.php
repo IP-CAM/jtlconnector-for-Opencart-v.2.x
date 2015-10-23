@@ -25,15 +25,19 @@ class ProductAttr extends BaseController
 
     public function pushData(ProductModel $data, &$model)
     {
+        $attributes = [];
         $model['product_attribute'] = [];
         foreach ($data->getAttributes() as $attr) {
             if (!$attr->getIsCustomProperty()) {
                 list($values, $descriptions) = $this->buildI18ns($attr);
                 $attributeId = $this->getOrCreateAttribute($descriptions);
-                $model['product_attribute'][] = [
-                    'attribute_id' => $attributeId,
-                    'product_attribute_description' => $values
-                ];
+                if (!in_array($attributeId, $attributes)) {
+                    $model['product_attribute'][] = [
+                        'attribute_id' => $attributeId,
+                        'product_attribute_description' => $values
+                    ];
+                    $attributes[] = $attributeId;
+                }
             }
         }
     }

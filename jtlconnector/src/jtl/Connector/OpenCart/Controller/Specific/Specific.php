@@ -29,11 +29,12 @@ class Specific extends MainEntityController
             $filterGroup = $this->mapper->toEndpoint($data);
             $ocFilter = $this->oc->loadAdminModel('catalog/filter');
             if ($ocFilter instanceof \ModelCatalogFilter) {
-                if (is_null($data->getId()->getEndpoint())) {
+                $id = $data->getId()->getEndpoint();
+                if (empty($id)) {
                     $id = $ocFilter->addFilter($filterGroup);
                     $data->getId()->setEndpoint($id);
                 } else {
-                    $ocFilter->editFilter($data->getId()->getEndpoint(), $filterGroup);
+                    $ocFilter->editFilter($id, $filterGroup);
                 }
             }
             $specificValueCtrl = new SpecificValueCtrl();

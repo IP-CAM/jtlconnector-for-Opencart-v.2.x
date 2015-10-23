@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Mapper;
 
+use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\Mapper\IPrimaryKeyMapper;
 use jtl\Connector\OpenCart\Utility\Db;

@@ -71,7 +71,7 @@ class Image extends MainEntityController
         $model = $this->mapper->toHost($picture);
         if ($model instanceof ImageModel) {
             $model->setRelationType($type);
-            $model->setRemoteURL(HTTP_CATALOG . 'image/' . $model->getFilename());
+            $model->setRemoteURL(HTTPS_CATALOG . 'image/' . $model->getFilename());
         }
         return $model;
     }
@@ -91,7 +91,8 @@ class Image extends MainEntityController
                 if ($data->getRelationType() === ImageRelationType::TYPE_PRODUCT) {
                     $this->pushProductImage($foreignKey, $path, $data);
                 } else {
-                    $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($foreignKey, $path);
+                    $id = $this->{'push' . ucfirst($data->getRelationType()) . 'Image'}($foreignKey, $path);
+                    $data->getId()->setEndpoint($id);
                 }
             }
         }
@@ -105,11 +106,11 @@ class Image extends MainEntityController
         if ($path !== false) {
             if ($isCover) {
                 $this->database->query(SQLs::productSetCover($path, $foreignKey));
-                $data->getId()->setEndpoint("p_" . $foreignKey);
+                $data->getId()->setEndpoint('p_' . $foreignKey);
             } else {
                 $query = SQLs::productAddImage($foreignKey, $path, $data->getSort());
                 $result = $this->database->query($query);
-                $data->getId()->setEndpoint("p_{$foreignKey}_{$result['id']}}");
+                $data->getId()->setEndpoint(sprintf('p_%d_%d', $foreignKey, $result));
             }
         }
     }
@@ -118,21 +119,21 @@ class Image extends MainEntityController
     private function pushCategoryImage($foreignKey, $path)
     {
         $this->database->query(SQLs::imageCategoryPush($path, $foreignKey));
+        return 'c_' . $foreignKey;
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
     private function pushManufacturerImage($foreignKey, $path)
     {
         $this->database->query(SQLs::imageManufacturerPush($path, $foreignKey));
+        return 'm_' . $foreignKey;
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
-    private
-    function pushProductVariationValueImage(
-        $foreignKey,
-        $path
-    ) {
+    private function pushProductVariationValueImage($foreignKey, $path)
+    {
         $this->database->query(SQLs::imageProductVariationValuePush($path, $foreignKey));
+        return 'pvv_' . $foreignKey;
     }
 
     private function saveImage(ImageModel $data)

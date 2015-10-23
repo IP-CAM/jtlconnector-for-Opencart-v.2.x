@@ -26,7 +26,8 @@ class ProductSpecific extends BaseController
     {
         $model['product_filter'] = [];
         foreach ($data->getSpecifics() as $specific) {
-            if (!is_null($specific->getSpecificValueId()->getEndpoint())) {
+            $id = $specific->getSpecificValueId()->getEndpoint();
+            if (!empty($id)) {
                 $specificValueId = $specific->getSpecificValueId()->getEndpoint();
                 $model['product_filter'][] = $specificValueId;
                 foreach ($data->getCategories() as $category) {

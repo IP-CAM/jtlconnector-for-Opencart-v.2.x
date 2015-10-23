@@ -24,10 +24,10 @@ class Currency extends BaseController
 
     protected function pushData(CurrencyModel $data, $model)
     {
-        $currencyId = $data->getId()->getEndpoint();
         $ocCurrency = $this->oc->loadAdminModel('localisation/currency');
         if ($ocCurrency instanceof \ModelLocalisationCurrency) {
-            if (is_null($currencyId)) {
+            $id = $data->getId()->getEndpoint();
+            if (empty($id)) {
                 $currency = $this->mapper->toEndpoint($data);
                 $ocCurrency->addCurrency($currency);
             } else {
