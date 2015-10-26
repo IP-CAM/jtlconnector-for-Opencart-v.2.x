@@ -1,3 +1,22 @@
+0.6.0
+------
+- Support VAT number, salutation and title by using custom fields
+- Add title tag für category
+- Partial product update: product price and stock level
+- Refactor all tests
+- Add missing tests for global data
+- Decide between different opencart versions from 2.0.0.0 to newest
+- Add missing product attribute i18n controller
+- Add top product flag in pull
+- Add checks for sqlite and zipping extension in opencart modules
+
+- Fix shipping method taken from language file
+- Fix image mapping
+- Fix order brutto to netto
+- Change decimals which are floats
+- Change endpoint id null checks to empty checks
+- Fix attributes with missing language not respected
+
 0.5.0
 ------
 - Add delivery note support
