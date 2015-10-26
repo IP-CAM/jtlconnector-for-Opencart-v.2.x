@@ -12,34 +12,25 @@ class CrossSellingTest extends AbstractMapperTest
         return new CrossSellingMock();
     }
 
-    function getHost()
-    {
-        $return = new \jtl\Connector\Model\CrossSelling();
-        $return->setProductId(new Identity("", 1));
-        $return->setItems([]);
-        return $return;
-    }
-
     function getEndpoint()
     {
         return [
-            'product_id' => "1"
+            'id' => '1',
+            'product_id' => '1'
         ];
     }
 
     protected function getMappedHost()
     {
         $return = new \jtl\Connector\Model\CrossSelling();
+        $return->setId(new Identity("1", 0));
         $return->setProductId(new Identity("1", 0));
         $return->setItems([]);
         return $return;
     }
 
-    protected function getMappedEndpoint()
+    public function testPush()
     {
-        return [
-            'product_id' => ""
-        ];
     }
 }
 

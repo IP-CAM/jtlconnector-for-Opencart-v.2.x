@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Drawing\ImageRelationType;
 use jtl\Connector\Model\Image as ImageModel;
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;

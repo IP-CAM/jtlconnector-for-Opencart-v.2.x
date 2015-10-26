@@ -6,6 +6,7 @@
 
 namespace jtl\Connector\OpenCart\Controller;
 
+use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Model\CrossSelling as CrossSellingModel;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
@@ -31,6 +32,7 @@ class CrossSelling extends MainEntityController
                     $this->database->query(SQLs::crossSellingPush($id, $relatedId->getEndpoint()));
                 }
             }
+            $data->getId()->setEndpoint($id);
         }
         return $data;
     }

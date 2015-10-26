@@ -9,12 +9,8 @@ namespace jtl\Connector\OpenCart\Mapper;
 class CrossSelling extends BaseMapper
 {
     protected $pull = [
+        'id' => 'id',
         'productId' => 'product_id',
         'items' => 'CrossSellingItem'
-    ];
-
-    protected $push = [
-        'product_id' => 'productId',
-        'CrossSellingItem' => 'items'
     ];
 }
