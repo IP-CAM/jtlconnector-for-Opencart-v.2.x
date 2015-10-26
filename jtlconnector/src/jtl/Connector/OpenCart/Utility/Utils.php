@@ -25,12 +25,7 @@ class Utils extends Singleton
         if (in_array($iso, $this->session->languages)) {
             return $this->session->languages[$iso];
         } else {
-            $id = Db::getInstance()->queryOne(sprintf('
-                SELECT language_id
-                FROM oc_language
-                WHERE code = "%s"',
-                Language::convert(null, $iso)
-            ));
+            $id = Db::getInstance()->queryOne(SQLs::languageId(Language::convert(null, $iso)));
             if (!is_null($id)) {
                 $this->session->languages[$iso] = $id;
             }

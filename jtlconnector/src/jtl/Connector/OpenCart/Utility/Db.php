@@ -11,7 +11,7 @@ use jtl\Connector\Core\Utilities\Singleton;
 
 class Db extends Singleton
 {
-    private $db;
+    protected $db;
 
     public function __construct()
     {

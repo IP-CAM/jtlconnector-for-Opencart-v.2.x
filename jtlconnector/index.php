@@ -1,6 +1,6 @@
 <?php
 
-defined('CONNECTOR_DIR') || define("CONNECTOR_DIR", __DIR__);
+defined('CONNECTOR_DIR') || define('CONNECTOR_DIR', __DIR__);
 
 $application = null;
 

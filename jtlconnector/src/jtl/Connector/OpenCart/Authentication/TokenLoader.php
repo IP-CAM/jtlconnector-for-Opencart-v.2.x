@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Authentication;
 
 use jtl\Connector\Authentication\ITokenLoader;
+use jtl\Connector\OpenCart\Utility\OpenCart;
 
 class TokenLoader implements ITokenLoader
 {
@@ -18,7 +19,6 @@ class TokenLoader implements ITokenLoader
      */
     public function load()
     {
-        return "YOLO";
-        //return OpenCart::getInstance()->loadToken();
+        return OpenCart::getInstance()->loadToken();
     }
 }

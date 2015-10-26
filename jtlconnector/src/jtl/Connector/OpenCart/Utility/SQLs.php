@@ -8,6 +8,8 @@ namespace jtl\Connector\OpenCart\Utility;
 
 use jtl\Connector\Linker\IdentityLinker;
 
+defined('DB_PREFIX') || define('DB_PREFIX', 'oc_');
+
 final class SQLs
 {
     // <editor-fold defaultstate="collapsed" desc="Attribute">
@@ -391,8 +393,8 @@ final class SQLs
     {
         return 'SELECT * FROM ' . DB_PREFIX . 'extension WHERE type = "shipping"';
     }
-
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Language">
     public static function languagePull()
     {
         return '
@@ -402,6 +404,17 @@ final class SQLs
             WHERE l.status = 1';
     }
 
+    public static function languageId($code)
+    {
+        return sprintf('
+            SELECT language_id
+            FROM ' . DB_PREFIX . 'language
+            WHERE code = "%s"',
+            $code
+        );
+    }
+
+    // </editor-fold>
     public static function globalDataStats()
     {
         return '

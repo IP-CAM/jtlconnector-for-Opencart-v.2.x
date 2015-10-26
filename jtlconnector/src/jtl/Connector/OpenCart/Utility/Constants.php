@@ -11,6 +11,7 @@ class Constants
 {
     const CORE_NAMESPACE = "\\jtl\\Connector\\";
     const CONNECTOR_NAMESPACE = "\\jtl\\Connector\\OpenCart\\";
+    const CONNECTOR_TEST_NAMESPACE = "\\jtl\\Connector\\OpenCart\\Tests\\";
     const MAPPER_NAMESPACE = "\\jtl\\Connector\\OpenCart\\Mapper\\";
     const CONTROLLER_NAMESPACE = "\\jtl\\Connector\\OpenCart\\Controller\\";
     const UTILITY_NAMESPACE = "\\jtl\\Connector\\OpenCart\\Utility\\";

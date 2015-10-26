@@ -72,7 +72,7 @@ abstract class BaseMapper extends Singleton
                 } elseif ($property->getType() == 'double') {
                     $value = floatval($value);
                 } elseif ($property->getType() == 'DateTime') {
-                    $value = Date::open_date($value) ? null : new \DateTime($value);
+                    $value = Date::isOpenDate($value) ? null : new \DateTime($value);
                 }
             }
             if (!empty($value)) {

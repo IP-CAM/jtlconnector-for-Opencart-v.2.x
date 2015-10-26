@@ -38,7 +38,7 @@ class ProductSpecialPrice extends BaseMapper
         $today = date("Y-m-d H:i:s");
         $start = $data['date_start'];
         $end = $data['date_end'];
-        return Date::is_open_time_frame($start, $end) || Date::between($today, $start, $end);
+        return Date::isOpenTimeFrame($start, $end) || Date::between($today, $start, $end);
     }
 
     protected function priority()

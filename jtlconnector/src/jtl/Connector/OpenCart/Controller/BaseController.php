@@ -32,10 +32,7 @@ abstract class BaseController extends Controller
 
     public function __construct()
     {
-        $this->database = Db::getInstance();
-        $this->oc = OpenCart::getInstance();
-        $this->utils = Utils::getInstance();
-
+        $this->initHelper();
         $reflect = new \ReflectionClass($this);
         $shortName = $reflect->getShortName();
         $this->controllerName = $shortName;
@@ -43,6 +40,13 @@ abstract class BaseController extends Controller
         if (class_exists($mapperClass)) {
             $this->mapper = new $mapperClass();
         }
+    }
+
+    protected function initHelper()
+    {
+        $this->database = Db::getInstance();
+        $this->oc = OpenCart::getInstance();
+        $this->utils = Utils::getInstance();
     }
 
     public function pull(QueryFilter $query)
