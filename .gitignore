@@ -7,3 +7,4 @@ composer.lock
 jtlconnector/vendor/**
 build/
 dist/
+truncate.sql
