@@ -20,7 +20,7 @@ class ControllerModuleJtlconnector extends Controller
     //// <editor-fold defaultstate="collapsed" desc="Edit Action">
     public function index()
     {
-        if (version_compare(VERSION, '2.0.3.1', '>')) {
+        if (version_compare(VERSION, '2.0.3.1', '>') || version_compare(VERSION, '1.5.6.4', '<=')) {
             $this->language->load('module/jtlconnector');
         } else {
             $this->load->language('module/jtlconnector');
@@ -38,7 +38,6 @@ class ControllerModuleJtlconnector extends Controller
         }
 
         $data['heading_title'] = $this->language->get('heading_title');
-
         $data['text_info'] = $this->language->get('text_info');
         $data['text_requirements'] = $this->language->get('text_requirements');
         $data['text_write_access'] = $this->language->get('text_write_access');
@@ -62,7 +61,6 @@ class ControllerModuleJtlconnector extends Controller
         $data['salutation_activated'] = $this->salutationActivated();
         $data['title_activated'] = $this->titleActivated();
         $data['vat_activated'] = $this->vatActivated();
-
         $data['button_save'] = $this->language->get('button_save');
         $data['button_cancel'] = $this->language->get('button_cancel');
 
@@ -99,11 +97,19 @@ class ControllerModuleJtlconnector extends Controller
             $data[self::CONFIG_PASSWORD_KEY] = $this->model_setting_setting->getSetting(self::CONFIG_KEY)[self::CONFIG_PASSWORD_KEY];
         }
 
-        $data['header'] = $this->load->controller('common/header');
-        $data['column_left'] = $this->load->controller('common/column_left');
-        $data['footer'] = $this->load->controller('common/footer');
-
-        $this->response->setOutput($this->load->view('module/jtlconnector.tpl', $data));
+        if (version_compare(VERSION, '1.5.6.4', '>')) {
+            $data['header'] = $this->load->controller('common/header');
+            $data['column_left'] = $this->load->controller('common/column_left');
+            $data['footer'] = $this->load->controller('common/footer');
+            $this->response->setOutput($this->load->view('module/jtlconnector.tpl', $data));
+        } else {
+            $this->data = $data;
+            $this->load->model('design/layout');
+            $this->data['layouts'] = $this->model_design_layout->getLayouts();
+            $this->template = 'module/jtlconnector.tpl';
+            $this->children = array('common/header', 'common/footer');
+            $this->response->setOutput($this->render());
+        }
     }
 
     private function writeAccess()
@@ -194,22 +200,62 @@ class ControllerModuleJtlconnector extends Controller
 
     private function activateFilter()
     {
-        $filterInstalled = 'SELECT * FROM ' . DB_PREFIX . 'extension WHERE type="module" AND CODE="filter"';
+        $categoryLayoutId = 3;
+        $filterInstalled = 'SELECT * FROM ' . DB_PREFIX . 'extension WHERE type = "module" AND CODE = "filter"';
         if (empty($this->db->query($filterInstalled)->rows)) {
             $this->db->query('INSERT INTO ' . DB_PREFIX . 'extension (type, CODE) VALUES ("module", "filter")');
         }
-        $filterActivated = 'SELECT * FROM ' . DB_PREFIX . 'setting WHERE `key`="filter_stats"';
-        if (empty($this->db->query($filterActivated)->rows)) {
-            $this->db->query('INSERT INTO ' . DB_PREFIX . 'setting SET store_id = 0, `code` = "filter", `key` = "filter_status", `value` = "1"');
-        } else {
-            $this->db->query('UPDATE ' . DB_PREFIX . 'setting SET `value` = "1" WHERE `key` = "filter_status"');
-        }
-        $filterInLayout = 'SELECT * FROM ' . DB_PREFIX . 'layout_module WHERE layout_id = 3 AND CODE="filter"';
-        if (empty($this->db->query($filterInLayout)->rows)) {
-            $this->db->query('
-                INSERT INTO ' . DB_PREFIX . 'layout_module (layout_id, CODE, position, sort_order)
-                VALUES (3, "filter", "column_left", 1)'
+        if (version_compare(VERSION, '1.5.6.4', '>')) {
+            $filterSettings = $this->model_setting_setting->getSetting('filter');
+            if (isset($filterSettings['filter_status'])) {
+                if ($filterSettings['filter_status'] != 1) {
+                    $this->model_setting_setting->editSettingValue('filter', 'filter_status', '1');
+                }
+            } else {
+                $filterSettings['filter_status'] = 1;
+                $this->model_setting_setting->editSetting('filter', $filterSettings);
+            }
+            $filterInLayout = sprintf('
+                SELECT *
+                FROM ' . DB_PREFIX . 'layout_module
+                WHERE layout_id = % AND CODE = "filter"',
+                $categoryLayoutId
             );
+            if (empty($this->db->query($filterInLayout)->rows)) {
+                $this->db->query('
+                    INSERT INTO ' . DB_PREFIX . 'layout_module (layout_id, CODE, position, sort_order)
+                    VALUES (3, "filter", "column_left", 1)'
+                );
+            }
+        } else {
+            $filterSettings = $this->model_setting_setting->getSetting('filter');
+            if (isset($filterSettings['filter_module'])) {
+                $found = false;
+                foreach ($filterSettings['filter_module'] as $i => $filter) {
+                    if ($filter['layout_id'] === $categoryLayoutId) {
+                        $found = true;
+                        $filterSettings[$i]['status'] = 1;
+                        $filterSettings[$i]['sort_order'] = 1;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $filterSettings['filter_module'][] = [
+                        "layout_id" => $categoryLayoutId,
+                        "position" => "column_left",
+                        "sort_order" => 1,
+                        "status" => 1
+                    ];
+                }
+            } else {
+                $filterSettings['filter_module'][] = [
+                    "layout_id" => $categoryLayoutId,
+                    "position" => "column_left",
+                    "sort_order" => 1,
+                    "status" => 1
+                ];
+            }
+            $this->model_setting_setting->editSetting('filter', $filterSettings);
         }
     }
 
