@@ -1,3 +1,12 @@
+0.6.1
+------
+- Add id to cross sellings
+- Change connector version storage
+- Hotfix missing bootstrap file
+- Move CHANGELOG and README files
+- Write tests for mapper and utility
+- Make code more decoupled for testing
+
 0.6.0
 ------
 - Support VAT number, salutation and title by using custom fields
@@ -56,4 +65,5 @@
 - Update the payment status of an order
 - Fix the deletion of images and articles before every sync
 - Fix null reference of items without a language identification
-- Fix hardcoded database credentials error- type checks
+- Fix hardcoded database credentials error
+- type checks
