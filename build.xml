@@ -28,9 +28,12 @@
         <copy todir="./dist/jtlconnector/">
             <fileset dir="./jtlconnector">
                 <include name="index.php"/>
+            </fileset>
+        </copy>
+        <copy todir="./dist/jtlconnector/">
+            <fileset dir="./">
                 <include name="LICENSE"/>
                 <include name="CHANGELOG.md"/>
-                <include name="version"/>
             </fileset>
         </copy>
 
@@ -56,7 +59,11 @@
                 <include name="jtlconnector.php"/>
             </fileset>
         </copy>
-        <!-- Deutsche Sprache hinzufügen -->
+        <copy todir="./dist/admin/language/deutsch/module/">
+            <fileset dir="./admin/language/deutsch/module">
+                <include name="jtlconnector.php"/>
+            </fileset>
+        </copy>
 
         <copy todir="./build/">
             <fileset dir="./jtlconnector">

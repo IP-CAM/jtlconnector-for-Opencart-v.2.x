@@ -102,6 +102,11 @@ class OpenCart extends Singleton
         return $this->getConfig(\ControllerModuleJtlconnector::CONFIG_PASSWORD_KEY);
     }
 
+    public function getConnectorVersion()
+    {
+        return $this->getConfig(\ControllerModuleJtlconnector::CONNECTOR_VERSION);
+    }
+
     public function getVersion()
     {
         return $this->getConfig(\ControllerModuleJtlconnector::CONFIG_OPENCART_VERSION);

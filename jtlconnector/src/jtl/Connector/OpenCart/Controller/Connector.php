@@ -77,11 +77,10 @@ class Connector extends Controller
             ->setExecutionTime((int)ini_get('max_execution_time'))
             ->setPostMaxSize($returnMegaBytes(ini_get('post_max_size')))
             ->setUploadMaxFilesize($returnMegaBytes(ini_get('upload_max_filesize')));
-        $version = file_get_contents(CONNECTOR_DIR . '/version');
         $identification = new ConnectorIdentification();
-        $identification->setEndpointVersion($version)
-            ->setPlatformName('OpenCart')
+        $identification->setPlatformName('OpenCart')
             ->setPlatformVersion(OpenCart::getInstance()->getVersion())
+            ->setEndpointVersion(OpenCart::getInstance()->getConnectorVersion())
             ->setProtocolVersion(Application()->getProtocolVersion())
             ->setServerInfo($serverInfo);
         $action->setResult($identification);
