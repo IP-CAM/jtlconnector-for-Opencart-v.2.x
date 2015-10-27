@@ -20,7 +20,7 @@ class ControllerModuleJtlconnector extends Controller
     //// <editor-fold defaultstate="collapsed" desc="Edit Action">
     public function index()
     {
-        if (version_compare(VERSION, '2.0.3.1', '>') || version_compare(VERSION, '1.5.6.4', '<=')) {
+        if (version_compare(VERSION, '2.0.3.1', '>')) {
             $this->language->load('module/jtlconnector');
         } else {
             $this->load->language('module/jtlconnector');
@@ -97,19 +97,10 @@ class ControllerModuleJtlconnector extends Controller
             $data[self::CONFIG_PASSWORD_KEY] = $this->model_setting_setting->getSetting(self::CONFIG_KEY)[self::CONFIG_PASSWORD_KEY];
         }
 
-        if (version_compare(VERSION, '1.5.6.4', '>')) {
-            $data['header'] = $this->load->controller('common/header');
-            $data['column_left'] = $this->load->controller('common/column_left');
-            $data['footer'] = $this->load->controller('common/footer');
-            $this->response->setOutput($this->load->view('module/jtlconnector.tpl', $data));
-        } else {
-            $this->data = $data;
-            $this->load->model('design/layout');
-            $this->data['layouts'] = $this->model_design_layout->getLayouts();
-            $this->template = 'module/jtlconnector.tpl';
-            $this->children = array('common/header', 'common/footer');
-            $this->response->setOutput($this->render());
-        }
+        $data['header'] = $this->load->controller('common/header');
+        $data['column_left'] = $this->load->controller('common/column_left');
+        $data['footer'] = $this->load->controller('common/footer');
+        $this->response->setOutput($this->load->view('module/jtlconnector.tpl', $data));
     }
 
     private function writeAccess()
@@ -205,57 +196,26 @@ class ControllerModuleJtlconnector extends Controller
         if (empty($this->db->query($filterInstalled)->rows)) {
             $this->db->query('INSERT INTO ' . DB_PREFIX . 'extension (type, CODE) VALUES ("module", "filter")');
         }
-        if (version_compare(VERSION, '1.5.6.4', '>')) {
-            $filterSettings = $this->model_setting_setting->getSetting('filter');
-            if (isset($filterSettings['filter_status'])) {
-                if ($filterSettings['filter_status'] != 1) {
-                    $this->model_setting_setting->editSettingValue('filter', 'filter_status', '1');
-                }
-            } else {
-                $filterSettings['filter_status'] = 1;
-                $this->model_setting_setting->editSetting('filter', $filterSettings);
+        $filterSettings = $this->model_setting_setting->getSetting('filter');
+        if (isset($filterSettings['filter_status'])) {
+            if ($filterSettings['filter_status'] != 1) {
+                $this->model_setting_setting->editSettingValue('filter', 'filter_status', '1');
             }
-            $filterInLayout = sprintf('
+        } else {
+            $filterSettings['filter_status'] = 1;
+            $this->model_setting_setting->editSetting('filter', $filterSettings);
+        }
+        $filterInLayout = sprintf('
                 SELECT *
                 FROM ' . DB_PREFIX . 'layout_module
                 WHERE layout_id = % AND CODE = "filter"',
-                $categoryLayoutId
-            );
-            if (empty($this->db->query($filterInLayout)->rows)) {
-                $this->db->query('
+            $categoryLayoutId
+        );
+        if (empty($this->db->query($filterInLayout)->rows)) {
+            $this->db->query('
                     INSERT INTO ' . DB_PREFIX . 'layout_module (layout_id, CODE, position, sort_order)
                     VALUES (3, "filter", "column_left", 1)'
-                );
-            }
-        } else {
-            $filterSettings = $this->model_setting_setting->getSetting('filter');
-            if (isset($filterSettings['filter_module'])) {
-                $found = false;
-                foreach ($filterSettings['filter_module'] as $i => $filter) {
-                    if ($filter['layout_id'] === $categoryLayoutId) {
-                        $found = true;
-                        $filterSettings[$i]['status'] = 1;
-                        $filterSettings[$i]['sort_order'] = 1;
-                        break;
-                    }
-                }
-                if (!$found) {
-                    $filterSettings['filter_module'][] = [
-                        "layout_id" => $categoryLayoutId,
-                        "position" => "column_left",
-                        "sort_order" => 1,
-                        "status" => 1
-                    ];
-                }
-            } else {
-                $filterSettings['filter_module'][] = [
-                    "layout_id" => $categoryLayoutId,
-                    "position" => "column_left",
-                    "sort_order" => 1,
-                    "status" => 1
-                ];
-            }
-            $this->model_setting_setting->editSetting('filter', $filterSettings);
+            );
         }
     }
 
