@@ -32,7 +32,8 @@ class CrossSelling extends MainEntityController
                     $this->database->query(SQLs::crossSellingPush($id, $relatedId->getEndpoint()));
                 }
             }
-            $data->getId()->setEndpoint($id);
+            // TODO: ab 1.0.5
+            //$data->getId()->setEndpoint($id);
         }
         return $data;
     }

@@ -104,7 +104,7 @@ class OpenCart extends Singleton
 
     public function getConnectorVersion()
     {
-        return $this->getConfig(\ControllerModuleJtlconnector::CONNECTOR_VERSION);
+        return \ControllerModuleJtlconnector::CONNECTOR_VERSION;
     }
 
     public function getVersion()
