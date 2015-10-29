@@ -15,7 +15,7 @@ class DeliveryNoteItem extends BaseController
         return parent::pullDataDefault($data);
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         return SQLs::deliveryNoteItemPull($data['order_id']);
     }

@@ -21,19 +21,22 @@ use jtl\Connector\Result\Action;
 
 abstract class BaseController extends Controller
 {
-    /**
-     * @var BaseMapper
-     */
-    protected $mapper = null;
-    protected $oc = null;
-    protected $utils = null;
-    protected $database = null;
-    protected $controllerName = null;
+    protected $oc;
+    protected $utils;
+    protected $mapper;
+    protected $database;
+    protected $controllerName;
 
-    public function __construct()
+    /**
+     * BaseController constructor.
+     *
+     * @param null $subClass Test classes chave to specify their parent class as they should not be used to build the
+     * controller and mapper.
+     */
+    public function __construct($subClass = null)
     {
-        $this->initHelper();
-        $reflect = new \ReflectionClass($this);
+        $this->utils = Utils::getInstance();
+        $reflect = (is_null($subClass)) ? new \ReflectionClass($this) : new \ReflectionClass($subClass);
         $shortName = $reflect->getShortName();
         $this->controllerName = $shortName;
         $mapperClass = str_replace('Controller', 'Mapper', $reflect->getNamespaceName()) . '\\' . $shortName;
@@ -42,13 +45,22 @@ abstract class BaseController extends Controller
         }
     }
 
+    /**
+     * Extracted method which can be overwritten by the tests to use another database or manipulate the OpenCart helper.
+     */
     protected function initHelper()
     {
         $this->database = Db::getInstance();
         $this->oc = OpenCart::getInstance();
-        $this->utils = Utils::getInstance();
     }
 
+    /**
+     * Method called on a pull request.
+     *
+     * @param QueryFilter $query Filter data like the limit.
+     *
+     * @return Action The action which is handled by the core.
+     */
     public function pull(QueryFilter $query)
     {
         $action = new Action();
@@ -66,6 +78,13 @@ abstract class BaseController extends Controller
         return $action;
     }
 
+    /**
+     * Method called on a push request.
+     *
+     * @param DataModel $data The data of the object which should be saved.
+     *
+     * @return Action The action which will be handled by the core.
+     */
     public function push(DataModel $data)
     {
         $action = new Action();
@@ -86,6 +105,13 @@ abstract class BaseController extends Controller
         return $action;
     }
 
+    /**
+     * Method called on a delete request.
+     *
+     * @param DataModel $data The data of the object which should be deleted.
+     *
+     * @return Action The action which will be handled by the core.
+     */
     public function delete(DataModel $data)
     {
         $action = new Action();
@@ -105,18 +131,39 @@ abstract class BaseController extends Controller
         return $action;
     }
 
-    protected function pullDataDefault($data, $limit = null)
+    /**
+     * Default implementation for pulling data.
+     * First an abstract method which returns the query is used to get all data.
+     * At second the result is iterated. Foreach entry the mapper is called.
+     *
+     * @param array $data For sub models their parent models data.
+     * @param integer $limit The limit which will be null for sub models.
+     *
+     * @return array The builded models to be returned to the host.
+     */
+    protected function pullDataDefault(array $data, $limit = null)
     {
         $return = [];
         $query = $this->pullQuery($data, $limit);
         $result = $this->database->query($query);
         foreach ((array)$result as $row) {
-            $host = $this->mapper->toHost($row);
-            $return[] = $host;
+            if ($this->mapper instanceof BaseMapper) {
+                $host = $this->mapper->toHost($row);
+                $return[] = $host;
+            }
         }
         return $return;
     }
 
+    /**
+     * Default implementation for models with i18ns.
+     * Based on the language ISO the OpenCart language id is caught and used to build the internatiolized array.
+     * The information is directly appended to the model.
+     *
+     * @param DataModel $data The pushed model.
+     * @param array $model The endpoint object where the i18ns should be added to.
+     * @param string $key The key which should be used for the i18ns.
+     */
     protected function pushDataI18n($data, &$model, $key)
     {
         if (!method_exists($data, 'getI18ns')) {
@@ -135,9 +182,10 @@ abstract class BaseController extends Controller
     /**
      * Called on a pull on the main model controllers including their sub model controllers.
      *
-     * @param $data  array  For sub models their parent models data.
-     * @param $model object For sub models their parent model.
-     * @param $limit int    The limit.
+     * @param array $data For sub models their parent models data.
+     * @param DataModel $model For sub models their parent model.
+     * @param integer $limit The limit which will be null for sub models.
+     *
      * @return array A list of models resulting from the pull query.
      */
     public abstract function pullData(array $data, $model, $limit = null);
@@ -145,9 +193,10 @@ abstract class BaseController extends Controller
     /**
      * Just return the query for the the pulling of data.
      *
-     * @param $data  array The data.
-     * @param $limit int   The limit.
-     * @return string The query.
+     * @param array $data For sub models their parent models data.
+     * @param int $limit The limit which will be null for sub models.
+     *
+     * @return string The query to be executed to fetch all needed data.
      */
-    protected abstract function pullQuery($data, $limit = null);
+    protected abstract function pullQuery(array $data, $limit = null);
 }

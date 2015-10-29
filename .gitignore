@@ -2,8 +2,6 @@
 /jtlconnector/config/config.json
 /jtlconnector/plugins
 !/jtlconnector/plugins/.gitkeep
-/jtlconnector/logs
-!/jtlconnector/logs/.gitkeep
 composer.lock
 jtlconnector/vendor/**
 build/

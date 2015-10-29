@@ -69,7 +69,7 @@ class CustomerOrderItem extends BaseController
         return $result;
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         throw new MethodNotAllowedException("Use the specific pull methods.");
     }

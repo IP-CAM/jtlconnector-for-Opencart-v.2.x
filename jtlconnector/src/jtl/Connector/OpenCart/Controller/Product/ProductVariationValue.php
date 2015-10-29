@@ -16,7 +16,7 @@ class ProductVariationValue extends BaseController
         return parent::pullDataDefault($data);
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         return SQLs::productVariationValuePull($data['product_option_id']);
     }

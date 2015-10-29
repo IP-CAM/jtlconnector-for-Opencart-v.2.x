@@ -30,7 +30,7 @@ class DeliveryNote extends MainEntityController
         return $return;
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         return SQLs::deliveryNotePull($limit);
     }

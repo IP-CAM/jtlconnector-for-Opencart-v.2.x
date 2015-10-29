@@ -5,18 +5,12 @@
         <mkdir dir="./dist/admin/"/>
         <mkdir dir="./dist/jtlconnector/config"/>
         <mkdir dir="./dist/jtlconnector/db"/>
-        <mkdir dir="./dist/jtlconnector/logs"/>
         <mkdir dir="./dist/jtlconnector/plugins"/>
 
         <copy todir="./dist/jtlconnector/config">
             <fileset dir="./jtlconnector/config">
                 <include name="features.json"/>
                 <include name="config.json"/>
-                <include name=".htaccess"/>
-            </fileset>
-        </copy>
-        <copy todir="./dist/jtlconnector/logs">
-            <fileset dir="./jtlconnector/logs">
                 <include name=".htaccess"/>
             </fileset>
         </copy>
@@ -39,7 +33,6 @@
 
         <chmod file="./dist/jtlconnector/config" mode="0777"/>
         <chmod file="./dist/jtlconnector/db" mode="0777"/>
-        <chmod file="./dist/jtlconnector/logs" mode="0777"/>
 
         <mkdir dir="./dist/admin/controller/module"/>
         <mkdir dir="./dist/admin/view/template/module"/>

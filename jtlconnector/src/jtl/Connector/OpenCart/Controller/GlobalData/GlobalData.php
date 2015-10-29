@@ -20,7 +20,7 @@ class GlobalData extends MainEntityController
         return [$this->mapper->toHost([])];
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         throw new MethodNotAllowedException("Just pull the different global data children.");
     }

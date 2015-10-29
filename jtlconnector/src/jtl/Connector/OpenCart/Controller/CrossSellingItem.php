@@ -26,7 +26,7 @@ class CrossSellingItem extends BaseController
         return [$model];
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         return SQLs::crossSellingItemPull($data['product_id']);
     }

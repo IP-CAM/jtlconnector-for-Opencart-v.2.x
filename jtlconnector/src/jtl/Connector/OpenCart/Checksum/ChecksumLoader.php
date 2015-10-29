@@ -8,6 +8,7 @@ namespace jtl\Connector\OpenCart\Checksum;
 
 use jtl\Connector\Checksum\IChecksumLoader;
 use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\Model\Checksum;
 use jtl\Connector\OpenCart\Utility\Db;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
@@ -22,7 +23,7 @@ class ChecksumLoader implements IChecksumLoader
 
     public function read($endpointId, $type)
     {
-        if ($endpointId === null || $type !== IdentityLinker::TYPE_PRODUCT) {
+        if ($endpointId === null || $type !== Checksum::TYPE_VARIATION) {
             return '';
         }
         $result = $this->database->queryOne(SQLs::checksumRead($endpointId, $type));
@@ -31,7 +32,7 @@ class ChecksumLoader implements IChecksumLoader
 
     public function write($endpointId, $type, $checksum)
     {
-        if ($endpointId === null || $type !== IdentityLinker::TYPE_PRODUCT) {
+        if ($endpointId === null || $type !== Checksum::TYPE_VARIATION) {
             return false;
         }
         $statement = $this->database->query(SQLs::checksumWrite($endpointId, $type, $checksum));
@@ -40,7 +41,7 @@ class ChecksumLoader implements IChecksumLoader
 
     public function delete($endpointId, $type)
     {
-        if ($endpointId === null || $type !== IdentityLinker::TYPE_PRODUCT) {
+        if ($endpointId === null || $type !== Checksum::TYPE_VARIATION) {
             return false;
         }
         $rows = $this->database->query(SQLs::checksumDelete($endpointId, $type));

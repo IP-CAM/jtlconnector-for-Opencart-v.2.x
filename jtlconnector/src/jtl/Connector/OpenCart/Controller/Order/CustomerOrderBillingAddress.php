@@ -16,7 +16,7 @@ class CustomerOrderBillingAddress extends BaseController
         return $this->mapper->toHost($data);
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         throw new DataAlreadyFetchedException();
     }

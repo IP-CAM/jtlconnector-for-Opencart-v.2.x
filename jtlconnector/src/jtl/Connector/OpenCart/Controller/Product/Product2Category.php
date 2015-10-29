@@ -17,7 +17,7 @@ class Product2Category extends BaseController
         return parent::pullDataDefault($data);
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         return SQLs::productCategoryPull($data['product_id']);
     }

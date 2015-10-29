@@ -15,7 +15,7 @@ class Customer extends MainEntityController
         return parent::pullDataDefault($data, $limit);
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         return SQLs::customerPull($limit);
     }

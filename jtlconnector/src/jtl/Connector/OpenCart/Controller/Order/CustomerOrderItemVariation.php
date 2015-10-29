@@ -23,7 +23,7 @@ class CustomerOrderItemVariation extends BaseController
         return $return;
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         return SQLs::customerOrderItemVariation($data['order_item_id']);
     }

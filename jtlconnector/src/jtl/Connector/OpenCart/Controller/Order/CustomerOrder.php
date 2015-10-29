@@ -35,7 +35,7 @@ class CustomerOrder extends MainEntityController
         return $orders;
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         return SQLs::customerOrderPull($limit);
     }

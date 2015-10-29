@@ -21,7 +21,7 @@ class ProductAttrI18n extends BaseController
         return $return;
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         return SQLs::productAttributeI18nPull($data['attribute_id']);
     }

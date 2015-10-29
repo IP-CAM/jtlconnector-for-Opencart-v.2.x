@@ -17,7 +17,7 @@ class ProductI18n extends BaseController
         return parent::pullDataDefault($data);
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         return SQLs::productI18nPull($data['product_id']);
     }

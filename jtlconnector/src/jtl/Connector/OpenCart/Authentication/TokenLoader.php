@@ -15,7 +15,7 @@ class TokenLoader implements ITokenLoader
     /**
      * Loads the on installation generated connector token.
      *
-     * @return string
+     * @return string The token
      */
     public function load()
     {

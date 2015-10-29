@@ -19,7 +19,7 @@ class StatusChange extends BaseController
         throw new MethodNotAllowedException();
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         throw new MethodNotAllowedException();
     }

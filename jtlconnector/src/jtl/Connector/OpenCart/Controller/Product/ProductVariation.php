@@ -29,7 +29,7 @@ class ProductVariation extends BaseController
         return parent::pullDataDefault($data);
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         // Do not pull checkbox as configuration items are not supported yet.
         // Do not pull file as uploads are handled extra.

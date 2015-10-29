@@ -60,7 +60,7 @@ class Payment extends MainEntityController
         }
     }
 
-    protected function pullQuery($data, $limit = null)
+    protected function pullQuery(array $data, $limit = null)
     {
         throw new MethodNotAllowedException("Use the queries for the specific types.");
     }
