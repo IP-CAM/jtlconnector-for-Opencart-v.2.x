@@ -106,12 +106,12 @@ class ControllerModuleJtlconnector extends Controller
     private function writeAccess()
     {
         $configPath = DIR_CATALOG . '../jtlconnector/config/config.json';
-        $logsPath = DIR_CATALOG . '../jtlconnector/logs';
-        $imagePath = DIR_IMAGE . 'catalog/';
+        $logsPath = DIR_LOGS . 'jtlconnector/';
+        $imagePath = DIR_IMAGE . 'data/';
         return [
-            'jtlconnector/config/config.json' => is_file($configPath) && is_writable($configPath),
-            'jtlconnector/logs/' => is_dir($logsPath) && is_writable($logsPath),
-            'image/catalog/' => is_dir($imagePath) && is_writable($imagePath)
+            $configPath => is_file($configPath) && is_writable($configPath),
+            $logsPath => is_dir($logsPath) && is_writable($logsPath),
+            $imagePath => is_dir($imagePath) && is_writable($imagePath)
         ];
     }
 

@@ -7,6 +7,7 @@
 namespace jtl\Connector\OpenCart\Utility;
 
 use jtl\Connector\Core\Database\Mysql;
+use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Core\Utilities\Singleton;
 
 class Db extends Singleton
@@ -31,10 +32,11 @@ class Db extends Singleton
         return $this->db->query($query);
     }
 
-    public function queryOne($query, $args = null, $_ = null)
+    public function queryOne($query)
     {
         $return = null;
         $result = mysqli_query($this->db->DB(), $query);
+        Logger::write($query, Logger::DEBUG, 'database');
         if ($result instanceof \mysqli_result) {
             $return = mysqli_fetch_row($result)[0];
         }

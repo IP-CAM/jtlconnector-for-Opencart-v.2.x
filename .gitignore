@@ -1,4 +1,5 @@
 .idea
+/jtlconnector/config/config.json
 /jtlconnector/plugins
 !/jtlconnector/plugins/.gitkeep
 /jtlconnector/logs
