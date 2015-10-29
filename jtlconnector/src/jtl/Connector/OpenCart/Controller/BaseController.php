@@ -35,6 +35,7 @@ abstract class BaseController extends Controller
      */
     public function __construct($subClass = null)
     {
+        $this->initHelper();
         $this->utils = Utils::getInstance();
         $reflect = (is_null($subClass)) ? new \ReflectionClass($this) : new \ReflectionClass($subClass);
         $shortName = $reflect->getShortName();
