@@ -6,7 +6,7 @@ use jtl\Connector\Core\Model\QueryFilter;
 use jtl\Connector\Drawing\ImageRelationType;
 use jtl\Connector\OpenCart\Controller\Image;
 use jtl\Connector\OpenCart\Tests\Mapper\AbstractControllerTest;
-use jtl\Connector\OpenCart\Utility\Db;
+use jtl\Connector\OpenCart\Tests\Mapper\Db;
 use jtl\Connector\OpenCart\Utility\Utils;
 
 class ImageTest extends AbstractControllerTest
@@ -31,10 +31,30 @@ class ImageTest extends AbstractControllerTest
         $this->invokeMethod($this->controller, 'addNextImages', [&$methods, &$return, &$limit]);
         $this->assertEquals($limit, $initLimit - count($return));
     }
+
+    public function testMapImageToHost()
+    {
+        $picture = [
+            'id' => 2,
+            'foreign_key' => 3,
+            'image' => 'supergeil.png',
+            'sort_order' => 2
+        ];
+        $type = ImageRelationType::TYPE_PRODUCT;
+        $model = $this->invokeMethod($this->controller, 'mapImageToHost', [$picture, $type]);
+        $this->assertTrue($model instanceof \jtl\Connector\Model\Image);
+        $this->assertEquals($type, $model->getRelationType());
+        $this->assertEquals(HTTPS_CATALOG . 'image/supergeil.png', $model->getRemoteURL());
+    }
 }
 
 class ImageMock extends Image
 {
+    public function __construct()
+    {
+        parent::__construct(get_parent_class());
+    }
+
     protected function initHelper()
     {
         $this->database = Db::getInstance();
