@@ -20,11 +20,6 @@ class Payment extends BaseMapper
         'paymentModuleCode' => null,
     ];
 
-    protected function paymentModuleCode(array $data)
-    {
-        return PaymentHelper::parseOpenCartPaymentCode($data['payment_code']);
-    }
-
     protected function billingInfo(array $data)
     {
         return isset($data['note']) ? $data['note'] : '';
@@ -33,5 +28,10 @@ class Payment extends BaseMapper
     protected function transactionId(array $data)
     {
         return isset($data['transaction_id']) ? $data['transaction_id'] : '';
+    }
+
+    protected function paymentModuleCode(array $data)
+    {
+        return PaymentHelper::parseOpenCartPaymentCode($data['payment_code']);
     }
 }

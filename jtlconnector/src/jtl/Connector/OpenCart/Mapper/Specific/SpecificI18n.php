@@ -12,8 +12,8 @@ class SpecificI18n extends I18nBaseMapper
 {
     protected $pull = [
         'specificId' => 'filter_group_id',
+        'name' => 'name',
         'languageISO' => null,
-        'name' => 'name'
     ];
 
     protected $push = [

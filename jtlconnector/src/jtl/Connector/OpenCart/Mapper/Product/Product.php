@@ -41,7 +41,6 @@ class Product extends BaseMapper
         'width' => 'width',
         'attributes' => 'Product\ProductAttr',
         'categories' => 'Product\Product2Category',
-        //'checksums' => 'Product\ProductChecksum',
         'i18ns' => 'Product\ProductI18n',
         'prices' => 'Product\ProductPrice',
         'specialPrices' => 'Product\ProductSpecialPrice',
@@ -90,18 +89,17 @@ class Product extends BaseMapper
         'Product\ProductStockLevel' => 'stockLevel',
         'Product\ProductSpecialPrice' => 'specialPrices',
         'Product\ProductVariation' => 'variations',
-        'Product\ProductSpecific' => 'specifics',
-        //'Product\ProductChecksum' => 'checksums'
+        'Product\ProductSpecific' => 'specifics'
     ];
 
     protected function jan()
     {
-        return "";
+        return '';
     }
 
     protected function mpn()
     {
-        return "";
+        return '';
     }
 
     protected function stock_status_id()
@@ -153,7 +151,7 @@ class Product extends BaseMapper
 
     protected function product_store()
     {
-        return [intval(0)];
+        return [0];
     }
 
     protected function considerVariationStock()

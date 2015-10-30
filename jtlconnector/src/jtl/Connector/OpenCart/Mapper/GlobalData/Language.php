@@ -7,19 +7,14 @@
 namespace jtl\Connector\OpenCart\Mapper\GlobalData;
 
 use jtl\Connector\Core\Utilities\Language as LanguageUtil;
-use jtl\Connector\OpenCart\Mapper\BaseMapper;
+use jtl\Connector\OpenCart\Mapper\I18nBaseMapper;
 
-class Language extends BaseMapper
+class Language extends I18nBaseMapper
 {
     protected $pull = [
         'id' => 'language_id',
         'nameGerman' => 'name',
-        'languageISO' => null,
-        'isDefault' => 'is_default'
+        'isDefault' => 'is_default',
+        'languageISO' => null
     ];
-
-    protected function languageISO($data)
-    {
-        return LanguageUtil::convert($data['code']);
-    }
 }

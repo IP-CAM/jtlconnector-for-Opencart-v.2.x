@@ -21,44 +21,6 @@ use jtl\Connector\Result\Action;
 
 class Connector extends Controller
 {
-    public function statistic(QueryFilter $queryFilter)
-    {
-        $action = new Action();
-        $action->setHandled(true);
-        $results = [];
-        $mainControllers = [
-            'Category',
-            'Customer',
-            'CustomerOrder',
-            'CrossSelling',
-            'Image',
-            'Product',
-            'Manufacturer',
-            'Specific',
-            'Payment'
-        ];
-        foreach ($mainControllers as $mainController) {
-            $class = Constants::CONTROLLER_NAMESPACE . $mainController;
-            if (class_exists($class)) {
-                try {
-                    $controllerObj = new $class();
-                    $result = $controllerObj->statistic($queryFilter);
-                    if ($result !== null && $result->isHandled() && !$result->isError()) {
-                        $results[] = $result->getResult();
-                    }
-                } catch (\Exception $exc) {
-                    Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
-                    $err = new Error();
-                    $err->setCode($exc->getCode());
-                    $err->setMessage($exc->getMessage());
-                    $action->setError($err);
-                }
-            }
-        }
-        $action->setResult($results);
-        return $action;
-    }
-
     public function identify()
     {
         $action = new Action();
@@ -95,13 +57,60 @@ class Connector extends Controller
             $optionHelper = Option::getInstance();
             $optionHelper->deleteObsoleteOptions();
         } catch (\Exception $exc) {
-            Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
-            $err = new Error();
-            $err->setCode($exc->getCode());
-            $err->setMessage($exc->getMessage());
-            $action->setError($err);
+            $this->handleException($exc, $action);
         }
         $action->setResult(true);
         return $action;
+    }
+
+    public function statistic(QueryFilter $queryFilter)
+    {
+        $action = new Action();
+        $action->setHandled(true);
+        $results = [];
+        $mainControllers = [
+            'Category',
+            'Customer',
+            'CustomerOrder',
+            'CrossSelling',
+            'Image',
+            'Product',
+            'Manufacturer',
+            'Specific',
+            'Payment'
+        ];
+        foreach ($mainControllers as $mainController) {
+            $class = Constants::CONTROLLER_NAMESPACE . $mainController;
+            if (class_exists($class)) {
+                try {
+                    $controllerObj = new $class();
+                    $result = $controllerObj->statistic($queryFilter);
+                    if ($result !== null && $result->isHandled() && !$result->isError()) {
+                        $results[] = $result->getResult();
+                    }
+                } catch (\Exception $exc) {
+                    $this->handleException($exc, $action);
+                }
+            }
+        }
+        $action->setResult($results);
+        return $action;
+    }
+
+    /**
+     * This method has to be called if an exception occured in one of the actions.
+     * At first the exception is logged. In the second step an error object is builded and passed to the action which
+     * is returned to the host.
+     *
+     * @param \Exception $exc The catched exception.
+     * @param Action $action The action for which the rror has to be set.
+     */
+    protected function handleException($exc, &$action)
+    {
+        Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
+        $err = new Error();
+        $err->setCode($exc->getCode());
+        $err->setMessage($exc->getFile() . ' (' . $exc->getLine() . '):' . $exc->getMessage());
+        $action->setError($err);
     }
 }

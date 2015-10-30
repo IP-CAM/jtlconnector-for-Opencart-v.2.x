@@ -10,8 +10,8 @@ class DeliveryNoteItem extends BaseMapper
 {
     protected $pull = [
         'id' => 'order_product_id',
-        'customerOrderItemId' => 'order_product_id',
         'deliveryNoteId' => 'order_id',
+        'customerOrderItemId' => 'order_product_id',
         'quantity' => 'quantity'
     ];
 }

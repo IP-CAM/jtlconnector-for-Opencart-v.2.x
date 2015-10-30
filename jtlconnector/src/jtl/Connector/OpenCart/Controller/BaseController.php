@@ -70,11 +70,7 @@ abstract class BaseController extends Controller
             $result = $this->pullData([], null, $query->getLimit());
             $action->setResult($result);
         } catch (\Exception $exc) {
-            Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
-            $err = new Error();
-            $err->setCode($exc->getCode());
-            $err->setMessage($exc->getFile() . ' (' . $exc->getLine() . '):' . $exc->getMessage());
-            $action->setError($err);
+            $this->handleException($exc, $action);
         }
         return $action;
     }
@@ -97,11 +93,7 @@ abstract class BaseController extends Controller
             }
             $action->setResult($result);
         } catch (\Exception $exc) {
-            Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
-            $err = new Error();
-            $err->setCode($exc->getCode());
-            $err->setMessage($exc->getFile() . ' (' . $exc->getLine() . '):' . $exc->getMessage());
-            $action->setError($err);
+            $this->handleException($exc, $action);
         }
         return $action;
     }
@@ -123,13 +115,26 @@ abstract class BaseController extends Controller
                 $action->setResult($this->deleteData($data));
             }
         } catch (\Exception $exc) {
-            Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
-            $err = new Error();
-            $err->setCode($exc->getCode());
-            $err->setMessage($exc->getFile() . ' (' . $exc->getLine() . '):' . $exc->getMessage());
-            $action->setError($err);
+            $this->handleException($exc, $action);
         }
         return $action;
+    }
+
+    /**
+     * This method has to be called if an exception occured in one of the actions.
+     * At first the exception is logged. In the second step an error object is builded and passed to the action which
+     * is returned to the host.
+     *
+     * @param \Exception $exc The catched exception.
+     * @param Action $action The action for which the rror has to be set.
+     */
+    protected function handleException($exc, &$action)
+    {
+        Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
+        $err = new Error();
+        $err->setCode($exc->getCode());
+        $err->setMessage($exc->getFile() . ' (' . $exc->getLine() . '):' . $exc->getMessage());
+        $action->setError($err);
     }
 
     /**

@@ -12,35 +12,35 @@ class ProductI18n extends I18nBaseMapper
 {
     protected $pull = [
         'productId' => 'product_id',
+        'titleTag' => 'tag',
+        'metaKeywords' => 'meta_keyword',
+        'metaDescription' => 'meta_description',
         'name' => null,
         'description' => null,
         'languageISO' => null,
-        'titleTag' => 'tag',
-        'metaKeywords' => 'meta_keyword',
-        'metaDescription' => 'meta_description'
     ];
 
     protected $push = [
         'name' => 'name',
         'description' => 'description',
         'tag' => 'titleTag',
-        'meta_title' => null,
+        'meta_keyword' => 'metaKeywords',
         'meta_description' => 'metaDescription',
-        'meta_keyword' => 'metaKeywords'
+        'meta_title' => null
     ];
 
     protected function name($data)
     {
-        return html_entity_decode($data['name']);
+        return isset($data['name']) ? html_entity_decode($data['name']) : '';
     }
 
     protected function description($data)
     {
-        return html_entity_decode($data['description']);
+        return isset($data['description']) ? html_entity_decode($data['description']) : '';
     }
 
     protected function meta_title()
     {
-        return "";
+        return '';
     }
 }

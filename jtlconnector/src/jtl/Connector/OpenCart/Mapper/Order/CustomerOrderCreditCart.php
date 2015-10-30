@@ -13,8 +13,8 @@ class CustomerOrderCreditCart extends BaseMapper
     protected $pull = [
         'id' => 'card_id',
         'customerOrderId' => 'order_id',
-        'creditCardExpiration' => 'expiry',
+        'creditCardType' => 'type',
         'creditCardNumber' => 'digits',
-        'creditCardType' => 'type'
+        'creditCardExpiration' => 'expiry'
     ];
 }

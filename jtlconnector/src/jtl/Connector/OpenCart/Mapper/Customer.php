@@ -18,8 +18,8 @@ class Customer extends BaseMapper
         'extraAddressLine' => 'address_2',
         'zipCode' => 'postcode',
         'city' => 'city',
-        'state' => 'name',
-        'countryIso' => 'iso_code_2',
+        'state' => 'state',
+        'countryIso' => 'country_iso',
         'company' => 'company',
         'eMail' => 'email',
         'phone' => 'telephone',
@@ -28,20 +28,20 @@ class Customer extends BaseMapper
         'creationDate' => 'date_added',
         'hasNewsletterSubscription' => 'newsletter',
         'isActive' => 'status',
-        'hasCustomerAccount' => null,
-        'vatNumber' => null,
         'title' => null,
-        'salutation' => null
+        'vatNumber' => null,
+        'salutation' => null,
+        'hasCustomerAccount' => null
     ];
-
-    protected function vatNumber(array $data)
-    {
-        return CustomField::getInstance()->vatNumber($data);
-    }
 
     protected function title(array $data)
     {
         return CustomField::getInstance()->title($data);
+    }
+
+    protected function vatNumber(array $data)
+    {
+        return CustomField::getInstance()->vatNumber($data);
     }
 
     protected function salutation(array $data)

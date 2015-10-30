@@ -10,12 +10,10 @@ use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\Mapper\IPrimaryKeyMapper;
 use jtl\Connector\OpenCart\Utility\Db;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class PrimaryKeyMapper implements IPrimaryKeyMapper
 {
-    /**
-     * @var Db
-     */
     protected $db;
 
     public function __construct()
@@ -25,12 +23,7 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
 
     public function getHostId($endpointId, $type)
     {
-        return $this->db->queryOne(sprintf('
-            SELECT hostId
-            FROM jtl_connector_link
-            WHERE endpointId = %s AND type = %s',
-            $endpointId, $type
-        ));
+        return $this->db->queryOne(SQLs::hostId($endpointId, $type));
     }
 
     public function getEndpointId($hostId, $type, $relationType = null)
@@ -40,21 +33,12 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
             $prefix = substr(strtolower($relationType), 0, 1);
             $clause = " AND endpointId LIKE '{$prefix}_%'";
         }
-        return $this->db->queryOne(sprintf('
-            SELECT endpointId
-            FROM jtl_connector_link
-            WHERE hostId = %s AND type = %s%s',
-            $hostId, $type, $clause
-        ));
+        return $this->db->queryOne(SQLs::endpointId($hostId, $type, $clause));
     }
 
     public function save($endpointId, $hostId, $type)
     {
-        $id = $this->db->query(sprintf('
-            INSERT INTO jtl_connector_link (endpointId, hostId, type)
-            VALUES ("%s", %s, %s)',
-            $endpointId, $hostId, $type
-        ));
+        $id = $this->db->query(SQLs::mappingSave($endpointId, $hostId, $type));
         return $id !== false;
     }
 
@@ -68,13 +52,12 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
         } elseif ($hostId !== null) {
             $where = sprintf('WHERE hostId = %s AND type = %s', $hostId, $type);
         }
-
-        return $this->db->query("DELETE FROM jtl_connector_link {$where}");
+        return $this->db->query(SQLs::mappingDelete($where));
     }
 
     public function clear()
     {
-        return $this->db->query('DELETE FROM jtl_connector_link');
+        return $this->db->query(SQLs::mappingClear());
     }
 
     public function gc()

@@ -24,16 +24,11 @@ class Category extends BaseMapper
         'status' => 'isActive',
         'sort_order' => 'sort',
         'CategoryI18n' => 'i18ns',
-        'category_store' => null,
         'top' => null,
         'column' => null,
-        'keyword' => null
+        'keyword' => null,
+        'category_store' => null
     ];
-
-    protected function category_store()
-    {
-        return [intval(0)];
-    }
 
     protected function top(CategoryModel $data)
     {
@@ -47,6 +42,11 @@ class Category extends BaseMapper
 
     protected function keyword()
     {
-        return "";
+        return '';
+    }
+
+    protected function category_store()
+    {
+        return [0];
     }
 }

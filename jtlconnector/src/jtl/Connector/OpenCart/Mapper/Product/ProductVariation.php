@@ -42,18 +42,19 @@ class ProductVariation extends BaseMapper
             }
             return $data->getType();
         } else {
-            if ($data['type'] === 'select') {
-                return ProductVariationModel::TYPE_SELECT;
-            } elseif ($data['type'] === 'radio') {
-                return ProductVariationModel::TYPE_RADIO;
-            } elseif ($data['type'] === 'image') {
-                return ProductVariationModel::TYPE_IMAGE_SWATCHES;
-            } else {
-                if ($data['required']) {
-                    return ProductVariationModel::TYPE_FREE_TEXT_OBLIGATORY;
-                } else {
-                    return ProductVariationModel::TYPE_FREE_TEXT;
-                }
+            switch ($data['type']) {
+                case 'select':
+                    return ProductVariationModel::TYPE_SELECT;
+                case 'radio':
+                    return ProductVariationModel::TYPE_RADIO;
+                case 'image':
+                    return ProductVariationModel::TYPE_IMAGE_SWATCHES;
+                default:
+                    if (isset($data['required']) && $data['required']) {
+                        return ProductVariationModel::TYPE_FREE_TEXT_OBLIGATORY;
+                    } else {
+                        return ProductVariationModel::TYPE_FREE_TEXT;
+                    }
             }
         }
     }
@@ -65,6 +66,6 @@ class ProductVariation extends BaseMapper
 
     protected function product_option_id()
     {
-        return "";
+        return '';
     }
 }

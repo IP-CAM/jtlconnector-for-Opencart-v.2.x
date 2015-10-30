@@ -142,14 +142,6 @@ class ControllerModuleJtlconnector extends Controller
         return $result->num_rows > 0;
     }
 
-    private function setCustomFieldStatus($id, $status)
-    {
-        $this->db->query(sprintf('
-            UPDATE ' . DB_PREFIX . 'custom_field SET status = %d
-            WHERE custom_field_id = %d', $status, $id
-        ));
-    }
-
     protected function validate()
     {
         if (!$this->user->hasPermission('modify', 'module/jtlconnector')) {
@@ -458,6 +450,14 @@ class ControllerModuleJtlconnector extends Controller
         } elseif ($result->num_rows === 1) {
             $this->setCustomFieldStatus($result->row['custom_field_id'], 1);
         }
+    }
+
+    private function setCustomFieldStatus($id, $status)
+    {
+        $this->db->query(sprintf('
+            UPDATE ' . DB_PREFIX . 'custom_field SET status = %d
+            WHERE custom_field_id = %d', $status, $id
+        ));
     }
 
     //// </editor-fold>

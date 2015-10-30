@@ -17,7 +17,7 @@ class ProductVariationValueExtraCharge extends BaseMapper
 
     protected function extraChargeNet($data)
     {
-        if ($data['price_prefix'] == '+') {
+        if ($data['price_prefix'] === '+') {
             return doubleval($data['price']);
         }
         return 0.0;

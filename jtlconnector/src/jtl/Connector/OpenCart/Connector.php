@@ -20,13 +20,8 @@ use jtl\Connector\Result\Action;
 
 class Connector extends BaseConnector
 {
-    /**
-     * Current Controller
-     *
-     * @var \jtl\Connector\Core\Controller\Controller
-     */
-    protected $controller;
     protected $action;
+    protected $controller;
 
     public function initialize()
     {

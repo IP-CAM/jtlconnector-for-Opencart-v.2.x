@@ -135,10 +135,12 @@ final class SQLs
     public static function customerPull($limit)
     {
         return sprintf('
-            SELECT c.*, a.company, a.address_1, a.city, a.postcode, a.country_id, co.iso_code_2, co.name
+            SELECT c.*, a.company, a.address_1, a.city, a.postcode, a.country_id, co.iso_code_2 as country_iso, z.name
+             as state
             FROM ' . DB_PREFIX . 'customer c
             LEFT JOIN ' . DB_PREFIX . 'address a ON c.address_id = a.address_id
             LEFT JOIN ' . DB_PREFIX . 'country co ON a.country_id = co.country_id
+            LEFT JOIN ' . DB_PREFIX . 'zone z ON a.zone_id = z.zone_id
             LEFT JOIN jtl_connector_link l ON c.customer_id = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL
             LIMIT %d',
@@ -682,6 +684,46 @@ final class SQLs
     public static function paymentWorldpayCard($orderId)
     {
         return sprintf('SELECT * FROM ' . DB_PREFIX . 'worldpay_card WHERE order_id = %d', $orderId);
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Primary Key Mapping">
+    public static function hostId($endpointId, $type)
+    {
+        return sprintf('
+            SELECT hostId
+            FROM jtl_connector_link
+            WHERE endpointId = %s AND type = %s',
+            $endpointId, $type
+        );
+    }
+
+    public static function endpointId($hostId, $type, $clause)
+    {
+        return sprintf('
+            SELECT endpointId
+            FROM jtl_connector_link
+            WHERE hostId = %s AND type = %s%s',
+            $hostId, $type, $clause
+        );
+    }
+
+    public static function mappingSave($endpointId, $hostId, $type)
+    {
+        return sprintf('
+            INSERT INTO jtl_connector_link (endpointId, hostId, type)
+            VALUES ("%s", %s, %s)',
+            $endpointId, $hostId, $type
+        );
+    }
+
+    public static function mappingClear()
+    {
+        return 'TRUNCATE jtl_connector_link';
+    }
+
+    public static function mappingDelete($where)
+    {
+        return sprintf('DELETE FROM jtl_connector_link %s', $where);
     }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Product">

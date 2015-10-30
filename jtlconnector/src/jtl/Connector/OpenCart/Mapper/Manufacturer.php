@@ -30,6 +30,6 @@ class Manufacturer extends BaseMapper
 
     protected function manufacturer_store()
     {
-        return [intval(0)];
+        return [0];
     }
 }

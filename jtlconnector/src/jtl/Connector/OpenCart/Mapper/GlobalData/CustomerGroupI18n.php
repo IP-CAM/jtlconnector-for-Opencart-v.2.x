@@ -12,7 +12,7 @@ class CustomerGroupI18n extends I18nBaseMapper
 {
     protected $pull = [
         'customerGroupId' => 'customer_group_id',
+        'name' => 'name',
         'languageISO' => null,
-        'name' => 'name'
     ];
 }

@@ -12,7 +12,7 @@ class ProductVariationValueI18n extends I18nBaseMapper
 {
     protected $pull = [
         'productVariationValueId' => 'product_option_value_id',
+        'name' => 'name',
         'languageISO' => null,
-        'name' => 'name'
     ];
 }

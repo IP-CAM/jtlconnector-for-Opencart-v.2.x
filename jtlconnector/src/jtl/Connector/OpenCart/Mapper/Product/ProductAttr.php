@@ -13,8 +13,8 @@ class ProductAttr extends BaseMapper
     protected $pull = [
         'id' => 'attribute_id',
         'productId' => 'product_id',
-        'isTranslated' => null,
-        'i18ns' => 'Product\ProductAttrI18n'
+        'i18ns' => 'Product\ProductAttrI18n',
+        'isTranslated' => null
     ];
 
     protected function isTranslated()

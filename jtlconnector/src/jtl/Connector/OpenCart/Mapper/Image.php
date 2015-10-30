@@ -12,8 +12,6 @@ class Image extends BaseMapper
         'id' => 'id',
         'foreignKey' => 'foreign_key',
         'filename' => 'image',
-        'relationType' => null,
-        'remoteUrl' => null,
         'sort' => 'sort_order'
     ];
 }

@@ -7,37 +7,11 @@
 namespace jtl\Connector\OpenCart\Mapper\Order;
 
 use jtl\Connector\Model\CustomerOrderItem;
-use jtl\Connector\OpenCart\Mapper\BaseMapper;
-use jtl\Connector\OpenCart\Utility\Constants;
-use jtl\Connector\OpenCart\Utility\Db;
-use jtl\Connector\Type\CustomerOrderItem as CustomerOrderItemType;
 
-class OrderItemDiscountMapper extends BaseMapper
+class OrderItemDiscountMapper extends OrderItemBaseMapper
 {
-    protected $pull = [
-        'id' => 'order_item_id',
-        'customerOrderId' => 'order_id',
-        'name' => 'title',
-        'price' => 'value',
-        'quantity' => null,
-        'type' => null
-    ];
-
-    /** @noinspection PhpMissingParentConstructorInspection */
-    public function __construct()
-    {
-        $this->database = DB::getInstance();
-        $this->model = Constants::CORE_MODEL_NAMESPACE . 'CustomerOrderItem';
-        $this->type = new CustomerOrderItemType();
-    }
-
-    protected function type($data)
+    protected function type()
     {
         return CustomerOrderItem::TYPE_DISCOUNT;
-    }
-
-    protected function quantity($data)
-    {
-        return doubleval(1);
     }
 }

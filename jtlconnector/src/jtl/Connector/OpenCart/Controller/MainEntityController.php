@@ -25,11 +25,7 @@ abstract class MainEntityController extends BaseController
             $statModel->setControllerName(lcfirst($this->controllerName));
             $action->setResult($statModel);
         } catch (\Exception $exc) {
-            Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
-            $err = new Error();
-            $err->setCode($exc->getCode());
-            $err->setMessage($exc->getMessage());
-            $action->setError($err);
+            $this->handleException($exc, $action);
         }
         return $action;
     }

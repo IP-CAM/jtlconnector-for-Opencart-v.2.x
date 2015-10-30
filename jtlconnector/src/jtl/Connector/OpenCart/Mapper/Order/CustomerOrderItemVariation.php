@@ -14,22 +14,18 @@ class CustomerOrderItemVariation extends BaseMapper
         'id' => 'order_option_id',
         'productVariationId' => 'product_option_id',
         'productVariationValueId' => 'product_option_value_id',
-        //'freeField' => '',
         'productVariationName' => 'name',
         'surcharge' => null,
         'valueName' => null
     ];
 
+    protected function surcharge($data)
+    {
+        return ($data['price_prefix'] == '+') ? doubleval($data['price']) : 0.0;
+    }
+
     protected function valueName($data)
     {
         return ($data['type'] == 'file') ? $data['filename'] : $data['value'];
-    }
-
-    protected function surcharge($data)
-    {
-        if ($data['price_prefix'] == '+') {
-            return doubleval($data['price']);
-        }
-        return 0.0;
     }
 }
