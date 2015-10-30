@@ -1,3 +1,18 @@
+0.6.2
+------
+- Refactor source code 
+    - reduce duplication
+    - make code better readable
+    - make code better testable
+- Update tests
+- Document code
+- Fix not saved checksums
+- Remove logs directory
+- Set log path to opencart log directory
+- Log Db classes queryOne method calls in database.log
+- Remove config.json
+- Fix connector version in identify call
+
 0.6.1
 ------
 - Add id to cross sellings
