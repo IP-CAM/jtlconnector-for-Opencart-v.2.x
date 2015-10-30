@@ -10,6 +10,7 @@ namespace jtl\Connector\OpenCart\Mapper;
 use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Core\Model\Model;
 use jtl\Connector\Core\Utilities\Singleton;
+use jtl\Connector\Model\DataModel;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Utility\Constants;
@@ -18,22 +19,20 @@ use jtl\Connector\Type\DataType;
 
 abstract class BaseMapper extends Singleton
 {
-    /**
-     * @var $type DataType
-     */
-    protected $type = null;
-    protected $model = null;
-    protected $endpointModel = null;
+    protected $type;
+    protected $model;
     protected $push = [];
     protected $pull = [];
 
+    /**
+     * BaseMapper constructor.
+     *
+     * @param null $subClass Test classes chave to specify their parent class as they should not be used to build the
+     * controller and mapper.
+     */
     public function __construct($subClass = null)
     {
-        if (is_null($subClass)) {
-            $reflect = new \ReflectionClass($this);
-        } else {
-            $reflect = new \ReflectionClass($subClass);
-        }
+        $reflect = (is_null($subClass)) ? new \ReflectionClass($this) : new \ReflectionClass($subClass);
         $shortName = $reflect->getShortName();
         $typeClass = Constants::CORE_TYPE_NAMESPACE . $shortName;
         $this->model = Constants::CORE_MODEL_NAMESPACE . $shortName;
@@ -41,19 +40,22 @@ abstract class BaseMapper extends Singleton
     }
 
     /**
-     * @param $data array
-     * @return Model
+     * Method which maps the endpoint model to an host version.
+     *
+     * @param array $data The endpoint model which should be mapped.
+     *
+     * @return DataModel The result of mapping the OpenCart model to a host model.
      */
-    public function toHost($data)
+    public function toHost(array $data)
     {
         $model = new $this->model();
         foreach ($this->pull as $host => $endpoint) {
             $setter = 'set' . ucfirst($host);
-            $fnName = strtolower($host);
-            if (method_exists($this, $fnName) && is_null($endpoint)) {
-                $value = $this->$fnName($data);
+            $functionName = strtolower($host);
+            if (method_exists($this, $functionName) && is_null($endpoint)) {
+                $value = $this->$functionName($data);
             } else {
-                $value = (isset($data[$endpoint])) ? $data[$endpoint] : null;
+                $value = isset($data[$endpoint]) ? $data[$endpoint] : null;
                 $property = $this->type->getProperty($host);
                 if ($property->isNavigation()) {
                     $subControllerName = Constants::CONTROLLER_NAMESPACE . $endpoint;
@@ -82,14 +84,21 @@ abstract class BaseMapper extends Singleton
         return $model;
     }
 
-    public function toEndpoint($data, $customData = null)
+    /**
+     * Method which maps the host model to an endpoint version.
+     *
+     * @param DataModel $data The host model which should be mapped.
+     * @param null $customData Additional data which should be past to an extra defined method.
+     *
+     * @return array The result of mapping the host model to an OpenCart model.
+     */
+    public function toEndpoint(DataModel $data, $customData = null)
     {
         $model = [];
         foreach ($this->push as $endpoint => $host) {
-            $fnName = strtolower($endpoint);
-            // Extra defined methods
-            if (method_exists($this, $fnName) && is_null($host)) {
-                $model[$endpoint] = $this->$fnName($data, $customData);
+            $functionName = strtolower($endpoint);
+            if (method_exists($this, $functionName) && is_null($host)) {
+                $model[$endpoint] = $this->$functionName($data, $customData);
             } else {
                 $getter = 'get' . ucfirst($host);
                 $value = $data->$getter();
@@ -114,5 +123,4 @@ abstract class BaseMapper extends Singleton
         }
         return $model;
     }
-
 }
