@@ -109,7 +109,7 @@ class Product extends BaseMapper
 
     protected function shipping()
     {
-        return null;
+        return 1;
     }
 
     protected function price(ProductModel $data)

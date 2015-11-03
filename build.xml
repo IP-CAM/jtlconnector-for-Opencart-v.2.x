@@ -87,7 +87,7 @@
             </metadata>
         </pharpackage>
         <move file="./dist/jtlconnector/index.phar" tofile="./dist/jtlconnector/connector.phar"/>
-        <zip destfile="./dist/jtl-connector-opencart-${version}.zip" basedir="./dist"/>
+        <zip destfile="./dist/jtl-connector-opencart2-${version}.zip" basedir="./dist"/>
     </target>
 
     <target name="clean">

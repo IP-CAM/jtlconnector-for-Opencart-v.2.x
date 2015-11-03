@@ -8,17 +8,18 @@ namespace jtl\Connector\OpenCart\Controller;
 
 use jtl\Connector\Model\ProductPrice as ProductPriceModel;
 use jtl\Connector\OpenCart\Exceptions\DataAlreadyFetchedException;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
 class ProductPriceItem extends BaseController
 {
     public function pullData(array $data, $model, $limit = null)
     {
-        return [$this->mapper->toHost($data)];
+        return parent::pullDataDefault($data);
     }
 
     protected function pullQuery(array $data, $limit = null)
     {
-        throw new DataAlreadyFetchedException();
+        return SQLs::productGroupPriceItems($data['product_id']);
     }
 
     public function pushData(ProductPriceModel $data)

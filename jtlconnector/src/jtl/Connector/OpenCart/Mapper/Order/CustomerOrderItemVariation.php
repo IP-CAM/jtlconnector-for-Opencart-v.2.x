@@ -26,6 +26,6 @@ class CustomerOrderItemVariation extends BaseMapper
 
     protected function valueName($data)
     {
-        return ($data['type'] == 'file') ? $data['filename'] : $data['value'];
+        return ($data['type'] === 'file') ? $data['filename'] : $data['value'];
     }
 }

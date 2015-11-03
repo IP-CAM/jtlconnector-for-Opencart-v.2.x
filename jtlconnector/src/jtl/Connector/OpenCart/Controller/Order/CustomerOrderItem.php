@@ -6,8 +6,8 @@
 
 namespace jtl\Connector\OpenCart\Controller\Order;
 
-use jtl\Connector\Model\CustomerOrderItem as COI;
 use jtl\Connector\Model\CustomerOrderItem as CustomerOrderItemModel;
+use jtl\Connector\Model\CustomerOrderItem as COI;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\OpenCart\Controller\BaseController;
 use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
@@ -62,9 +62,7 @@ class CustomerOrderItem extends BaseController
         $result = $this->{$type . 'Mapper'}->toHost($item);
         if ($result instanceof CustomerOrderItemModel) {
             $result->setId(new Identity($this->orderId . '_' . $id));
-            if ($type != COI::TYPE_DISCOUNT) {
-                $result->setVat($this->tax);
-            }
+            $result->setVat($this->tax);
         }
         return $result;
     }

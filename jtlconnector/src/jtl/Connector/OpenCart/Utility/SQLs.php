@@ -859,7 +859,8 @@ final class SQLs
             $stockLevel, $productId
         );
     }
-
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Product Price">
     public static function productPricePull($limit)
     {
         return sprintf('
@@ -871,11 +872,70 @@ final class SQLs
         );
     }
 
+    public static function productPriceByProduct($product_id)
+    {
+        return sprintf('
+            SELECT product_id, null as customer_group_id, price
+            FROM ' . DB_PREFIX . 'product
+            WHERE product_id = %d',
+            $product_id
+        );
+    }
+
+    public static function productGroupPricesByProduct($product_id)
+    {
+        return sprintf('
+            SELECT product_id, customer_group_id
+            FROM ' . DB_PREFIX . 'product_discount
+            WHERE product_id = %d
+            GROUP BY product_id, customer_group_id',
+            $product_id
+        );
+    }
+
+    public static function productGroupPriceItems($product_id)
+    {
+        return sprintf('
+            SELECT *
+            FROM ' . DB_PREFIX . 'product_discount
+            WHERE product_id = %d',
+            $product_id
+        );
+    }
+
+    public static function productPrice($productId, $groupId)
+    {
+        return sprintf('
+            SELECT product_discount_id
+            FROM ' . DB_PREFIX . 'product_discount
+            WHERE product_id = %d AND customer_group_id = %d',
+            $productId, $groupId
+        );
+    }
+
     public static function productPricePush($productId, $price)
     {
         return sprintf('
             UPDATE ' . DB_PREFIX . 'product SET price = %f WHERE product_id = %d',
             $price, $productId
+        );
+    }
+
+    public static function productPriceUpdate($id, $quantity, $price)
+    {
+        return sprintf('
+            UPDATE ' . DB_PREFIX . 'product_discount SET quantity = %d price = %f
+            WHERE product_dicount_id = %d',
+            $quantity, $price, $id
+        );
+    }
+
+    public static function productPriceAdd($productId, $groupId, $quantity, $price)
+    {
+        return sprintf('
+            INSERT INTO ' . DB_PREFIX . 'product_discount (product_id, customer_group_id, quantity, price)
+            VALUES (%d, %d, %f)',
+            $productId, $groupId, $quantity, $price
         );
     }
     // </editor-fold>

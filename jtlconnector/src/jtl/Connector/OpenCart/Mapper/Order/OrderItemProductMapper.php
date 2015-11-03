@@ -19,7 +19,7 @@ class OrderItemProductMapper extends OrderItemBaseMapper
         'price' => 'price',
         'quantity' => 'quantity',
         'variations' => 'Order\CustomerOrderItemVariation',
-        'type' => null,
+        'type' => null
     ];
 
     protected function type()

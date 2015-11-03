@@ -107,7 +107,7 @@ class ControllerModuleJtlconnector extends Controller
     {
         $configPath = DIR_CATALOG . '../jtlconnector/config/config.json';
         $logsPath = DIR_LOGS . 'jtlconnector/';
-        $imagePath = DIR_IMAGE . 'data/';
+        $imagePath = DIR_IMAGE . 'catalog/';
         return [
             $configPath => is_file($configPath) && is_writable($configPath),
             $logsPath => is_dir($logsPath) && is_writable($logsPath),

@@ -83,12 +83,12 @@ class CustomerOrder extends MainEntityController
             case PaymentTypes::TYPE_BPAY:
                 $paymentMapper = new  CustomerOrderCreditCart();
                 $query = SQLs::paymentBluepayHostedCard($orderId);
-                $result = $paymentMapper->toHost($this->database->query($query));
-                if (!empty($result)) {
+                $result = $this->database->query($query);
+                if ($result->num_rwos === 1) {
                     break;
                 }
                 $query = SQLs::paymentBluepayRedirectCard($orderId);
-                $result = $paymentMapper->toHost($this->database->query($query));
+                $result = $this->database->query($query);
                 break;
             case PaymentTypes::TYPE_WORLDPAY:
                 $paymentMapper = new  CustomerOrderCreditCart();
@@ -96,9 +96,9 @@ class CustomerOrder extends MainEntityController
                 $result = $this->database->query($query);
                 break;
             default:
-                return null;
+                return;
         }
-        return $paymentMapper->toHost($result);
+        $paymentMapper->toHost($result);
     }
 
     protected function pushData(CustomerOrderModel $data, $model)

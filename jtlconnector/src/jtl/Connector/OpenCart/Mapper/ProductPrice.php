@@ -10,6 +10,24 @@ class ProductPrice extends BaseMapper
 {
     protected $pull = [
         'productId' => 'product_id',
+        'customerGroupId' => 'customer_group_id',
         'items' => 'ProductPriceItem'
     ];
+
+    protected $push = [
+        'product_id' => 'productId',
+        'customer_group_id' => 'customerGroupId',
+        'date_start' => null,
+        'date_end' => null
+    ];
+
+    protected function date_start()
+    {
+        return '0000-00-00';
+    }
+
+    protected function date_end()
+    {
+        return '0000-00-00';
+    }
 }
