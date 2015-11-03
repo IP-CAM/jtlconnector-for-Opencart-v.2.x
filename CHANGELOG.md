@@ -1,3 +1,11 @@
+0.6.3
+------
+- Add support for block pricing
+- Update image path
+- Fix payment error
+- Fix vat for customer order items
+- Adapt name of OpenCart specific archive
+
 0.6.2
 ------
 - Refactor source code 
