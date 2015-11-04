@@ -1,5 +1,4 @@
 .idea
-/jtlconnector/config/config.json
 /jtlconnector/plugins
 !/jtlconnector/plugins/.gitkeep
 composer.lock

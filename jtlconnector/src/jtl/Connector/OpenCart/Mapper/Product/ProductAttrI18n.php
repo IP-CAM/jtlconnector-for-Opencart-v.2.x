@@ -12,8 +12,18 @@ class ProductAttrI18n extends I18nBaseMapper
 {
     protected $pull = [
         'productAttrId' => 'attribute_id',
-        'name' => 'name',
-        'value' => 'value',
+        'name' => null,
+        'value' => null,
         'languageISO' => null
     ];
+
+    protected function name(array $data)
+    {
+        return isset($data['name']) ? html_entity_decode($data['name']) : '';
+    }
+
+    protected function value(array $data)
+    {
+        return isset($data['value']) ? html_entity_decode($data['value']) : '';
+    }
 }

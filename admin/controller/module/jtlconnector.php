@@ -105,10 +105,12 @@ class ControllerModuleJtlconnector extends Controller
 
     private function writeAccess()
     {
-        $configPath = DIR_CATALOG . '../jtlconnector/config/config.json';
-        $logsPath = DIR_LOGS . 'jtlconnector/';
-        $imagePath = DIR_IMAGE . 'catalog/';
+        $dbPath = realpath(DIR_CATALOG . '../jtlconnector/db/');
+        $configPath = realpath(DIR_CATALOG . '../jtlconnector/config/config.json');
+        $logsPath = realpath(DIR_LOGS);
+        $imagePath = realpath(DIR_IMAGE . 'catalog/');
         return [
+            $dbPath => is_dir($dbPath) && is_writable($dbPath),
             $configPath => is_file($configPath) && is_writable($configPath),
             $logsPath => is_dir($logsPath) && is_writable($logsPath),
             $imagePath => is_dir($imagePath) && is_writable($imagePath)
@@ -158,6 +160,8 @@ class ControllerModuleJtlconnector extends Controller
         $this->activateLinking();
         $this->activateChecksum();
         $this->activateFilter();
+        $this->activateCategoryTree();
+        $this->fillCategoryLevelTable();
 
         $result = $this->db->query('SELECT * FROM oc_language');
         $groupDescriptions = [];
@@ -184,9 +188,9 @@ class ControllerModuleJtlconnector extends Controller
     private function activateFilter()
     {
         $categoryLayoutId = 3;
-        $filterInstalled = 'SELECT * FROM ' . DB_PREFIX . 'extension WHERE type = "module" AND CODE = "filter"';
+        $filterInstalled = 'SELECT * FROM ' . DB_PREFIX . 'extension WHERE type = "module" AND code = "filter"';
         if (empty($this->db->query($filterInstalled)->rows)) {
-            $this->db->query('INSERT INTO ' . DB_PREFIX . 'extension (type, CODE) VALUES ("module", "filter")');
+            $this->db->query('INSERT INTO ' . DB_PREFIX . 'extension (type, code) VALUES ("module", "filter")');
         }
         $filterSettings = $this->model_setting_setting->getSetting('filter');
         if (isset($filterSettings['filter_status'])) {
@@ -200,12 +204,12 @@ class ControllerModuleJtlconnector extends Controller
         $filterInLayout = sprintf('
                 SELECT *
                 FROM ' . DB_PREFIX . 'layout_module
-                WHERE layout_id = % AND CODE = "filter"',
+                WHERE layout_id = %d AND code = "filter"',
             $categoryLayoutId
         );
         if (empty($this->db->query($filterInLayout)->rows)) {
             $this->db->query('
-                    INSERT INTO ' . DB_PREFIX . 'layout_module (layout_id, CODE, position, sort_order)
+                    INSERT INTO ' . DB_PREFIX . 'layout_module (layout_id, code, position, sort_order)
                     VALUES (3, "filter", "column_left", 1)'
             );
         }
@@ -233,6 +237,40 @@ class ControllerModuleJtlconnector extends Controller
                 PRIMARY KEY (endpointId)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $this->db->query($checksumQuery);
+    }
+
+    private function activateCategoryTree()
+    {
+        $sql = '
+            CREATE TABLE IF NOT EXISTS jtl_connector_category_level (
+                category_id int(11) NOT NULL,
+                level int(10) unsigned NOT NULL,
+                PRIMARY KEY (`category_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
+        $this->db->query($sql);
+    }
+
+    private function fillCategoryLevelTable(array $parentIds = null, $level = 0)
+    {
+        $where = 'WHERE parent_id = 0';
+        if ($parentIds === null) {
+            $parentIds = [];
+            $this->db->query('TRUNCATE TABLE jtl_connector_category_level');
+        } else {
+            $where = 'WHERE parent_id IN (' . implode(',', $parentIds) . ')';
+            $parentIds = [];
+        }
+        $categories = $this->db->query('SELECT category_id FROM ' . DB_PREFIX . 'category ' . $where);
+        if ($categories->num_rows > 0) {
+            foreach ($categories->rows as $category) {
+                $parentIds[] = (int)$category['category_id'];
+                $sql = '
+                    INSERT IGNORE INTO jtl_connector_category_level (category_id, level)
+                    VALUES (%d, %d)';
+                $this->db->query(sprintf($sql, $category['category_id'], $level));
+            }
+            $this->fillCategoryLevelTable($parentIds, $level + 1);
+        }
     }
 
     private function createPassword()
@@ -466,6 +504,7 @@ class ControllerModuleJtlconnector extends Controller
     {
         $this->db->query('DROP TABLE IF EXISTS jtl_connector_link');
         $this->db->query('DROP TABLE IF EXISTS jtl_connector_checksum');
+        $this->db->query('DROP TABLE IF EXISTS jtl_connector_category_level');
         $configs = $this->model_setting_setting->getSetting(self::CONFIG_KEY);
         $this->model_catalog_attribute_group->deleteAttributeGroup($configs[self::CONFIG_ATTRIBUTE_GROUP]);
         $this->model_setting_setting->deleteSetting(self::CONFIG_KEY);

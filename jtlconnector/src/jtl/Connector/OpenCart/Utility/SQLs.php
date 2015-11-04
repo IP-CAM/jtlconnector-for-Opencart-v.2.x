@@ -30,8 +30,10 @@ final class SQLs
         return sprintf('
             SELECT c.*
             FROM ' . DB_PREFIX . 'category c
+            LEFT JOIN jtl_connector_category_level cl ON cl.category_id = c.category_id
             LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL
+            ORDER BY cl.level ASC
             LIMIT %d',
             IdentityLinker::TYPE_CATEGORY, $limit
         );
@@ -875,7 +877,17 @@ final class SQLs
     public static function productPriceByProduct($product_id)
     {
         return sprintf('
-            SELECT product_id, null as customer_group_id, price
+            SELECT product_id, 0 as customer_group_id
+            FROM ' . DB_PREFIX . 'product
+            WHERE product_id = %d',
+            $product_id
+        );
+    }
+
+    public static function productPriceItems($product_id)
+    {
+        return sprintf('
+            SELECT price, 1 as quantity
             FROM ' . DB_PREFIX . 'product
             WHERE product_id = %d',
             $product_id

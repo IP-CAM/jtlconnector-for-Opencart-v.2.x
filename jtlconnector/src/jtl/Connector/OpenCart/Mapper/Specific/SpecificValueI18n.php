@@ -12,7 +12,7 @@ class SpecificValueI18n extends I18nBaseMapper
 {
     protected $pull = [
         'specificValueId' => 'filter_id',
-        'value' => 'name',
+        'value' => null,
         'languageISO' => null
     ];
 
@@ -20,4 +20,9 @@ class SpecificValueI18n extends I18nBaseMapper
         'filter_id' => 'specificValueId',
         'name' => 'value'
     ];
+
+    protected function value(array $data)
+    {
+        return isset($data['name']) ? html_entity_decode($data['name']) : '';
+    }
 }

@@ -87,6 +87,9 @@
             </metadata>
         </pharpackage>
         <move file="./dist/jtlconnector/index.phar" tofile="./dist/jtlconnector/connector.phar"/>
+    </target>
+
+    <target name="release" depends="package">
         <zip destfile="./dist/jtl-connector-opencart2-${version}.zip" basedir="./dist"/>
     </target>
 
