@@ -25,7 +25,7 @@ class Category extends MainEntityController
 
     public function pushData(CategoryModel $data, $model)
     {
-        if (isset(self::$idCache[$data->getParentCategoryId()->getHost()])) {
+        if ($data->getParentCategoryId() !== null && isset(self::$idCache[$data->getParentCategoryId()->getHost()])) {
             $data->getParentCategoryId()->setEndpoint(self::$idCache[$data->getParentCategoryId()->getHost()]);
         }
         $category = $this->mapper->toEndpoint($data);

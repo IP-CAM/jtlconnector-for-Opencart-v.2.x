@@ -19,6 +19,9 @@ class ProductPriceItem extends BaseController
 
     protected function pullQuery(array $data, $limit = null)
     {
+        if ($data['customer_group_id'] == 0) {
+            return SQLs::productPriceItems($data['product_id']);
+        }
         return SQLs::productGroupPriceItems($data['product_id']);
     }
 

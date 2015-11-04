@@ -7,10 +7,36 @@
 namespace jtl\Connector\OpenCart\Controller\Product;
 
 use jtl\Connector\Model\Product as ProductModel;
+use jtl\Connector\OpenCart\Controller\BaseController;
+use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Mapper\ProductPriceItem;
+use jtl\Connector\OpenCart\Utility\SQLs;
 
-class ProductPrice extends \jtl\Connector\OpenCart\Controller\ProductPrice
+class ProductPrice extends BaseController
 {
+    public function pullData(array $data, $model, $limit = null)
+    {
+        $return = [];
+        $groupPriceQuery = SQLs::productGroupPricesByProduct($data['product_id']);
+        $result = $this->database->query($groupPriceQuery);
+        foreach ((array)$result as $row) {
+            $host = $this->mapper->toHost($row);
+            $return[] = $host;
+        }
+        $productPriceQuery = SQLs::productPriceByProduct($data['product_id']);
+        $result = $this->database->query($productPriceQuery);
+        if (!empty($result)) {
+            $host = $this->mapper->toHost($result[0]);
+            $return[] = $host;
+        }
+        return $return;
+    }
+
+    protected function pullQuery(array $data, $limit = null)
+    {
+        throw new MethodNotAllowedException();
+    }
+
     public function pushData(ProductModel $data, &$model)
     {
         $priceItemMapper = new ProductPriceItem();
