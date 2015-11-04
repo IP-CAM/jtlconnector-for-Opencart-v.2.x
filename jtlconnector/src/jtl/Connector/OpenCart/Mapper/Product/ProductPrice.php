@@ -11,6 +11,7 @@ use jtl\Connector\OpenCart\Mapper\BaseMapper;
 class ProductPrice extends \jtl\Connector\OpenCart\Mapper\ProductPrice
 {
     protected $pull = [
+        'id' => 'id',
         'productId' => 'product_id',
         'customerGroupId' => 'customer_group_id',
         'items' => 'Product\ProductPriceItem'

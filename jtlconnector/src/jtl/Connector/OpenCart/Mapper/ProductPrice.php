@@ -9,6 +9,7 @@ namespace jtl\Connector\OpenCart\Mapper;
 class ProductPrice extends BaseMapper
 {
     protected $pull = [
+        'id' => 'id',
         'productId' => 'product_id',
         'customerGroupId' => 'customer_group_id',
         'items' => 'ProductPriceItem'

@@ -863,21 +863,10 @@ final class SQLs
     }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Product Price">
-    public static function productPricePull($limit)
-    {
-        return sprintf('
-            SELECT p.price, p.product_id
-            FROM ' . DB_PREFIX . 'product p
-            LEFT JOIN jtl_connector_link l ON p.product_id = l.endpointId AND l.type = %d
-            LIMIT %d',
-            IdentityLinker::TYPE_PRODUCT, $limit
-        );
-    }
-
     public static function productPriceByProduct($product_id)
     {
         return sprintf('
-            SELECT product_id, 0 as customer_group_id
+            SELECT product_id, "" as customer_group_id, CONCAT(product_id, "_default") as id
             FROM ' . DB_PREFIX . 'product
             WHERE product_id = %d',
             $product_id
@@ -887,7 +876,7 @@ final class SQLs
     public static function productPriceItems($product_id)
     {
         return sprintf('
-            SELECT price, 1 as quantity
+            SELECT price, 0 as quantity, CONCAT(product_id, "_default") as price_id
             FROM ' . DB_PREFIX . 'product
             WHERE product_id = %d',
             $product_id
@@ -897,7 +886,7 @@ final class SQLs
     public static function productGroupPricesByProduct($product_id)
     {
         return sprintf('
-            SELECT product_id, customer_group_id
+            SELECT product_id, customer_group_id, product_discount_id as id
             FROM ' . DB_PREFIX . 'product_discount
             WHERE product_id = %d
             GROUP BY product_id, customer_group_id',
@@ -908,7 +897,7 @@ final class SQLs
     public static function productGroupPriceItems($product_id)
     {
         return sprintf('
-            SELECT *
+            SELECT *, product_discount_id as price_id
             FROM ' . DB_PREFIX . 'product_discount
             WHERE product_id = %d',
             $product_id

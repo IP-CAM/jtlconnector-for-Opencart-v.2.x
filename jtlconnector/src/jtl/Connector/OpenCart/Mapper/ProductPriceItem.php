@@ -11,13 +11,14 @@ use jtl\Connector\Model\ProductPriceItem as ProductPriceItemModel;
 class ProductPriceItem extends BaseMapper
 {
     protected $pull = [
+        'productPriceId' => 'price_id',
         'netPrice' => 'price',
         'quantity' => 'quantity'
     ];
 
     protected $push = [
         'price' => 'netPrice',
-        'quantity' => null,
+        'quantity' => 'quantity',
         'priority' => null
     ];
 
