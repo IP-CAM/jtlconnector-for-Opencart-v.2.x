@@ -1,3 +1,12 @@
+0.6.4
+------
+- Create category tree table on install
+- Fill category tree table on install
+- HTML decode OpenCart descriptions
+- Delete delivery note as it is just compatible with OpenCart Openbay
+- Fix product and group prices
+- Add db folder to write access check
+
 0.6.3
 ------
 - Add support for block pricing
