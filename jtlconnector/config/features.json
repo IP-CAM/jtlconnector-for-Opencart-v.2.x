@@ -146,12 +146,12 @@
       "delete": false
     },
     "DeliveryNote": {
-      "pull": true,
+      "pull": false,
       "push": false,
       "delete": false
     },
     "DeliveryNoteItem": {
-      "pull": true,
+      "pull": false,
       "push": false,
       "delete": false
     },
@@ -161,7 +161,7 @@
       "delete": false
     },
     "DeliveryNoteTrackingList": {
-      "pull": true,
+      "pull": false,
       "push": false,
       "delete": false
     },

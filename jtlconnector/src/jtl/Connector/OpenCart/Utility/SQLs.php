@@ -1226,33 +1226,4 @@ final class SQLs
         );
     }
     // </editor-fold>
-    //// <editor-fold defaultstate="collapsed" desc="Delivery Note">
-    public static function deliveryNoteStats()
-    {
-        return sprintf('
-            SELECT COUNT(*)
-            FROM ' . DB_PREFIX . 'order o
-            LEFT JOIN jtl_connector_link l ON o.order_id = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL',
-            IdentityLinker::TYPE_DELIVERY_NOTE
-        );
-    }
-
-    public static function deliveryNotePull($limit)
-    {
-        return sprintf('
-            SELECT o.order_id, o.date_added, o.shipping_method, o.tracking
-            FROM ' . DB_PREFIX . 'order o
-            LEFT JOIN jtl_connector_link l ON o.order_id = l.endpointId AND l.type = %d
-            WHERE l.hostId IS NULL AND o.tracking IS NOT NULL AND o.tracking != ""
-            LIMIT %d',
-            IdentityLinker::TYPE_DELIVERY_NOTE, $limit
-        );
-    }
-
-    public static function deliveryNoteItemPull($orderId)
-    {
-        return sprintf('SELECT * FROM ' . DB_PREFIX . 'order_product WHERE order_id = %d', $orderId);
-    }
-    // </editor-fold>
 }
