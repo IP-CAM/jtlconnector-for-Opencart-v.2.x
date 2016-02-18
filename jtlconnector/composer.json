@@ -33,8 +33,7 @@
   },
   "autoload": {
     "psr-0": {
-      "jtl\\Connector\\OpenCart\\": "src/",
-      "": "plugins/"
+      "jtl\\Connector\\OpenCart\\": "src/"
     },
     "autoload-dev": {
       "psr-0": {
