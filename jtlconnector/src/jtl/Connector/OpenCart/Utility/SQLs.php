@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @author    Sven Mäurer <sven.maeurer@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
  */
 
@@ -28,7 +28,7 @@ final class SQLs
     public static function categoryPull($limit)
     {
         return sprintf('
-            SELECT c.*
+            SELECT c.*, cl.level
             FROM ' . DB_PREFIX . 'category c
             LEFT JOIN jtl_connector_category_level cl ON cl.category_id = c.category_id
             LEFT JOIN jtl_connector_link l ON c.category_id = l.endpointId AND l.type = %d
@@ -59,6 +59,16 @@ final class SQLs
             WHERE l.hostId IS NULL',
             IdentityLinker::TYPE_CATEGORY
         );
+    }
+
+    public static function categoryTreeUpdate($id, $level)
+    {
+        return sprintf('UPDATE jtl_connector_category_level SET level = %d WHERE category_id = %d', $level, $id);
+    }
+
+    public static function categoryTreeDelete($id)
+    {
+        return sprintf('DELETE FROM jtl_connector_category_level WHERE category_id = %d', $id);
     }
     // </editor-fold>
     //// <editor-fold defaultstate="collapsed" desc="Checksum">
@@ -199,15 +209,21 @@ final class SQLs
     public static function customerOrderPull($limit)
     {
         return sprintf('
-            SELECT o.*, l.code, c.iso_code_3, (o.total - ot.value) as total_sum
-            FROM ' . DB_PREFIX . 'order o
-            LEFT JOIN ' . DB_PREFIX . 'language l ON o.language_id = l.language_id
-            LEFT JOIN ' . DB_PREFIX . 'country c ON o.payment_country_id = c.country_id
-            LEFT JOIN ' . DB_PREFIX . 'order_total ot ON o.order_id = ot.order_id AND ot.code = "tax"
+            SELECT o.*, l.code, c.iso_code_3,
+            (
+                SELECT ot2.value - SUM(ot1.value)
+                FROM %sorder_total ot1
+                CROSS JOIN %sorder_total ot2
+                WHERE ot1.code = "tax" AND ot2.code = "total"
+                GROUP BY ot1.code
+            ) as total_sum
+            FROM %sorder o
+            LEFT JOIN %slanguage l ON o.language_id = l.language_id
+            LEFT JOIN %scountry c ON o.payment_country_id = c.country_id
             LEFT JOIN jtl_connector_link cl ON o.order_id = cl.endpointId AND cl.type = %d
             WHERE cl.hostId IS NULL
             LIMIT %d',
-            IdentityLinker::TYPE_CUSTOMER_ORDER, $limit
+            DB_PREFIX, DB_PREFIX, DB_PREFIX, DB_PREFIX, DB_PREFIX, IdentityLinker::TYPE_CUSTOMER_ORDER, $limit
         );
     }
 

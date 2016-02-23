@@ -62,12 +62,12 @@ class Db extends Singleton
     public function __construct()
     {
         $mysql = Mysql::getInstance();
-        $mysql->connect([
+        /*$mysql->connect([
             'host' => $GLOBALS['DB_HOST'],
             'name' => $GLOBALS['DB_NAME'],
             'user' => $GLOBALS['DB_USER'],
             'password' => $GLOBALS['DB_PASSWORD']
-        ]);
+        ]);*/
         $this->db = $mysql;
     }
 

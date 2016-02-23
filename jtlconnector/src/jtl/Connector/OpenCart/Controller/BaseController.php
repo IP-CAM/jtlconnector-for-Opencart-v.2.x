@@ -21,9 +21,21 @@ use jtl\Connector\Result\Action;
 
 abstract class BaseController extends Controller
 {
+    /**
+     * @var OpenCart
+     */
     protected $oc;
+    /**
+     * @var Utils
+     */
     protected $utils;
+    /**
+     * @var BaseMapper
+     */
     protected $mapper;
+    /**
+     * @var Db
+     */
     protected $database;
     protected $controllerName;
 

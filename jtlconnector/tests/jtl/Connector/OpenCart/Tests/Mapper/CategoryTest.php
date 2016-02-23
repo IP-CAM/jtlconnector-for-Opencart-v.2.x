@@ -17,7 +17,7 @@ class CategoryTest extends AbstractMapperTest
         $result = new \jtl\Connector\Model\Category();
         $result->setId(new Identity("", 1));
         $result->setParentCategoryId(new Identity());
-        $result->setLevel(0);
+        $result->setLevel(2);
         $result->setSort(3);
         $result->setIsActive(true);
         $result->setAttributes([]);
@@ -31,10 +31,11 @@ class CategoryTest extends AbstractMapperTest
     {
         return [
             'category_id' => "1",
-            'parent_id' => null,
-            'column' => 0,
-            'status' => 1,
-            'sort_order' => 3
+            'parent_id'   => null,
+            'column'      => 0,
+            'status'      => 1,
+            'sort_order'  => 3,
+            'level'       => 2
         ];
     }
 
@@ -43,7 +44,7 @@ class CategoryTest extends AbstractMapperTest
         $result = new \jtl\Connector\Model\Category();
         $result->setId(new Identity("1", 0));
         $result->setParentCategoryId(new Identity());
-        $result->setLevel(0);
+        $result->setLevel(2);
         $result->setSort(3);
         $result->setIsActive(true);
         $result->setAttributes([]);
@@ -56,13 +57,14 @@ class CategoryTest extends AbstractMapperTest
     protected function getMappedEndpoint()
     {
         return [
-            'category_id' => '',
-            'parent_id' => '',
-            'column' => 0,
-            'status' => true,
-            'sort_order' => 3,
-            'top' => true,
-            'keyword' => '',
+            'category_id'    => '',
+            'parent_id'      => '',
+            'column'         => 0,
+            'status'         => true,
+            'sort_order'     => 3,
+            'top'            => true,
+            'keyword'        => '',
+            'level'          => 2,
             'category_store' => [0]
         ];
     }

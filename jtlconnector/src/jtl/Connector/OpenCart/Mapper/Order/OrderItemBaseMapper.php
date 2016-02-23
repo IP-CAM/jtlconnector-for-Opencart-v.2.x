@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @author    Sven Mäurer <sven.maeurer@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
  */
 
@@ -14,12 +14,13 @@ use jtl\Connector\Type\CustomerOrderItem;
 abstract class OrderItemBaseMapper extends BaseMapper
 {
     protected $pull = [
-        'id' => 'order_item_id',
+        'id'              => 'order_item_id',
         'customerOrderId' => 'order_id',
-        'name' => 'title',
-        'price' => 'value',
-        'type' => null,
-        'quantity' => null
+        'name'            => 'title',
+        'price'           => null,
+        'priceGross'      => null,
+        'type'            => null,
+        'quantity'        => null
     ];
 
     /** @noinspection PhpMissingParentConstructorInspection */
@@ -33,5 +34,15 @@ abstract class OrderItemBaseMapper extends BaseMapper
     protected function quantity()
     {
         return 1.0;
+    }
+
+    protected function price(array $item)
+    {
+        return round((float)$item['value'], 2);
+    }
+
+    protected function priceGross(array $item)
+    {
+        return round((float)$item['value'], 2);
     }
 }

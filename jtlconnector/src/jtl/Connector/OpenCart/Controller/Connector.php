@@ -14,7 +14,6 @@ use jtl\Connector\Core\Rpc\Error;
 use jtl\Connector\Formatter\ExceptionFormatter;
 use jtl\Connector\Model\ConnectorIdentification;
 use jtl\Connector\Model\ConnectorServerInfo;
-use jtl\Connector\OpenCart\Utility\CategoryTree;
 use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\OpenCart\Utility\OpenCart;
 use jtl\Connector\OpenCart\Utility\Option;
@@ -55,8 +54,6 @@ class Connector extends Controller
         $action = new Action();
         $action->setHandled(true);
         try {
-            $categoryTreeHelper = CategoryTree::getInstance();
-            $categoryTreeHelper->fillCategoryLevelTable();
             $optionHelper = Option::getInstance();
             $optionHelper->deleteObsoleteOptions();
         } catch (\Exception $exc) {

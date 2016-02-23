@@ -16,7 +16,7 @@ class ImageTest extends AbstractControllerTest
         return new ImageMock();
     }
 
-    public function testAddNextImages()
+    public function AddNextImages()
     {
         $return = [];
         $limit = 100;

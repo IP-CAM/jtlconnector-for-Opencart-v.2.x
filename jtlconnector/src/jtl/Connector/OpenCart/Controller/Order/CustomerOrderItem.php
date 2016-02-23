@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @author    Sven Mäurer <sven.maeurer@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
  */
 
@@ -19,14 +19,14 @@ use jtl\Connector\OpenCart\Utility\SQLs;
 
 class CustomerOrderItem extends BaseController
 {
-    private $tax;
     private $orderId;
     private $productMapper;
     private $shippingMapper;
     private $discountMapper;
+    private $sumsForVat;
 
     private $methods = [
-        'customerOrderProducts' => COI::TYPE_PRODUCT,
+        'customerOrderProducts'  => COI::TYPE_PRODUCT,
         'customerOrderShippings' => COI::TYPE_SHIPPING,
         'customerOrderDiscounts' => COI::TYPE_DISCOUNT
     ];
@@ -34,6 +34,7 @@ class CustomerOrderItem extends BaseController
     public function __construct()
     {
         parent::__construct();
+        $this->sumsForVat = [];
         $this->productMapper = new OrderItemProductMapper();
         $this->shippingMapper = new OrderItemShippingMapper();
         $this->discountMapper = new OrderItemDiscountMapper();
@@ -44,7 +45,6 @@ class CustomerOrderItem extends BaseController
         $return = [];
         $orderItemId = 1;
         $this->orderId = $data['order_id'];
-        $this->tax = doubleval($this->getTax($this->orderId));
         foreach ($this->methods as $method => $type) {
             $sqlMethod = Constants::UTILITY_NAMESPACE . 'SQLs::' . $method;
             $query = call_user_func($sqlMethod, $this->orderId);
@@ -62,18 +62,24 @@ class CustomerOrderItem extends BaseController
         $result = $this->{$type . 'Mapper'}->toHost($item);
         if ($result instanceof CustomerOrderItemModel) {
             $result->setId(new Identity($this->orderId . '_' . $id));
-            $result->setVat($this->tax);
+            if ($result->getType() === CustomerOrderItemModel::TYPE_PRODUCT) {
+                if (isset($this->sumsForVat["{$result->getVat()}"])) {
+                    $this->sumsForVat["{$result->getVat()}"] += $result->getPrice();
+                } else {
+                    $this->sumsForVat["{$result->getVat()}"] = $result->getPrice();
+                }
+            } else {
+                arsort($this->sumsForVat);
+                $vat = array_keys($this->sumsForVat)[0];
+                $result->setVat($vat);
+                $result->setPriceGross($result->getPrice() * (1 + $vat / 100));
+            }
         }
         return $result;
     }
 
     protected function pullQuery(array $data, $limit = null)
     {
-        throw new MethodNotAllowedException("Use the specific pull methods.");
-    }
-
-    private function getTax($orderId)
-    {
-        return $this->database->queryOne(SQLs::taxRateOfOrder($orderId));
+        throw new MethodNotAllowedException('Use the specific pull methods.');
     }
 }

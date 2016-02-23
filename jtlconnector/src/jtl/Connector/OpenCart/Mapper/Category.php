@@ -15,6 +15,7 @@ class Category extends BaseMapper
         'parentCategoryId' => 'parent_id',
         'isActive' => 'status',
         'sort' => 'sort_order',
+        'level' => 'level',
         'i18ns' => 'CategoryI18n'
     ];
 
@@ -23,6 +24,7 @@ class Category extends BaseMapper
         'parent_id' => 'parentCategoryId',
         'status' => 'isActive',
         'sort_order' => 'sort',
+        'level' => 'level',
         'CategoryI18n' => 'i18ns',
         'top' => null,
         'column' => null,

@@ -39,6 +39,7 @@ class Category extends MainEntityController
             } else {
                 $ocCategory->editCategory($id, $category);
             }
+            SQLs::categoryTreeUpdate($id, $data->getLevel());
         }
         return $data;
     }
@@ -48,6 +49,7 @@ class Category extends MainEntityController
         $ocCategory = $this->oc->loadAdminModel('catalog/category');
         if ($ocCategory instanceof \ModelCatalogCategory) {
             $ocCategory->deleteCategory($data->getId()->getEndpoint());
+            SQLs::categoryTreeDelete($data->getId()->getEndpoint());
         }
         return $data;
     }

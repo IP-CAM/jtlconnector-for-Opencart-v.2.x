@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Sven Mäurer <sven.maeurer@jtl-software.com>
+ * @author    Sven Mäurer <sven.maeurer@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
  */
 
@@ -16,10 +16,10 @@ use jtl\Connector\Payment\PaymentTypes;
 class CustomerOrder extends MainEntityController
 {
     private $shippingStatusMapping = [
-        'Pending' => CustomerOrderModel::STATUS_NEW,
+        'Pending'    => CustomerOrderModel::STATUS_NEW,
         'Processing' => CustomerOrderModel::STATUS_PARTIALLY_SHIPPED,
-        'Shipped' => CustomerOrderModel::STATUS_SHIPPED,
-        'Canceled' => CustomerOrderModel::STATUS_CANCELLED
+        'Shipped'    => CustomerOrderModel::STATUS_SHIPPED,
+        'Canceled'   => CustomerOrderModel::STATUS_CANCELLED
     ];
 
     public function pullData(array $data, $model, $limit = null)
@@ -54,6 +54,8 @@ class CustomerOrder extends MainEntityController
                 $order->setStatus($this->shippingStatusMapping[$result[0]['name']]);
             }
             $order->setShippingDate(date_create_from_format("Y-m-d H:i:s", $result[0]['date_added']));
+        } else {
+            $order->setStatus(CustomerOrderModel::STATUS_NEW);
         }
     }
 
@@ -73,6 +75,8 @@ class CustomerOrder extends MainEntityController
         if (!empty($result)) {
             $order->setPaymentStatus(trim(str_replace('Payment:', '', $result[0]['comment'])));
             $order->setPaymentDate(date_create_from_format("Y-m-d H:i:s", $result[0]['date_added']));
+        } else {
+            $order->setStatus(CustomerOrderModel::PAYMENT_STATUS_UNPAID);
         }
     }
 
