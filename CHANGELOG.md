@@ -1,3 +1,11 @@
+0.7.0
+-----
+- Update autoloading plugin namespace
+- Fix order with different vat types
+- Add price gross for orders
+- Refactor category level logic
+- Fix tests
+
 0.6.4
 ------
 - Create category tree table on install

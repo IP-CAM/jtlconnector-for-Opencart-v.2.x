@@ -2,7 +2,7 @@
 
 class ControllerModuleJtlconnector extends Controller
 {
-    const CONNECTOR_VERSION = '0.6.4';
+    const CONNECTOR_VERSION = '0.7.0';
     const CONFIG_KEY = 'connector';
     const CONFIG_PASSWORD_KEY = 'connector_password';
     const CONFIG_ATTRIBUTE_GROUP = 'connector_attribute_group';
