@@ -1,8 +1,8 @@
 <?php
 
-class ControllerModuleJtlconnector extends Controller
+class ControllerExtensionModuleJtlConnector extends Controller
 {
-    const CONNECTOR_VERSION = '0.7.0';
+    const CONNECTOR_VERSION = '0.8.0';
     const CONFIG_KEY = 'connector';
     const CONFIG_PASSWORD_KEY = 'connector_password';
     const CONFIG_ATTRIBUTE_GROUP = 'connector_attribute_group';
@@ -21,9 +21,9 @@ class ControllerModuleJtlconnector extends Controller
     public function index()
     {
         if (version_compare(VERSION, '2.0.3.1', '>')) {
-            $this->language->load('module/jtlconnector');
+            $this->language->load('extension/module/jtl_connector');
         } else {
-            $this->load->language('module/jtlconnector');
+            $this->load->language('extension/module/jtl_connector');
         }
 
         $this->document->setTitle($this->language->get('heading_title'));
@@ -100,7 +100,8 @@ class ControllerModuleJtlconnector extends Controller
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
-        $this->response->setOutput($this->load->view('module/jtlconnector.tpl', $data));
+
+        $this->response->setOutput($this->load->view('extension/module/jtl_connector.tpl', $data));
     }
 
     private function writeAccess()
@@ -109,6 +110,7 @@ class ControllerModuleJtlconnector extends Controller
         $configPath = realpath(DIR_CATALOG . '../jtlconnector/config/config.json');
         $logsPath = realpath(DIR_LOGS);
         $imagePath = realpath(DIR_IMAGE . 'catalog/');
+
         return [
             $dbPath => is_dir($dbPath) && is_writable($dbPath),
             $configPath => is_file($configPath) && is_writable($configPath),
@@ -123,6 +125,7 @@ class ControllerModuleJtlconnector extends Controller
             SELECT *
             FROM ' . DB_PREFIX . 'custom_field_description
             WHERE name IN ("Anrede", "Salutation")');
+
         return $result->num_rows > 0;
     }
 
@@ -132,6 +135,7 @@ class ControllerModuleJtlconnector extends Controller
             SELECT *
             FROM ' . DB_PREFIX . 'custom_field_description
             WHERE name IN ("Titel", "Title")');
+
         return $result->num_rows > 0;
     }
 
@@ -141,6 +145,7 @@ class ControllerModuleJtlconnector extends Controller
             SELECT *
             FROM ' . DB_PREFIX . 'custom_field_description
             WHERE name IN ("USt-IdNr.", "VAT number")');
+
         return $result->num_rows > 0;
     }
 
@@ -157,10 +162,10 @@ class ControllerModuleJtlconnector extends Controller
     //// <editor-fold defaultstate="collapsed" desc="Install Action">
     public function install()
     {
-        $this->activateLinking();
-        $this->activateChecksum();
+        $this->load->model('extension/module/jtl_connector');
+        $this->model_extension_module_jtl_connector->createSchema();
+
         $this->activateFilter();
-        $this->activateCategoryTree();
         $this->fillCategoryLevelTable();
 
         $result = $this->db->query('SELECT * FROM oc_language');
@@ -215,41 +220,6 @@ class ControllerModuleJtlconnector extends Controller
         }
     }
 
-    private function activateLinking()
-    {
-        $linkQuery = "
-            CREATE TABLE IF NOT EXISTS jtl_connector_link (
-                endpointId CHAR(64) NOT NULL,
-                hostId INT(10) NOT NULL,
-                type INT(10),
-                PRIMARY KEY (endpointId, hostId, type)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $this->db->query($linkQuery);
-    }
-
-    private function activateChecksum()
-    {
-        $checksumQuery = "
-            CREATE TABLE IF NOT EXISTS jtl_connector_checksum (
-                endpointId INT(10) UNSIGNED NOT NULL,
-                type TINYINT UNSIGNED NOT NULL,
-                checksum VARCHAR(255) NOT NULL,
-                PRIMARY KEY (endpointId)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $this->db->query($checksumQuery);
-    }
-
-    private function activateCategoryTree()
-    {
-        $sql = '
-            CREATE TABLE IF NOT EXISTS jtl_connector_category_level (
-                category_id int(11) NOT NULL,
-                level int(10) unsigned NOT NULL,
-                PRIMARY KEY (`category_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
-        $this->db->query($sql);
-    }
-
     private function fillCategoryLevelTable(array $parentIds = null, $level = 0)
     {
         $where = 'WHERE parent_id = 0';
@@ -278,6 +248,7 @@ class ControllerModuleJtlconnector extends Controller
         if (function_exists('com_create_guid') === true) {
             return trim(com_create_guid(), '{}');
         }
+
         return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535),
             mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
