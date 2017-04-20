@@ -21,7 +21,7 @@ require_once Path::combine(DIR_SYSTEM, 'engine', 'model.php');
 require_once Path::combine(DIR_SYSTEM, 'engine', 'loader.php');
 require_once Path::combine(DIR_SYSTEM, 'engine', 'registry.php');
 require_once Path::combine(DIR_SYSTEM, 'helper', 'utf8.php');
-require_once Path::combine(DIR_APPLICATION, 'controller', 'module', 'jtlconnector.php');
+require_once Path::combine(DIR_APPLICATION, 'controller', 'extension', 'module', 'jtl_connector.php');
 
 class OpenCart extends Singleton
 {
@@ -48,12 +48,12 @@ class OpenCart extends Singleton
         $cache = new \Cache('file');
         $this->registry->set('cache', $cache);
         /** @noinspection PhpUndefinedClassInspection */
-        $event = new \Event($this->registry);
+        /*$event = new \Event($this->registry);
         $this->registry->set('event', $event);
         $query = $database->query('SELECT * FROM ' . DB_PREFIX . 'event');
         foreach ($query->rows as $result) {
             $event->register($result['trigger'], $result['action']);
-        }
+        }*/
         $result = $database->query('SELECT directory FROM ' . DB_PREFIX . 'language WHERE code = "de"');
         if ($result->num_rows === 0 || !is_dir(DIR_CATALOG . 'language/' . $result->row['directory'])) {
             $this->directory = 'english';
@@ -74,12 +74,14 @@ class OpenCart extends Singleton
     public function loadAdminModel($model)
     {
         $file = DIR_APPLICATION . 'model/' . $model . '.php';
+
         return $this->loadOcModel($file, $model);
     }
 
     public function loadFrontendModel($model)
     {
         $file = DIR_CATALOG . 'model/' . $model . '.php';
+
         return $this->loadOcModel($file, $model);
     }
 
@@ -94,30 +96,33 @@ class OpenCart extends Singleton
             trigger_error('Error: Could not load model ' . $file . '!');
             exit();
         }
+
         return $ocModel;
     }
 
     public function loadToken()
     {
-        return $this->getConfig(\ControllerModuleJtlconnector::CONFIG_PASSWORD_KEY);
+        return $this->getConfig(\ControllerExtensionModuleJtlConnector::CONFIG_PASSWORD_KEY);
     }
 
     public function getConnectorVersion()
     {
-        return \ControllerModuleJtlconnector::CONNECTOR_VERSION;
+        return \ControllerExtensionModuleJtlConnector::CONNECTOR_VERSION;
     }
 
     public function getVersion()
     {
-        return $this->getConfig(\ControllerModuleJtlconnector::CONFIG_OPENCART_VERSION);
+        return $this->getConfig(\ControllerExtensionModuleJtlConnector::CONFIG_OPENCART_VERSION);
     }
 
     public function getConfig($key)
     {
         $ocSetting = $this->loadAdminModel('setting/setting');
+
         if ($ocSetting instanceof \ModelSettingSetting) {
-            return $ocSetting->getSetting(\ControllerModuleJtlconnector::CONFIG_KEY)[$key];
+            return $ocSetting->getSetting(\ControllerExtensionModuleJtlConnector::CONFIG_KEY)[$key];
         }
+
         return '';
     }
 
@@ -125,6 +130,7 @@ class OpenCart extends Singleton
     {
         $_ = [];
         include_once DIR_CATALOG . 'language/' . $this->directory . '/' . $model . '.php';
+
         return isset($_[$key]) ? $_[$key] : '';
     }
 }
