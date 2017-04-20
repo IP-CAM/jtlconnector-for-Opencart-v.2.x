@@ -77,7 +77,7 @@ class ProductAttr extends BaseController
             }
         }
         if (is_null($attributeId)) {
-            $groupId = $this->oc->getConfig(\ControllerExtensionModuleJtlConnector::CONFIG_ATTRIBUTE_GROUP);
+            $groupId = $this->oc->getConfig(\ControllerModuleJtlconnector::CONFIG_ATTRIBUTE_GROUP);
             $ocAttribute = $this->oc->loadAdminModel('catalog/attribute');
             if ($ocAttribute instanceof \ModelCatalogAttribute) {
                 $attributeId = $ocAttribute->addAttribute([
