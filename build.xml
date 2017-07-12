@@ -34,26 +34,26 @@
         <chmod file="./dist/jtlconnector/config" mode="0777"/>
         <chmod file="./dist/jtlconnector/db" mode="0777"/>
 
-        <mkdir dir="./dist/admin/controller/module"/>
-        <mkdir dir="./dist/admin/view/template/module"/>
-        <mkdir dir="./dist/admin/language/english/module"/>
-        <copy todir="./dist/admin/controller/module/">
-            <fileset dir="./admin/controller/module">
+        <mkdir dir="./dist/admin/controller/extension/module"/>
+        <mkdir dir="./dist/admin/view/template/extension/module"/>
+        <mkdir dir="./dist/admin/language/english/extension/module"/>
+        <copy todir="./dist/admin/controller/extension/module/">
+            <fileset dir="./admin/controller/extension/module">
                 <include name="jtlconnector.php"/>
             </fileset>
         </copy>
-        <copy todir="./dist/admin/view/template/module/">
-            <fileset dir="./admin/view/template/module">
+        <copy todir="./dist/admin/view/template/extension/module/">
+            <fileset dir="./admin/view/template/extension/module">
                 <include name="jtlconnector.tpl"/>
             </fileset>
         </copy>
-        <copy todir="./dist/admin/language/english/module/">
-            <fileset dir="./admin/language/english/module">
+        <copy todir="./dist/admin/language/en-gb/extension/module/">
+            <fileset dir="./admin/language/en-gb/extension/module">
                 <include name="jtlconnector.php"/>
             </fileset>
         </copy>
-        <copy todir="./dist/admin/language/deutsch/module/">
-            <fileset dir="./admin/language/deutsch/module">
+        <copy todir="./dist/admin/language/deutsch/extension/module/">
+            <fileset dir="admin/language/deutsch/extension/module">
                 <include name="jtlconnector.php"/>
             </fileset>
         </copy>
@@ -69,7 +69,7 @@
     <target name="package" depends="build">
         <loadfile property="version" file="jtlconnector/version"/>
         <pharpackage
-                destfile="./dist/jtlconnector/index.phar"
+                destfile="./dist/jtlconnector/connector.phar"
                 basedir="./build"
                 compression="gzip"
                 stub="./stub.php"
@@ -86,7 +86,6 @@
                 </element>
             </metadata>
         </pharpackage>
-        <move file="./dist/jtlconnector/index.phar" tofile="./dist/jtlconnector/connector.phar"/>
     </target>
 
     <target name="release" depends="package">

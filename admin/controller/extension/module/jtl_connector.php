@@ -2,7 +2,7 @@
 
 class ControllerExtensionModuleJtlConnector extends Controller
 {
-    const CONNECTOR_VERSION = '0.8.0';
+    const CONNECTOR_VERSION = '0.7.0';
     const CONFIG_KEY = 'connector';
     const CONFIG_PASSWORD_KEY = 'connector_password';
     const CONFIG_ATTRIBUTE_GROUP = 'connector_attribute_group';
@@ -476,6 +476,7 @@ class ControllerExtensionModuleJtlConnector extends Controller
         $this->db->query('DROP TABLE IF EXISTS jtl_connector_link');
         $this->db->query('DROP TABLE IF EXISTS jtl_connector_checksum');
         $this->db->query('DROP TABLE IF EXISTS jtl_connector_category_level');
+
         $configs = $this->model_setting_setting->getSetting(self::CONFIG_KEY);
         $this->model_catalog_attribute_group->deleteAttributeGroup($configs[self::CONFIG_ATTRIBUTE_GROUP]);
         $this->model_setting_setting->deleteSetting(self::CONFIG_KEY);
