@@ -36,7 +36,8 @@
 
         <mkdir dir="./dist/admin/controller/extension/module"/>
         <mkdir dir="./dist/admin/view/template/extension/module"/>
-        <mkdir dir="./dist/admin/language/english/extension/module"/>
+        <mkdir dir="./dist/admin/language/de-de/extension/module"/>
+        <mkdir dir="./dist/admin/language/en-gb/extension/module"/>
         <copy todir="./dist/admin/controller/extension/module/">
             <fileset dir="./admin/controller/extension/module">
                 <include name="jtlconnector.php"/>
@@ -47,13 +48,13 @@
                 <include name="jtlconnector.tpl"/>
             </fileset>
         </copy>
-        <copy todir="./dist/admin/language/en-gb/extension/module/">
-            <fileset dir="./admin/language/en-gb/extension/module">
+        <copy todir="./dist/admin/language/de-de/extension/module/">
+            <fileset dir="admin/language/de-de/extension/module">
                 <include name="jtlconnector.php"/>
             </fileset>
         </copy>
-        <copy todir="./dist/admin/language/deutsch/extension/module/">
-            <fileset dir="admin/language/deutsch/extension/module">
+        <copy todir="./dist/admin/language/en-gb/extension/module/">
+            <fileset dir="./admin/language/en-gb/extension/module">
                 <include name="jtlconnector.php"/>
             </fileset>
         </copy>
