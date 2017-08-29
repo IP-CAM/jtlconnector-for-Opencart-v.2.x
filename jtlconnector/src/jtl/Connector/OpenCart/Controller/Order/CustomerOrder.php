@@ -113,7 +113,7 @@ class CustomerOrder extends MainEntityController
             default:
                 return;
         }
-        
+
         $paymentMapper->toHost($result);
     }
 

@@ -1,3 +1,8 @@
+0.7.1
+-----
+- Add missing surcharge order items
+- Return unresolved payment code if it is not mapped
+
 0.7.0
 -----
 - Update autoloading plugin namespace
