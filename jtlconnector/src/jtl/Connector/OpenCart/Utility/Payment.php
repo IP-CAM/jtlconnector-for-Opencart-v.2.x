@@ -19,6 +19,7 @@ class Payment
         'paymate' => PaymentTypes::TYPE_PAYMATE,
         'paypoint' => PaymentTypes::TYPE_PAYPOINT,
         'payza' => PaymentTypes::TYPE_PAYZA,
+        'skrill' => PaymentTypes::TYPE_SKRILL,
         'worldpay' => PaymentTypes::TYPE_WORLDPAY
     ];
 
@@ -26,14 +27,16 @@ class Payment
     {
         if (isset(self::$paymentMapping[$code])) {
             return self::$paymentMapping[$code];
-        } else {
-            if (strrpos('alipay', $code) !== false) {
-                return PaymentTypes::TYPE_ALIPAY;
-            }
-            if (strrpos('bluepay', $code) !== false) {
-                return PaymentTypes::TYPE_BPAY;
-            }
-            return '';
         }
+
+        if (strrpos('alipay', $code) !== false) {
+            return PaymentTypes::TYPE_ALIPAY;
+        }
+
+        if (strrpos('bluepay', $code) !== false) {
+            return PaymentTypes::TYPE_BPAY;
+        }
+
+        return $code;
     }
 }

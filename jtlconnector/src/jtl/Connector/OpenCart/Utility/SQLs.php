@@ -299,6 +299,16 @@ final class SQLs
         );
     }
 
+    public static function customerOrderSurcharges($orderId)
+    {
+        return sprintf('
+            SELECT *
+            FROM ' . DB_PREFIX . 'order_total
+            WHERE CODE IN ("low_order_fee", "handling") AND order_id = %d',
+            $orderId
+        );
+    }
+
     public static function customerOrderItemVariation($orderId)
     {
         return sprintf('

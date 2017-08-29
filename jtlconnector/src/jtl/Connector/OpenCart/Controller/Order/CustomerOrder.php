@@ -25,6 +25,7 @@ class CustomerOrder extends MainEntityController
     public function pullData(array $data, $model, $limit = null)
     {
         $orders = parent::pullDataDefault($data, $limit);
+
         foreach ($orders as $order) {
             if ($order instanceof CustomerOrderModel) {
                 $this->setShippingStatus($order);
@@ -32,6 +33,7 @@ class CustomerOrder extends MainEntityController
                 $this->setPaymentInfo($order);
             }
         }
+
         return $orders;
     }
 
@@ -48,11 +50,14 @@ class CustomerOrder extends MainEntityController
             CustomerOrderModel::STATUS_SHIPPED,
             CustomerOrderModel::STATUS_CANCELLED
         ];
+
         $result = $this->database->query(SQLs::customerOrderShippingStatus($order->getId()->getEndpoint()));
+
         if (!empty($result)) {
             if (in_array($result[0]['name'], $shippingStatuses)) {
                 $order->setStatus($this->shippingStatusMapping[$result[0]['name']]);
             }
+
             $order->setShippingDate(date_create_from_format("Y-m-d H:i:s", $result[0]['date_added']));
         } else {
             $order->setStatus(CustomerOrderModel::STATUS_NEW);
@@ -62,16 +67,21 @@ class CustomerOrder extends MainEntityController
     private function setPaymentStatus(CustomerOrderModel &$order)
     {
         $paymentStatus = [];
+
         $paymentStatuses = [
             CustomerOrderModel::PAYMENT_STATUS_UNPAID,
             CustomerOrderModel::PAYMENT_STATUS_PARTIALLY,
             CustomerOrderModel::PAYMENT_STATUS_COMPLETED
         ];
+
         foreach ($paymentStatuses as $status) {
             $paymentStatus[] = "'{$status}'";
         }
+
         $query = SQLs::customerOrderPaymentStatus($order->getId()->getEndpoint(), implode($paymentStatus, ','));
+
         $result = $this->database->query($query);
+
         if (!empty($result)) {
             $order->setPaymentStatus(trim(str_replace('Payment:', '', $result[0]['comment'])));
             $order->setPaymentDate(date_create_from_format("Y-m-d H:i:s", $result[0]['date_added']));
@@ -83,6 +93,7 @@ class CustomerOrder extends MainEntityController
     private function setPaymentInfo(CustomerOrderModel $order)
     {
         $orderId = $order->getId()->getEndpoint();
+
         switch ($order->getPaymentModuleCode()) {
             case PaymentTypes::TYPE_BPAY:
                 $paymentMapper = new  CustomerOrderCreditCart();
@@ -102,6 +113,7 @@ class CustomerOrder extends MainEntityController
             default:
                 return;
         }
+        
         $paymentMapper->toHost($result);
     }
 

@@ -14,6 +14,7 @@ use jtl\Connector\OpenCart\Exceptions\MethodNotAllowedException;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemDiscountMapper;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemProductMapper;
 use jtl\Connector\OpenCart\Mapper\Order\OrderItemShippingMapper;
+use jtl\Connector\OpenCart\Mapper\Order\OrderItemSurchargeMapper;
 use jtl\Connector\OpenCart\Utility\Constants;
 use jtl\Connector\OpenCart\Utility\SQLs;
 
@@ -23,12 +24,14 @@ class CustomerOrderItem extends BaseController
     private $productMapper;
     private $shippingMapper;
     private $discountMapper;
+    private $surchargeMapper;
     private $sumsForVat;
 
     private $methods = [
         'customerOrderProducts'  => COI::TYPE_PRODUCT,
         'customerOrderShippings' => COI::TYPE_SHIPPING,
-        'customerOrderDiscounts' => COI::TYPE_DISCOUNT
+        'customerOrderDiscounts' => COI::TYPE_DISCOUNT,
+        'customerOrderSurcharges' => COI::TYPE_SURCHARGE
     ];
 
     public function __construct()
@@ -38,6 +41,7 @@ class CustomerOrderItem extends BaseController
         $this->productMapper = new OrderItemProductMapper();
         $this->shippingMapper = new OrderItemShippingMapper();
         $this->discountMapper = new OrderItemDiscountMapper();
+        $this->surchargeMapper = new OrderItemSurchargeMapper();
     }
 
     public function pullData(array $data, $model, $limit = null)
