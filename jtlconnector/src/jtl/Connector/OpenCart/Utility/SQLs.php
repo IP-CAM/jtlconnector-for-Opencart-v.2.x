@@ -575,6 +575,16 @@ final class SQLs
     {
         return 'SELECT module_id FROM ' . DB_PREFIX . 'module WHERE CODE = "featured" AND NAME = "Featured - Wawi"';
     }
+
+    public static function tableExists($table)
+    {
+        return sprintf("
+            SELECT COUNT(*) 
+            FROM INFORMATION_SCHEMA.TABLES 
+            WHERE TABLE_SCHEMA = '%s' AND TABLE_NAME = '%s%s'",
+            DB_DATABASE, DB_PREFIX, $table
+        );
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Option">
     public static function optionId($languageId, $name, $type)
@@ -681,6 +691,18 @@ final class SQLs
             .bluepay_hosted_order_id
             LEFT JOIN ' . DB_PREFIX . 'order o ON o.order_id = bro.order_id
             LEFT JOIN jtl_connector_link l ON brot.bluepay_hosted_order_transaction_id = l.endpointId AND l.type = %d
+            WHERE l.hostId IS NULL
+            LIMIT %d',
+            IdentityLinker::TYPE_PAYMENT, $limit
+        );
+    }
+
+    public static function paymentNovalnetPull($limit)
+    {
+        return sprintf('
+            SELECT id, order_no as order_id, amount, `date` as date_added, additional_note as note, tid as transaction_id, payment_type as payment_code
+            FROM ' . DB_PREFIX . 'novalnet_transaction_detail nov
+            LEFT JOIN jtl_connector_link l ON nov.id = l.endpointId AND l.type = %d
             WHERE l.hostId IS NULL
             LIMIT %d',
             IdentityLinker::TYPE_PAYMENT, $limit
